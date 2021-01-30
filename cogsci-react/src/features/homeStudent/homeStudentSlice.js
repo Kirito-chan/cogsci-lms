@@ -43,17 +43,17 @@ export const loadAttendance = userId => (dispatch, getState) => {
 
     const diffInMinutes = moment().diff(moment(lastFetch), "minutes")
     if (diffInMinutes < TIME_TO_WAIT_FOR_FETCHING) return;
-
-    return dispatch(
-        apiCallBegan({
-            url: urlAttendance + "/" + userId,
-            onStart: allDataRequested.type,
-            onSuccess: allDataReceived.type,
-            onError: allDataRequestFailed.type
-        })
-    )
-
+    
+        return dispatch(
+            apiCallBegan({
+                url: urlAttendance + "/" + userId,
+                onStart: allDataRequested.type,
+                onSuccess: allDataReceived.type,
+                onError: allDataRequestFailed.type
+            })
+        )
 }
 
 // Selectors
 export const selectAttendance = state => state.features.homeStudent.attendances
+export const getLoading = state => state.features.homeStudent.loading
