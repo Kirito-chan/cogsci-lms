@@ -1,24 +1,23 @@
 import React from "react";
+import formatTranslation from "../../../components/StringUtils";
 
-function HomeWorkEvaluation({ evaluation, classAttribute }) {
+function HomeWorkEvaluation({ evaluation }) {
   let textClassAttribute = "";
   let text = evaluation;
 
   if (evaluation == 0) {
     textClassAttribute = "text-danger font-weight-bold";
-    text = text.concat(" bodov");
+    text = "získal " + text;
+    text = text.concat(" " + formatTranslation(0, "bod"));
   } else if (evaluation == 1) {
     textClassAttribute = "text-success font-weight-bold";
-    text = text.concat(" bod");
+    text = "získal " + text;
+    text = text.concat(" " + formatTranslation(1, "bod"));
   } else {
-    textClassAttribute = "text-secondary font-italic";
+    textClassAttribute = "text-secondary";
   }
 
-  return (
-    <p className={classAttribute}>
-      <b>Hodnotenie:</b> <span className={textClassAttribute}>{text}</span>
-    </p>
-  );
+  return <span className={textClassAttribute}>{text}</span>;
 }
 
 export default HomeWorkEvaluation;

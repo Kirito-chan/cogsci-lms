@@ -10,7 +10,7 @@ export const slice = createSlice({
     homeworks: [],
     teacherPresentations: [],
     studentPresentations: [],
-    myPres: {},
+    myPresentation: [],
     grade: {},
     loading: false,
     lastFetch: null,
@@ -39,6 +39,11 @@ export const slice = createSlice({
       state.loading = false;
       state.lastFetch = Date.now();
     },
+    myPresentationReceived: (state, action) => {
+      state.myPresentation = action.payload;
+      state.loading = false;
+      state.lastFetch = Date.now();
+    },
     allDataRequestFailed: (state) => {
       state.loading = false;
     },
@@ -52,6 +57,7 @@ export const {
   homeworksReceived,
   teacherPresentationsReceived,
   studentPresentationsReceived,
+  myPresentationReceived,
 } = slice.actions;
 
 export default slice.reducer;
@@ -125,6 +131,21 @@ export const loadStudentPresentations = (userId) => (dispatch, getState) => {
   );
 };
 
+const urlMyPresentation = "/my-presentation";
+
+export const loadMyPresentation = (userId) => (dispatch, getState) => {
+  if (dataInReduxAreRecent(getState)) return;
+
+  return dispatch(
+    apiCallBegan({
+      url: urlMyPresentation + "/" + userId,
+      onStart: allDataRequested.type,
+      onSuccess: myPresentationReceived.type,
+      onError: allDataRequestFailed.type,
+    })
+  );
+};
+
 // Selectors
 export const getLoading = (state) => state.features.homeStudent.loading;
 export const getAttendance = (state) => state.features.homeStudent.attendances;
@@ -133,3 +154,5 @@ export const getTeacherPresentations = (state) =>
   state.features.homeStudent.teacherPresentations;
 export const getStudentPresentations = (state) =>
   state.features.homeStudent.studentPresentations;
+export const getMyPresentation = (state) =>
+  state.features.homeStudent.myPresentation;

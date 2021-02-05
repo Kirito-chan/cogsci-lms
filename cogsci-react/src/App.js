@@ -10,7 +10,8 @@ import { getLoading } from "./features/homeStudent/homeStudentSlice";
 import HomeWorks from "./features/homeStudent/homeworks/HomeWorks";
 import AllPresentations from "./features/homeStudent/presentations/AllPresentations";
 import TeacherPresentations from "./features/homeStudent/presentations/TeacherPresentations";
-// import StudentPresentations from "./features/homeStudent/presentations/StudentPresentations";
+import StudentPresentations from "./features/homeStudent/presentations/StudentPresentations";
+import MyPresentation from "./features/homeStudent/presentations/MyPresentation";
 
 function App() {
   const isLoading = useSelector(getLoading);
@@ -28,27 +29,17 @@ function App() {
           <Row>
             <Col lg={6}>
               <Attendance />
-            </Col>
-
-            <Col lg={6}>
               <HomeWorks />
             </Col>
-          </Row>
 
-          <hr />
-
-          <Row>
-            <Col>
-              <AllPresentations />
-            </Col>
-          </Row>
-
-          <Row>
             <Col lg={6}>
-              <TeacherPresentations />
+              <div className="pl-lg-5">
+                <AllPresentations />
+                <TeacherPresentations />
+                <StudentPresentations />
+                <MyPresentation />
+              </div>
             </Col>
-
-            <Col lg={6}>{/* <StudentPresentations /> */}</Col>
           </Row>
         </Container>
       </section>

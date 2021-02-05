@@ -1,5 +1,16 @@
 .App {
   padding-top: 6em;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.nav-link {
+  font-weight: bold;
+}
+
+.navbar .nav-link {
+  font-weight: normal;
 }
 
 .App-logo {
@@ -26,9 +37,9 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(10px)
+    transform: translateY(10px);
   }
   100% {
-    transform: translateY(0px)
+    transform: translateY(0px);
   }
 }

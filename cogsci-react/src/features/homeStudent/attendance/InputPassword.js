@@ -9,7 +9,12 @@ function InputPassword() {
       <Form>
         <Form.Row>
           <Col>
-            <Form.Control type="password" placeholder="password" />
+            <label htmlFor="password" className="d-none"></label>
+            <Form.Control
+              id="password"
+              type="password"
+              placeholder="Password"
+            />
           </Col>
           <Col>
             <Button variant="primary" type="submit">

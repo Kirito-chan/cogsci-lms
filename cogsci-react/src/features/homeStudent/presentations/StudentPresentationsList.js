@@ -1,21 +1,28 @@
 import React from "react";
 import Nav from "react-bootstrap/Nav";
-import Discussion from "../Discussion";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import StudentPresInfo from "./StudentPresInfo";
 
 function StudentPresentationsList({ studentPresentations }) {
   return (
     <div>
       <h3>Študentské prezentácie</h3>
-      {studentPresentations.map((presentation, i) => (
-        <div key={presentation.id}>
-          <Nav.Link href={`pres${presentation.id}`}>
-            {i + 1}. {presentation.title}
-          </Nav.Link>
-          <Discussion
-            data={presentation}
-            classAttribute="d-inline-block mr-3 pl-2"
-          />
-        </div>
+      {studentPresentations.map((presentation) => (
+        <article key={presentation.id}>
+          <Row>
+            <Nav.Link href={`pres${presentation.id}`}>
+              {presentation.title} - {presentation.first_name}{" "}
+              {presentation.last_name}
+            </Nav.Link>
+          </Row>
+
+          <Row>
+            <Col>
+              <StudentPresInfo presentation={presentation} />
+            </Col>
+          </Row>
+        </article>
       ))}
     </div>
   );
