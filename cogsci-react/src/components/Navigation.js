@@ -13,7 +13,7 @@ export default function Navigation() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="#predmety2">
-            <FaBrain />
+            <FaBrain size={25} />
           </Nav.Link>
 
           <Nav.Link href="#predmety">Cogsci predmety</Nav.Link>
