@@ -7,7 +7,7 @@ import Discussion from "../Discussion";
 function TeacherPresentationsList({ teacherPresentations }) {
   return (
     <div className="mb-5">
-      <h3>Učiteľove</h3>
+      <h3>Učiteľské prezentácie</h3>
 
       {teacherPresentations.map((presentation, i) => (
         <div key={presentation.id}>

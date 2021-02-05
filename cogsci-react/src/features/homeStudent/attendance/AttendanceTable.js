@@ -8,7 +8,7 @@ export default function AttendanceTable({ attendances }) {
   return (
     <div>
       <h2>Dochádzka</h2>
-      <Table bordered striped hover size="md" className="text-center">
+      <Table bordered striped hover size="sm" className="text-center">
         <thead>
           <tr>
             <th>Týždeň</th>

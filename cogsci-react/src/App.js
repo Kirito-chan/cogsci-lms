@@ -12,6 +12,7 @@ import AllPresentations from "./features/homeStudent/presentations/AllPresentati
 import TeacherPresentations from "./features/homeStudent/presentations/TeacherPresentations";
 import StudentPresentations from "./features/homeStudent/presentations/StudentPresentations";
 import MyPresentation from "./features/homeStudent/presentations/MyPresentation";
+import Evaluation from "./features/homeStudent/evaluation/Evaluation";
 
 function App() {
   const isLoading = useSelector(getLoading);
@@ -30,6 +31,7 @@ function App() {
             <Col lg={6}>
               <Attendance />
               <HomeWorks />
+              <Evaluation />
             </Col>
 
             <Col lg={6}>

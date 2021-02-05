@@ -33,9 +33,14 @@ app.get("/api/attendance/:userId", (req, res) => {
             END AS show_password_input 
       FROM attendance AS a LEFT JOIN user_attendance_lookup AS u
       ON u.attendance_id = a.id AND u.user_id = ${userId}
-      WHERE a.subject_id = 18)
+      WHERE a.subject_id = 18),
 
-      SELECT tab1.date, tab1.id, tab1.got_point, tab1.show_password_input FROM tab1
+      pres_weight as (
+        SELECT val_attendance as weight FROM subject s WHERE s.id = 18
+       )
+
+      SELECT tab1.date, tab1.id, tab1.got_point, tab1.show_password_input, pw.weight 
+      FROM tab1 CROSS JOIN pres_weight pw
       ORDER BY tab1.date DESC`;
 
   pool.execute(query, function (err, rows) {
@@ -71,9 +76,14 @@ app.get("/api/homeworks/:userId", (req, res) => {
                count(*) as num_all_comments 
                FROM announcement_comments AS c
         GROUP BY c.announcement_id
-      )
+      ),
 
-      SELECT tab1.*, tab2.num_all_comments FROM tab1 LEFT JOIN tab2 USING(id)
+      pres_weight as (
+        SELECT val_comment as weight FROM subject s WHERE s.id = 18
+       )
+
+      SELECT tab1.*, tab2.num_all_comments, pw.weight
+      FROM (tab1 LEFT JOIN tab2 USING(id)) CROSS JOIN pres_weight pw
       ORDER BY tab2.id DESC`;
 
   pool.execute(query, function (err, rows) {
@@ -202,6 +212,19 @@ app.get("/api/my-presentation/:userId", (req, res) => {
     if (err) throw err;
     rows = JSON.parse(JSON.stringify(rows));
     res.json(rows);
+  });
+});
+
+// get my presentation - title and points
+app.get("/api/subject-valuation", (req, res) => {
+  const query = `
+     SELECT * FROM subject_valuation WHERE subject_id = 18
+  `;
+
+  pool.execute(query, function (err, rows) {
+    if (err) throw err;
+    rows = JSON.parse(JSON.stringify(rows));
+    res.json(rows[0]);
   });
 });
 
