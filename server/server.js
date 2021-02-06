@@ -1,6 +1,8 @@
-const express = require("express");
-const cors = require("cors");
-const pool = require("./db");
+import { getSubjectValuation } from "./queries.js";
+import express from "express";
+import cors from "cors";
+import pool from "./db.js";
+
 const app = express();
 
 app.use(cors());
@@ -15,8 +17,9 @@ app.use(express.json());
 
 // get attendance
 app.get("/api/attendance/:userId", (req, res) => {
-  const { userId } = req.params;
-
+  let { userId } = req.params;
+  userId = 346;
+  const subjectId = 18;
   const query = `
       WITH
       tab1 AS (
@@ -32,18 +35,18 @@ app.get("/api/attendance/:userId", (req, res) => {
               ELSE 0
             END AS show_password_input 
       FROM attendance AS a LEFT JOIN user_attendance_lookup AS u
-      ON u.attendance_id = a.id AND u.user_id = ${userId}
-      WHERE a.subject_id = 18),
+      ON u.attendance_id = a.id AND u.user_id = ?
+      WHERE a.subject_id = ?),
 
       pres_weight as (
-        SELECT val_attendance as weight FROM subject s WHERE s.id = 18
+        SELECT val_attendance as weight FROM subject s WHERE s.id = ?
        )
 
       SELECT tab1.date, tab1.id, tab1.got_point, tab1.show_password_input, pw.weight 
       FROM tab1 CROSS JOIN pres_weight pw
       ORDER BY tab1.date DESC`;
 
-  pool.execute(query, function (err, rows) {
+  pool.execute(query, [userId, subjectId, subjectId], function (err, rows) {
     if (err) throw err;
     rows = JSON.parse(JSON.stringify(rows));
     res.json(rows);
@@ -53,6 +56,7 @@ app.get("/api/attendance/:userId", (req, res) => {
 // get homeworks
 app.get("/api/homeworks/:userId", (req, res) => {
   const { userId } = req.params;
+  const subjectId = 18;
 
   const query = `
       WITH
@@ -67,8 +71,8 @@ app.get("/api/homeworks/:userId", (req, res) => {
             END AS evaluation,
             count(c.user_id) as num_of_comments         
       FROM announcement AS a LEFT JOIN announcement_comments AS c
-      ON a.id = c.announcement_id AND c.user_id = ${userId}
-      WHERE a.subject_id = 18
+      ON a.id = c.announcement_id AND c.user_id = ?
+      WHERE a.subject_id = ?
       GROUP BY a.id),
 
       tab2 AS (
@@ -79,14 +83,14 @@ app.get("/api/homeworks/:userId", (req, res) => {
       ),
 
       pres_weight as (
-        SELECT val_comment as weight FROM subject s WHERE s.id = 18
+        SELECT val_comment as weight FROM subject s WHERE s.id = ?
        )
 
       SELECT tab1.*, tab2.num_all_comments, pw.weight
       FROM (tab1 LEFT JOIN tab2 USING(id)) CROSS JOIN pres_weight pw
       ORDER BY tab2.id DESC`;
 
-  pool.execute(query, function (err, rows) {
+  pool.execute(query, [userId, subjectId, subjectId], function (err, rows) {
     if (err) throw err;
     rows = JSON.parse(JSON.stringify(rows));
     res.json(rows);
@@ -96,6 +100,7 @@ app.get("/api/homeworks/:userId", (req, res) => {
 // get teacher's presentations
 app.get("/api/teacher-presentations/:userId", (req, res) => {
   const { userId } = req.params;
+  const subjectId = 14;
 
   const query = `
   WITH
@@ -105,8 +110,8 @@ app.get("/api/teacher-presentations/:userId", (req, res) => {
          c.user_id,
          count(c.user_id) as num_of_comments         
   FROM teacher_presentation AS t LEFT JOIN teacher_presentation_comments AS c
-  ON t.id = c.presentation_id AND c.user_id = ${userId}
-  WHERE t.subject_id = 14
+  ON t.id = c.presentation_id AND c.user_id = ?
+  WHERE t.subject_id = ?
   GROUP BY t.id),
 
   tab2 AS (
@@ -119,7 +124,7 @@ app.get("/api/teacher-presentations/:userId", (req, res) => {
   SELECT tab1.*, tab2.num_all_comments FROM tab1 LEFT JOIN tab2 USING(id)
   ORDER BY tab1.id DESC;`;
 
-  pool.execute(query, function (err, rows) {
+  pool.execute(query, [userId, subjectId], function (err, rows) {
     if (err) throw err;
     rows = JSON.parse(JSON.stringify(rows));
     res.json(rows);
@@ -128,8 +133,8 @@ app.get("/api/teacher-presentations/:userId", (req, res) => {
 
 // get student's presentations
 app.get("/api/student-presentations/:userId", (req, res) => {
-  let { userId } = req.params;
-  userId = 241;
+  const { userId } = req.params;
+  const subjectId = 15;
   const query = `
    WITH
     tab1 as 
@@ -140,38 +145,43 @@ app.get("/api/student-presentations/:userId", (req, res) => {
         JOIN user ON user.id = usl.user_id)
     LEFT JOIN user_presentation_comments AS u ON
         u.presentation_id = p.id
-    WHERE p.status = 2 AND usl.subject_id = 15
+    WHERE p.status = 2 AND usl.subject_id = ?
     GROUP BY p.id),
 
     tab2 as (
     SELECT tab1.*, count(u.user_id) as num_of_comments 
     FROM tab1 LEFT JOIN user_presentation_comments AS u
-          ON tab1.pres_id = u.presentation_id AND u.user_id = ${userId}
+          ON tab1.pres_id = u.presentation_id AND u.user_id = ?
     GROUP BY tab1.pres_id
     )
 
     SELECT tab2.*, CASE WHEN upv.id is NULL THEN FALSE ELSE TRUE END AS has_evaluated
     FROM tab2 LEFT JOIN user_presentation_valuation as upv
           ON upv.target_usl_id = (SELECT usl.id FROM user_subject_lookup as usl
-                                 WHERE usl.user_id = ${userId}
-                                   AND usl.subject_id = 15)
+                                 WHERE usl.user_id = ?
+                                   AND usl.subject_id = ?)
           AND upv.whose_usl_id=(SELECT usl.id FROM user_subject_lookup as usl
                                 WHERE usl.user_id = tab2.user_id
-                                  AND usl.subject_id = 15) 
+                                  AND usl.subject_id = ?) 
     GROUP BY tab2.pres_id 
     ORDER BY has_evaluated ASC 
     LIMIT 9`;
 
-  pool.execute(query, function (err, rows) {
-    if (err) throw err;
-    rows = JSON.parse(JSON.stringify(rows));
-    res.json(rows);
-  });
+  pool.execute(
+    query,
+    [subjectId, userId, userId, subjectId, subjectId],
+    function (err, rows) {
+      if (err) throw err;
+      rows = JSON.parse(JSON.stringify(rows));
+      res.json(rows);
+    }
+  );
 });
 
 // get my presentation - title and points
 app.get("/api/my-presentation/:userId", (req, res) => {
   const { userId } = req.params;
+  const subjectId = 15;
 
   const query = `
   WITH
@@ -179,7 +189,7 @@ app.get("/api/my-presentation/:userId", (req, res) => {
       SELECT usl.id as usl_id, usl.presentation_id, p.title
       FROM user_subject_lookup as usl JOIN presentation p
             ON p.id = usl.presentation_id
-      WHERE usl.user_id = ${userId} AND usl.subject_id = 15
+      WHERE usl.user_id = ? AND usl.subject_id = ?
     ),
 
     tab2 as (
@@ -189,7 +199,7 @@ app.get("/api/my-presentation/:userId", (req, res) => {
     ),
 
     pres_weight as (
-      SELECT val_presentation as weight FROM subject s WHERE s.id = 15
+      SELECT val_presentation as weight FROM subject s WHERE s.id = ?
      ),
 
     tab3 as (
@@ -208,7 +218,7 @@ app.get("/api/my-presentation/:userId", (req, res) => {
     WHERE tab4.id is not null;
   `;
 
-  pool.execute(query, function (err, rows) {
+  pool.execute(query, [userId, subjectId, subjectId], function (err, rows) {
     if (err) throw err;
     rows = JSON.parse(JSON.stringify(rows));
     res.json(rows);
@@ -216,17 +226,25 @@ app.get("/api/my-presentation/:userId", (req, res) => {
 });
 
 // get my presentation - title and points
-app.get("/api/subject-valuation", (req, res) => {
-  const query = `
-     SELECT * FROM subject_valuation WHERE subject_id = 18
-  `;
-
-  pool.execute(query, function (err, rows) {
-    if (err) throw err;
-    rows = JSON.parse(JSON.stringify(rows));
-    res.json(rows[0]);
-  });
+app.get("/api/subject-valuation", async (req, res) => {
+  const subjectId = 18;
+  const row = await getSubjectValuation(subjectId);
+  res.json(row);
 });
+
+// app.get("/api/subject-valuation", (req, res) => {
+//   const subjectId = 18;
+//   const query = `
+//      SELECT * FROM subject_valuation WHERE subject_id = ?
+//   `;
+
+//   pool.execute(query, [subjectId], function (err, rows) {
+//     if (err) throw err;
+//     rows = JSON.parse(JSON.stringify(rows));
+//     console.log(rows[0]);
+//     res.json(rows[0]);
+//   });
+// });
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

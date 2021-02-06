@@ -26,11 +26,13 @@ export default function EvaluationTable({
       2
     )
   );
-  const sumOfPercents = (
-    presentationPoints +
-    attendancePointsFromWeight +
-    homeworkPointsFromWeight
-  ).toFixed(2);
+  const sumOfPercents = parseFloat(
+    (
+      presentationPoints +
+      attendancePointsFromWeight +
+      homeworkPointsFromWeight
+    ).toFixed(2)
+  );
 
   const grade = getGrade(sumOfPercents, subjectValuation);
 

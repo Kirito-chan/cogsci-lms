@@ -11,7 +11,7 @@ export default function getGrade(percents, subjectValuation) {
   if (A >= number && number >= B) return "A";
   else if (B > number && number >= C) return "B";
   else if (C > number && number >= D) return "C";
-  else if (D > number && number >= D) return "D";
+  else if (D > number && number >= E) return "D";
   else if (E > number && number >= FX) return "E";
   else return "Fx";
 }
