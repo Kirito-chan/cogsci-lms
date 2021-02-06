@@ -10,8 +10,8 @@ export default function EvaluationTable({
 }) {
   const presentationPoints = parseFloat(presentation?.points);
   const presentationWeight = presentation?.weight;
-  const earnedAttendancePoints = attendances.filter((it) => it.got_point)
-    .length;
+  // prettier-ignore
+  const earnedAttendancePoints = attendances.filter((it) => it.got_point).length;
   const maxAttendancePoints = attendances.length;
   const attendanceWeight = attendances[0]?.weight;
   const earnedBonusPoints = bonuses.filter((it) => it.evaluation == 1).length;
@@ -20,11 +20,11 @@ export default function EvaluationTable({
   const bonusPointsFromWeight = Number(
     ((earnedBonusPoints / maxBonusPoints) * bonusWeight).toFixed(2)
   );
+  // prettier-ignore
   const attendancePointsFromWeight = Number(
-    ((earnedAttendancePoints / maxAttendancePoints) * attendanceWeight).toFixed(
-      2
-    )
+    ((earnedAttendancePoints / maxAttendancePoints) * attendanceWeight).toFixed(2)
   );
+
   const sumOfPercents = parseFloat(
     (
       presentationPoints +
@@ -67,7 +67,7 @@ export default function EvaluationTable({
           </tr>
 
           <tr>
-            <td>Domáce úlohy</td>
+            <td>Bonusové úlohy</td>
             <td>
               {earnedBonusPoints} z {maxBonusPoints}
             </td>

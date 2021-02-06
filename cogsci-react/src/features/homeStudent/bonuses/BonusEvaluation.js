@@ -1,20 +1,24 @@
 import React from "react";
 import formatTranslation from "../../../components/StringUtils";
+import {
+  GOT_0_BONUS_POINTS,
+  GOT_1_BONUS_POINTS,
+  NOT_YET_EVALUATED_BONUS_POINTS,
+} from "../../../constants";
 
 function BonusEvaluation({ evaluation }) {
   let textClassAttribute = "";
-  let text = evaluation;
+  let text = "získal " + evaluation;
 
-  if (evaluation == 0) {
+  if (evaluation == GOT_0_BONUS_POINTS) {
     textClassAttribute = "text-danger font-weight-bold";
-    text = "získal " + text;
     text = text.concat(" " + formatTranslation(0, "bod"));
-  } else if (evaluation == 1) {
+  } else if (evaluation == GOT_1_BONUS_POINTS) {
     textClassAttribute = "text-success font-weight-bold";
-    text = "získal " + text;
     text = text.concat(" " + formatTranslation(1, "bod"));
-  } else {
+  } else if (evaluation == NOT_YET_EVALUATED_BONUS_POINTS) {
     textClassAttribute = "text-secondary";
+    text = "nehodnotené";
   }
 
   return <span className={textClassAttribute}>{text}</span>;
