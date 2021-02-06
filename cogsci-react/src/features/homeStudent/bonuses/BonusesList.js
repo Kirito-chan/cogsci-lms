@@ -4,26 +4,26 @@ import Discussion from "../Discussion";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-function HomeWorksList({ homeworks }) {
+function BonusesList({ bonuses }) {
   return (
     <div className="mt-5">
-      <h2>Domáce úlohy</h2>
+      <h2>Bonusové úlohy</h2>
 
-      {homeworks.map((homework, i) => (
-        <article key={homework.id}>
+      {bonuses.map((bonus, i) => (
+        <article key={bonus.id}>
           <Row>
             <Col>
-              <Nav.Link href={`domaca${homework.id}`} className="pl-0">
-                {homeworks.length - i}. {homework.title}
+              <Nav.Link href={`bonus${bonus.id}`} className="pl-0">
+                {bonuses.length - i}. {bonus.title}
               </Nav.Link>
             </Col>
           </Row>
           <Row>
             <Col>
               <Discussion
-                data={homework}
+                data={bonus}
                 classAttribute="d-inline-block mr-3"
-                evaluation={homework.evaluation}
+                evaluation={bonus.evaluation}
               />
             </Col>
           </Row>
@@ -33,4 +33,4 @@ function HomeWorksList({ homeworks }) {
   );
 }
 
-export default HomeWorksList;
+export default BonusesList;

@@ -7,7 +7,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { getLoading } from "./features/homeStudent/homeStudentSlice";
-import HomeWorks from "./features/homeStudent/homeworks/HomeWorks";
+import Bonuses from "./features/homeStudent/bonuses/Bonuses";
 import AllPresentations from "./features/homeStudent/presentations/AllPresentations";
 import TeacherPresentations from "./features/homeStudent/presentations/TeacherPresentations";
 import StudentPresentations from "./features/homeStudent/presentations/StudentPresentations";
@@ -29,17 +29,17 @@ function App() {
         <Container fluid>
           <Row>
             <Col lg={6}>
-              <Attendance />
-              <HomeWorks />
-              <Evaluation />
+              <AllPresentations />
+              <TeacherPresentations />
+              <StudentPresentations />
+              <MyPresentation />
             </Col>
 
             <Col lg={6}>
-              <div className="pl-lg-5">
-                <AllPresentations />
-                <TeacherPresentations />
-                <StudentPresentations />
-                <MyPresentation />
+              <div className="pl-lg-4">
+                <Attendance />
+                <Bonuses />
+                <Evaluation />
               </div>
             </Col>
           </Row>

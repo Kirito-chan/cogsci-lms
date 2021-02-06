@@ -7,7 +7,7 @@ export const slice = createSlice({
   name: "homeStudent",
   initialState: {
     attendances: [],
-    homeworks: [],
+    bonuses: [],
     teacherPresentations: [],
     studentPresentations: [],
     myPresentation: [],
@@ -24,8 +24,8 @@ export const slice = createSlice({
       state.loading = false;
       state.lastFetch = Date.now();
     },
-    homeworksReceived: (state, action) => {
-      state.homeworks = action.payload;
+    bonusesReceived: (state, action) => {
+      state.bonuses = action.payload;
       state.loading = false;
       state.lastFetch = Date.now();
     },
@@ -59,7 +59,7 @@ export const {
   allDataRequested,
   attendancesReceived,
   allDataRequestFailed,
-  homeworksReceived,
+  bonusesReceived,
   teacherPresentationsReceived,
   studentPresentationsReceived,
   myPresentationReceived,
@@ -92,16 +92,16 @@ export const loadAttendance = (userId) => (dispatch, getState) => {
   );
 };
 
-const urlHomeworks = "/homeworks";
+const urlBonuses = "/bonuses";
 
-export const loadHomeworks = (userId) => (dispatch, getState) => {
+export const loadBonuses = (userId) => (dispatch, getState) => {
   if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
-      url: urlHomeworks + "/" + userId,
+      url: urlBonuses + "/" + userId,
       onStart: allDataRequested.type,
-      onSuccess: homeworksReceived.type,
+      onSuccess: bonusesReceived.type,
       onError: allDataRequestFailed.type,
     })
   );
@@ -170,7 +170,7 @@ export const loadSubjectValuation = () => (dispatch, getState) => {
 // Selectors
 export const getLoading = (state) => state.features.homeStudent.loading;
 export const getAttendance = (state) => state.features.homeStudent.attendances;
-export const getHomeworks = (state) => state.features.homeStudent.homeworks;
+export const getBonuses = (state) => state.features.homeStudent.bonuses;
 export const getTeacherPresentations = (state) =>
   state.features.homeStudent.teacherPresentations;
 export const getStudentPresentations = (state) =>

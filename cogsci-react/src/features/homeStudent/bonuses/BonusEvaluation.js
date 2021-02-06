@@ -1,7 +1,7 @@
 import React from "react";
 import formatTranslation from "../../../components/StringUtils";
 
-function HomeWorkEvaluation({ evaluation }) {
+function BonusEvaluation({ evaluation }) {
   let textClassAttribute = "";
   let text = evaluation;
 
@@ -20,4 +20,4 @@ function HomeWorkEvaluation({ evaluation }) {
   return <span className={textClassAttribute}>{text}</span>;
 }
 
-export default HomeWorkEvaluation;
+export default BonusEvaluation;

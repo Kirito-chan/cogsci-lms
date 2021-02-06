@@ -1,7 +1,7 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
 import formatTranslation from "../../components/StringUtils";
-import HomeWorkEvaluation from "./homeworks/HomeWorkEvaluation";
+import BonusEvaluation from "./bonuses/BonusEvaluation";
 
 function Discussion({ data, classAttribute, evaluation }) {
   const num_of_all_comments = data.num_all_comments;
@@ -14,7 +14,7 @@ function Discussion({ data, classAttribute, evaluation }) {
         {num_of_my_comments} {formatTranslation(num_of_my_comments, "váš")}
         {!evaluation || (
           <span>
-            , <HomeWorkEvaluation evaluation={evaluation} />
+            , <BonusEvaluation evaluation={evaluation} />
           </span>
         )}
       </p>

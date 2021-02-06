@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getHomeworks,
+  getBonuses,
   getAttendance,
   getMyPresentation,
   loadMyPresentation,
   loadAttendance,
-  loadHomeworks,
+  loadBonuses,
   loadSubjectValuation,
   getSubjectValuation,
 } from "../homeStudentSlice";
@@ -19,13 +19,13 @@ export default function Evaluation() {
   const currentUserId = useSelector(getCurrentUser);
   const myPresentation = useSelector(getMyPresentation);
   const attendances = useSelector(getAttendance);
-  const homeworks = useSelector(getHomeworks);
+  const bonuses = useSelector(getBonuses);
   const subjectValuation = useSelector(getSubjectValuation);
 
   useEffect(() => {
     dispatch(loadMyPresentation(currentUserId));
     dispatch(loadAttendance(currentUserId));
-    dispatch(loadHomeworks(currentUserId));
+    dispatch(loadBonuses(currentUserId));
     dispatch(loadSubjectValuation(currentUserId));
   }, []);
 
@@ -33,7 +33,7 @@ export default function Evaluation() {
     <EvaluationTable
       presentation={myPresentation[0]}
       attendances={attendances}
-      homeworks={homeworks}
+      bonuses={bonuses}
       subjectValuation={subjectValuation}
     />
   );

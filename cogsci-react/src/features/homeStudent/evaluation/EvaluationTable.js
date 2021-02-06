@@ -5,7 +5,7 @@ import getGrade from "../../../components/Math";
 export default function EvaluationTable({
   presentation,
   attendances,
-  homeworks,
+  bonuses,
   subjectValuation,
 }) {
   const presentationPoints = parseFloat(presentation?.points);
@@ -14,12 +14,11 @@ export default function EvaluationTable({
     .length;
   const maxAttendancePoints = attendances.length;
   const attendanceWeight = attendances[0]?.weight;
-  const earnedHomeworkPoints = homeworks.filter((it) => it.evaluation == 1)
-    .length;
-  const maxHomeworkPoints = homeworks.length;
-  const homeworkWeight = homeworks[0]?.weight;
-  const homeworkPointsFromWeight = Number(
-    ((earnedHomeworkPoints / maxHomeworkPoints) * homeworkWeight).toFixed(2)
+  const earnedBonusPoints = bonuses.filter((it) => it.evaluation == 1).length;
+  const maxBonusPoints = bonuses.length;
+  const bonusWeight = bonuses[0]?.weight;
+  const bonusPointsFromWeight = Number(
+    ((earnedBonusPoints / maxBonusPoints) * bonusWeight).toFixed(2)
   );
   const attendancePointsFromWeight = Number(
     ((earnedAttendancePoints / maxAttendancePoints) * attendanceWeight).toFixed(
@@ -30,7 +29,7 @@ export default function EvaluationTable({
     (
       presentationPoints +
       attendancePointsFromWeight +
-      homeworkPointsFromWeight
+      bonusPointsFromWeight
     ).toFixed(2)
   );
 
@@ -70,10 +69,10 @@ export default function EvaluationTable({
           <tr>
             <td>Domáce úlohy</td>
             <td>
-              {earnedHomeworkPoints} z {maxHomeworkPoints}
+              {earnedBonusPoints} z {maxBonusPoints}
             </td>
-            <td>{homeworkPointsFromWeight}</td>
-            <td>{homeworkWeight}</td>
+            <td>{bonusPointsFromWeight}</td>
+            <td>{bonusWeight}</td>
           </tr>
 
           <tr>
