@@ -6,10 +6,7 @@ import StudentHomePage from "./features/homeStudent/StudentHomePage";
 import { BrowserRouter, Switch } from "react-router-dom";
 import SubjectsPage from "./features/subjects/SubjectsPage";
 import Login from "./features/login/Login";
-// import withAuth from "./features/login/withAuth";
 import AuthRoute from "./features/login/AuthRoute";
-
-// import useToken from "./features/login/useToken";
 
 function App() {
   const isLoading = useSelector(getLoading);

@@ -3,33 +3,27 @@ import { Redirect, Route } from "react-router";
 import { getToken, clearToken } from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-// import SubjectsPage from "../subjects/SubjectsPage";
-// import SubjectsPage from "../subjects/SubjectsPage";
-// import StudentHomePage from "../homeStudent/StudentHomePage";
 
 const AuthRoute = (props) => {
   const [component, setComponent] = useState(<div></div>);
   const dispatch = useDispatch();
   let token = useSelector(getToken);
+
   if (!token) {
     token = localStorage.getItem("token");
   }
 
-  const clearTokensAndUnauthorize = () => {
-    localStorage.removeItem("token");
+  const clearTokens = () => {
+    localStorage.clear();
     dispatch(clearToken());
   };
 
   useEffect(() => {
-    console.log("idem urobit checkToken preeed " + token);
     if (token) {
-      console.log("idem urobit checkToken " + token);
-
       const fetchData = async () => {
         try {
           // prettier-ignore
-          const response = await axios.post("http://localhost:8080/api/checkToken",{ token: token});
-          console.log("odpoved " + response + " status " + response.status);
+          await axios.post("http://localhost:8080/api/checkToken",{ token: token});
           localStorage.setItem("token", token);
 
           if (props.type === "login") {
@@ -38,7 +32,7 @@ const AuthRoute = (props) => {
             setComponent(<Route {...props} />);
           }
         } catch (error) {
-          clearTokensAndUnauthorize();
+          clearTokens();
           if (props.type === "login") {
             setComponent(<Route {...props} />);
           } else {
@@ -56,14 +50,6 @@ const AuthRoute = (props) => {
     }
   }, [props.type, token]);
 
-  // const { type } = props;
-
-  // console.log(isAuthorized);
-
-  // if (type === "guest" && isAuthorized) return <Redirect to="/subjects" />;
-  // if (type === "private" && !isAuthorized) return <Redirect to="/login" />;
-
-  // return <Route {...props} />;
   return component;
 };
 

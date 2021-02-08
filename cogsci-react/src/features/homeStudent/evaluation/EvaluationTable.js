@@ -51,42 +51,42 @@ export default function EvaluationTable({
           <tr>
             <td>Prezentácia</td>
             <td>
-              {presentationPoints} z {presentationWeight}
+              {presentationPoints || 0} z {presentationWeight || 0}
             </td>
-            <td>{presentationPoints}</td>
-            <td>{presentationWeight}</td>
+            <td>{presentationPoints || 0}</td>
+            <td>{presentationWeight || 0}</td>
           </tr>
 
           <tr>
             <td>Dochádzka</td>
             <td>
-              {earnedAttendancePoints} z {maxAttendancePoints}
+              {earnedAttendancePoints || 0} z {maxAttendancePoints || 0}
             </td>
-            <td>{attendancePointsFromWeight}</td>
-            <td>{attendanceWeight}</td>
+            <td>{attendancePointsFromWeight || 0}</td>
+            <td>{attendanceWeight || 0}</td>
           </tr>
 
           <tr>
             <td>Bonusové úlohy</td>
             <td>
-              {earnedBonusPoints} z {maxBonusPoints}
+              {earnedBonusPoints || 0} z {maxBonusPoints || 0}
             </td>
-            <td>{bonusPointsFromWeight}</td>
-            <td>{bonusWeight}</td>
+            <td>{bonusPointsFromWeight || 0}</td>
+            <td>{bonusWeight || 0}</td>
           </tr>
 
           <tr>
             <td>
               <strong>Spolu</strong>
             </td>
-            <td colSpan="3">{sumOfPercents} %</td>
+            <td colSpan="3">{sumOfPercents || 0} %</td>
           </tr>
           <tr>
             <td>
               <strong>Známka</strong>
             </td>
             <td colSpan="3">
-              <strong>{grade}</strong>
+              <strong>{grade || 0}</strong>
             </td>
           </tr>
         </tbody>

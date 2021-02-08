@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import TeacherPresentationsList from "./TeacherPresentationsList";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentUser } from "../../../app/currentUserSlice";
+import { getCurrentUserId } from "../../../app/currentUserSlice";
 import {
   loadTeacherPresentations,
   getTeacherPresentations,
@@ -9,7 +9,7 @@ import {
 
 function TeacherPresentations() {
   const dispatch = useDispatch();
-  const currentUserId = useSelector(getCurrentUser);
+  const currentUserId = useSelector(getCurrentUserId);
   const teacherPresentations = useSelector(getTeacherPresentations);
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./Login.css";
-import { loadToken } from "../../app/currentUserSlice";
+import { loadUserAndToken } from "../../app/currentUserSlice";
 import { useDispatch } from "react-redux";
 
 function Login(props) {
@@ -13,7 +13,7 @@ function Login(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(loadToken(username, password));
+    dispatch(loadUserAndToken(username, password));
     props.history.push("/subjects");
   };
 

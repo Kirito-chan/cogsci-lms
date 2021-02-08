@@ -17,7 +17,6 @@ const isCorrectPassword = (typedPassword, DBpassword, salt) => {
 };
 
 app.post("/api/checkToken", withAuth, function (req, res) {
-  console.log("som v checkToken");
   res.sendStatus(200);
 });
 
@@ -25,24 +24,36 @@ const secret = "secret";
 // POST route to login a user
 app.post("/api/login", async function (req, res) {
   const { username, password } = req.body;
-  console.log(username);
   const query = `SELECT * FROM user WHERE username = ${username}`;
-  const hashedPassword = crypto
-    .createHash("sha512")
-    .update(password)
-    .digest("hex");
-  const rows = await queries.getUser(username);
-  console.log("tunaj v server: " + rows);
+
+  const user = await queries.getUser(username);
+
   if (
-    rows != undefined /*isCorrectPassword(hashedPassword, DBpassword, salt)*/
+    user != undefined /*isCorrectPassword(hashedPassword, DBpassword, salt)*/
   ) {
     // Issue token
-    console.log("som tu");
-    const payload = { username };
+    const DBpassword = user.password;
+    const payload = { username, password };
     const token = jwt.sign(payload, secret, { expiresIn: "1h" });
-    const salt = rows.salt;
-    const DBpassword = rows.password;
-    res.json({ token: token });
+    const salt = user.salt;
+
+    // console.log(password);
+
+    // const pass = `${password}{${salt}}`;
+    // console.log(pass);
+
+    // const hashedPassword = crypto
+    //   .createHash("sha512")
+    //   .update(pass)
+    //   .digest("hex");
+    // console.log(hashedPassword);
+    // console.log("a");
+    // console.log(DBpassword);
+    // if (hashedPassword == DBpassword) {
+    //   console.log("juchuu");
+    // }
+
+    res.json({ token, user });
   } else {
     res.json({ token: "" });
   }
@@ -70,7 +81,6 @@ app.get("/api/attendance/:userId", async (req, res) => {
   //userId = 346;
   const subjectId = 18;
   const rows = await queries.getAttedance(userId, subjectId);
-  console.log("attendance " + rows);
   res.json(rows);
 });
 

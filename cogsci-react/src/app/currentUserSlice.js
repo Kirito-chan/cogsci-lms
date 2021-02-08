@@ -4,12 +4,16 @@ import { apiCallBegan } from "../app/apiConstants";
 export const slice = createSlice({
   name: "currentUser",
   initialState: {
-    id: 241, // 346 je dobry testovaci user, 241 som ja
+    id: null, // 346 je dobry testovaci user, 241 som ja
+    name: null,
     token: "",
   },
   reducers: {
-    tokenReceived: (state, action) => {
+    tokenUserReceived: (state, action) => {
       state.token = action.payload.token;
+      state.id = action.payload.user.id;
+      state.name =
+        action.payload.user.first_name + " " + action.payload.user.last_name;
     },
     tokenCleared: (state) => {
       state.token = "";
@@ -18,17 +22,17 @@ export const slice = createSlice({
   },
 });
 
-export const { tokenReceived, tokenCleared, tokenChecked } = slice.actions;
+export const { tokenUserReceived, tokenCleared, tokenChecked } = slice.actions;
 
 export default slice.reducer;
 
 const urlToken = "/login";
 
-export const loadToken = (username, password) => (dispatch) => {
+export const loadUserAndToken = (username, password) => (dispatch) => {
   return dispatch(
     apiCallBegan({
       url: urlToken,
-      onSuccess: tokenReceived.type,
+      onSuccess: tokenUserReceived.type,
       method: "post",
       data: {
         username,
@@ -58,5 +62,6 @@ export const clearToken = () => (dispatch) => {
 };
 
 // Selectors
-export const getCurrentUser = (state) => state.currentUser.id;
+export const getCurrentUserId = (state) => state.currentUser.id;
+export const getCurrentUserName = (state) => state.currentUser.name;
 export const getToken = (state) => state.currentUser.token;

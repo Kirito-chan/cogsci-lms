@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../app/apiConstants";
-import { TIME_TO_WAIT_FOR_FETCHING } from "../../constants";
-import moment from "moment";
+// import { TIME_TO_WAIT_FOR_FETCHING } from "../../constants";
+// import moment from "moment";
 
 export const slice = createSlice({
   name: "homeStudent",
@@ -69,18 +69,18 @@ export const {
 export default slice.reducer;
 
 // Action Creators
-function dataInReduxAreRecent(getState) {
-  const { lastFetch } = getState().features.homeStudent;
+// function dataInReduxAreRecent(getState) {
+//   const { lastFetch } = getState().features.homeStudent;
 
-  const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
-  if (diffInMinutes < TIME_TO_WAIT_FOR_FETCHING) return true;
-  return false;
-}
+//   const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
+//   if (diffInMinutes < TIME_TO_WAIT_FOR_FETCHING) return true;
+//   return false;
+// }
 
 const urlAttendance = "/attendance";
 
-export const loadAttendance = (userId) => (dispatch, getState) => {
-  if (dataInReduxAreRecent(getState)) return;
+export const loadAttendance = (userId) => (dispatch) => {
+  //if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
@@ -94,8 +94,8 @@ export const loadAttendance = (userId) => (dispatch, getState) => {
 
 const urlBonuses = "/bonuses";
 
-export const loadBonuses = (userId) => (dispatch, getState) => {
-  if (dataInReduxAreRecent(getState)) return;
+export const loadBonuses = (userId) => (dispatch) => {
+  // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
@@ -109,8 +109,8 @@ export const loadBonuses = (userId) => (dispatch, getState) => {
 
 const urlTeacherPresentations = "/teacher-presentations";
 
-export const loadTeacherPresentations = (userId) => (dispatch, getState) => {
-  if (dataInReduxAreRecent(getState)) return;
+export const loadTeacherPresentations = (userId) => (dispatch) => {
+  // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
@@ -124,8 +124,8 @@ export const loadTeacherPresentations = (userId) => (dispatch, getState) => {
 
 const urlStudentPresentations = "/student-presentations";
 
-export const loadStudentPresentations = (userId) => (dispatch, getState) => {
-  if (dataInReduxAreRecent(getState)) return;
+export const loadStudentPresentations = (userId) => (dispatch) => {
+  // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
@@ -139,8 +139,8 @@ export const loadStudentPresentations = (userId) => (dispatch, getState) => {
 
 const urlMyPresentation = "/my-presentation";
 
-export const loadMyPresentation = (userId) => (dispatch, getState) => {
-  if (dataInReduxAreRecent(getState)) return;
+export const loadMyPresentation = (userId) => (dispatch) => {
+  // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
@@ -154,8 +154,8 @@ export const loadMyPresentation = (userId) => (dispatch, getState) => {
 
 const urlSubjectValuation = "/subject-valuation";
 
-export const loadSubjectValuation = () => (dispatch, getState) => {
-  if (dataInReduxAreRecent(getState)) return;
+export const loadSubjectValuation = () => (dispatch) => {
+  // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({

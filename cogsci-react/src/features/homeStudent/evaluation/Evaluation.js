@@ -10,24 +10,26 @@ import {
   loadSubjectValuation,
   getSubjectValuation,
 } from "../homeStudentSlice";
-import { getCurrentUser } from "../../../app/currentUserSlice";
+import { getCurrentUserId } from "../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
 
 export default function Evaluation() {
   const dispatch = useDispatch();
 
-  const currentUserId = useSelector(getCurrentUser);
+  const currentUserId = useSelector(getCurrentUserId);
   const myPresentation = useSelector(getMyPresentation);
   const attendances = useSelector(getAttendance);
   const bonuses = useSelector(getBonuses);
   const subjectValuation = useSelector(getSubjectValuation);
 
   useEffect(() => {
-    dispatch(loadMyPresentation(currentUserId));
-    dispatch(loadAttendance(currentUserId));
-    dispatch(loadBonuses(currentUserId));
-    dispatch(loadSubjectValuation(currentUserId));
-  }, []);
+    if (currentUserId) {
+      dispatch(loadMyPresentation(currentUserId));
+      dispatch(loadAttendance(currentUserId));
+      dispatch(loadBonuses(currentUserId));
+      dispatch(loadSubjectValuation(currentUserId));
+    }
+  }, [currentUserId]);
 
   return (
     <EvaluationTable
