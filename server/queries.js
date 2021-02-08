@@ -20,6 +20,13 @@ export const getSubjectValuation = async (subjectId) => {
   return row[0];
 };
 
+export const getUser = async (username) => {
+  const [row] = await execute("SELECT * FROM user WHERE username = ?", [
+    username,
+  ]);
+  return row[0];
+};
+
 // attendance
 export const getAttedance = async (userId, subjectId) => {
   const [row] = await execute(

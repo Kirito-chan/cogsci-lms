@@ -8,8 +8,8 @@ function StudentPresentationsList({ studentPresentations }) {
   return (
     <div>
       <h3>Študentské prezentácie</h3>
-      {studentPresentations.map((presentation) => (
-        <article key={presentation.id}>
+      {studentPresentations.map((presentation, i) => (
+        <article key={i}>
           <Row>
             <Nav.Link href={`pres${presentation.id}`}>
               {presentation.title} - {presentation.first_name}{" "}

@@ -1,6 +1,9 @@
 import * as queries from "./queries.js";
 import express from "express";
 import cors from "cors";
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
+import withAuth from "./middleware/auth.js";
 
 const app = express();
 
@@ -9,12 +12,65 @@ app.use(cors());
 // parse requests of content-type - application/json
 app.use(express.json());
 
+const isCorrectPassword = (typedPassword, DBpassword, salt) => {
+  return typedPassword === `${DBpassword}{${salt}}`;
+};
+
+app.post("/api/checkToken", withAuth, function (req, res) {
+  console.log("som v checkToken");
+  res.sendStatus(200);
+});
+
+const secret = "secret";
+// POST route to login a user
+app.post("/api/login", async function (req, res) {
+  const { username, password } = req.body;
+  console.log(username);
+  const query = `SELECT * FROM user WHERE username = ${username}`;
+  const hashedPassword = crypto
+    .createHash("sha512")
+    .update(password)
+    .digest("hex");
+  const rows = await queries.getUser(username);
+  console.log("tunaj v server: " + rows);
+  if (
+    rows != undefined /*isCorrectPassword(hashedPassword, DBpassword, salt)*/
+  ) {
+    // Issue token
+    console.log("som tu");
+    const payload = { username };
+    const token = jwt.sign(payload, secret, { expiresIn: "1h" });
+    const salt = rows.salt;
+    const DBpassword = rows.password;
+    res.json({ token: token });
+  } else {
+    res.json({ token: "" });
+  }
+});
+
+// POST route to register a user
+app.post("/api/register", function (req, res) {
+  const { firstName, lastName, username, password, email } = req.body;
+  const query = `INSERT INTO user (first_name, last_name, username, password, email, role, salt, last_visited_announcements)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+  const studentRole = 1;
+  const adminRole = 0;
+  const hashedPassword = "hash(password)";
+  const salt = "generateSalt()";
+  // prettier-ignore
+  const date = new Date().toISOString().slice(0, 10) + " " + new Date().toLocaleTimeString("en-GB");
+  console.log(date);
+  // prettier-ignore
+  const array = [firstName, lastName, username, hashedPassword, email, studentRole, salt, date];
+});
+
 // get attendance
 app.get("/api/attendance/:userId", async (req, res) => {
-  let { userId } = req.params;
-  userId = 346;
+  const { userId } = req.params;
+  //userId = 346;
   const subjectId = 18;
   const rows = await queries.getAttedance(userId, subjectId);
+  console.log("attendance " + rows);
   res.json(rows);
 });
 
