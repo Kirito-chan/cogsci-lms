@@ -7,6 +7,7 @@ export const slice = createSlice({
     id: null, // 346 je dobry testovaci user, 241 som ja
     name: null,
     token: "",
+    error: "",
   },
   reducers: {
     tokenUserReceived: (state, action) => {
@@ -19,10 +20,18 @@ export const slice = createSlice({
       state.token = "";
     },
     tokenChecked: () => {},
+    apiFailed: (state, action) => {
+      state.error = action.payload;
+    },
   },
 });
 
-export const { tokenUserReceived, tokenCleared, tokenChecked } = slice.actions;
+export const {
+  tokenUserReceived,
+  tokenCleared,
+  tokenChecked,
+  apiFailed,
+} = slice.actions;
 
 export default slice.reducer;
 
@@ -38,6 +47,7 @@ export const loadUserAndToken = (username, password) => (dispatch) => {
         username,
         password,
       },
+      onError: apiFailed.type,
     })
   );
 };
@@ -53,6 +63,7 @@ export const checkToken = (token) => (dispatch) => {
       data: {
         token,
       },
+      onError: apiFailed.type,
     })
   );
 };
@@ -65,3 +76,4 @@ export const clearToken = () => (dispatch) => {
 export const getCurrentUserId = (state) => state.currentUser.id;
 export const getCurrentUserName = (state) => state.currentUser.name;
 export const getToken = (state) => state.currentUser.token;
+export const getError = (state) => state.currentUser.error;

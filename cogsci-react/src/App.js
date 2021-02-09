@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     document.body.style.cursor = isLoading ? "progress" : "";
-  });
+  }, [isLoading]);
 
   return (
     <div className="App">
