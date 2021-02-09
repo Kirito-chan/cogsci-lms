@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
-import homeStudentReducer from "../features/homeStudent/homeStudentSlice";
+import studentReducer from "../features/student/studentReducer";
 
 export default combineReducers({
-  homeStudent: homeStudentReducer,
+  student: studentReducer,
+  //teacher: teacherReducer,s
 });

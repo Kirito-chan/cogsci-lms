@@ -5,12 +5,16 @@ import {
   clearToken,
   checkToken,
   getError,
+  getCurrentUserId,
+  loadUserAndToken,
 } from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
+import jwt from "jwt-decode";
 
 const AuthRoute = (props) => {
   const [component, setComponent] = useState(<div></div>);
   const dispatch = useDispatch();
+  const currentUserId = useSelector(getCurrentUserId);
   let token = useSelector(getToken);
   const error = useSelector(getError);
 
@@ -22,6 +26,16 @@ const AuthRoute = (props) => {
     localStorage.clear();
     dispatch(clearToken());
   };
+
+  // stara sa o to, aby pri refreshnuti stranky sa vzdy nacital token, userId a userName do Reduxu
+  // kedze refresh vyprazdnuje Redux, tak to treba vratit do reduxu
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!currentUserId && token) {
+      const user = jwt(token);
+      dispatch(loadUserAndToken(user.username, user.password));
+    }
+  }, [currentUserId]);
 
   useEffect(() => {
     if (token) {

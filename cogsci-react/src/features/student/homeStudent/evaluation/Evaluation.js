@@ -10,7 +10,7 @@ import {
   loadSubjectValuation,
   getSubjectValuation,
 } from "../homeStudentSlice";
-import { getCurrentUserId } from "../../../app/currentUserSlice";
+import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
 
 export default function Evaluation() {

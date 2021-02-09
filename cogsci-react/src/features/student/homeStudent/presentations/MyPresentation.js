@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import MyPresentationList from "./MyPresentationList";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentUserId } from "../../../app/currentUserSlice";
+import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import { loadMyPresentation, getMyPresentation } from "../homeStudentSlice";
 
 function MyPresentation() {

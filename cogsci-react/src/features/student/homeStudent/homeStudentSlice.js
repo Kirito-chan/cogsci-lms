@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apiCallBegan } from "../../app/apiConstants";
+import { apiCallBegan } from "../../../app/apiConstants";
 // import { TIME_TO_WAIT_FOR_FETCHING } from "../../constants";
 // import moment from "moment";
 
@@ -168,14 +168,15 @@ export const loadSubjectValuation = () => (dispatch) => {
 };
 
 // Selectors
-export const getLoading = (state) => state.features.homeStudent.loading;
-export const getAttendance = (state) => state.features.homeStudent.attendances;
-export const getBonuses = (state) => state.features.homeStudent.bonuses;
+export const getLoading = (state) => state.features.student.homeStudent.loading;
+export const getAttendance = (state) =>
+  state.features.student.homeStudent.attendances;
+export const getBonuses = (state) => state.features.student.homeStudent.bonuses;
 export const getTeacherPresentations = (state) =>
-  state.features.homeStudent.teacherPresentations;
+  state.features.student.homeStudent.teacherPresentations;
 export const getStudentPresentations = (state) =>
-  state.features.homeStudent.studentPresentations;
+  state.features.student.homeStudent.studentPresentations;
 export const getMyPresentation = (state) =>
-  state.features.homeStudent.myPresentation;
+  state.features.student.homeStudent.myPresentation;
 export const getSubjectValuation = (state) =>
-  state.features.homeStudent.subjectValuation;
+  state.features.student.homeStudent.subjectValuation;

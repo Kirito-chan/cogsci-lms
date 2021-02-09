@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
-import formatDate from "../../../components/DateUtils";
+import formatDate from "../../../../components/DateUtils";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import InputPassword from "./InputPassword";
 

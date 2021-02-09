@@ -20,8 +20,8 @@ app.post("/api/checkToken", withAuth, function (req, res) {
   res.sendStatus(200);
 });
 
-const secret = "secret";
 // POST route to login a user
+const secret = "secret";
 app.post("/api/login", async function (req, res) {
   const { username, password } = req.body;
   const query = `SELECT * FROM user WHERE username = ${username}`;

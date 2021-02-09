@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
-import formatTranslation from "../../../components/StringUtils";
+import formatTranslation from "../../../../components/StringUtils";
 
 function MyPresentationList({ myPresentation }) {
   return (

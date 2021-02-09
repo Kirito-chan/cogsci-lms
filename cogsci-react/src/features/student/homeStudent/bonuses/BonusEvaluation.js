@@ -1,10 +1,10 @@
 import React from "react";
-import formatTranslation from "../../../components/StringUtils";
+import formatTranslation from "../../../../components/StringUtils";
 import {
   GOT_0_BONUS_POINTS,
   GOT_1_BONUS_POINTS,
   NOT_YET_EVALUATED_BONUS_POINTS,
-} from "../../../constants";
+} from "../../../../constants";
 
 function BonusEvaluation({ evaluation }) {
   let textClassAttribute = "";

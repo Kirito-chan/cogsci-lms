@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
-import formatTranslation from "../../components/StringUtils";
+import formatTranslation from "../../../components/StringUtils";
 import BonusEvaluation from "./bonuses/BonusEvaluation";
 
 function Discussion({ data, classAttribute, evaluation }) {

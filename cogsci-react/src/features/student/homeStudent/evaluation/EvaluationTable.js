@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
-import getGrade from "../../../components/Math";
+import getGrade from "../../../../components/Math";
 
 export default function EvaluationTable({
   presentation,
@@ -8,22 +8,23 @@ export default function EvaluationTable({
   bonuses,
   subjectValuation,
 }) {
-  const presentationPoints = parseFloat(presentation?.points);
-  const presentationWeight = presentation?.weight;
+  const presentationPoints = parseFloat(presentation?.points) || 0;
+  const presentationWeight = presentation?.weight || 0;
   // prettier-ignore
-  const earnedAttendancePoints = attendances.filter((it) => it.got_point).length;
-  const maxAttendancePoints = attendances.length;
-  const attendanceWeight = attendances[0]?.weight;
-  const earnedBonusPoints = bonuses.filter((it) => it.evaluation == 1).length;
-  const maxBonusPoints = bonuses.length;
-  const bonusWeight = bonuses[0]?.weight;
-  const bonusPointsFromWeight = Number(
-    ((earnedBonusPoints / maxBonusPoints) * bonusWeight).toFixed(2)
-  );
+  const earnedAttendancePoints = attendances.filter((it) => it.got_point).length || 0;
+  const maxAttendancePoints = attendances.length || 0;
+  const attendanceWeight = attendances[0]?.weight || 0;
+  const earnedBonusPoints =
+    bonuses.filter((it) => it.evaluation == 1).length || 0;
+  const maxBonusPoints = bonuses.length || 0;
+  const bonusWeight = bonuses[0]?.weight || 0;
+  const bonusPointsFromWeight =
+    Number(((earnedBonusPoints / maxBonusPoints) * bonusWeight).toFixed(2)) ||
+    0;
   // prettier-ignore
   const attendancePointsFromWeight = Number(
     ((earnedAttendancePoints / maxAttendancePoints) * attendanceWeight).toFixed(2)
-  );
+  ) || 0;
 
   const sumOfPercents = parseFloat(
     (
@@ -51,42 +52,42 @@ export default function EvaluationTable({
           <tr>
             <td>Prezentácia</td>
             <td>
-              {presentationPoints || 0} z {presentationWeight || 0}
+              {presentationPoints} z {presentationWeight}
             </td>
-            <td>{presentationPoints || 0}</td>
-            <td>{presentationWeight || 0}</td>
+            <td>{presentationPoints}</td>
+            <td>{presentationWeight}</td>
           </tr>
 
           <tr>
             <td>Dochádzka</td>
             <td>
-              {earnedAttendancePoints || 0} z {maxAttendancePoints || 0}
+              {earnedAttendancePoints} z {maxAttendancePoints}
             </td>
-            <td>{attendancePointsFromWeight || 0}</td>
-            <td>{attendanceWeight || 0}</td>
+            <td>{attendancePointsFromWeight}</td>
+            <td>{attendanceWeight}</td>
           </tr>
 
           <tr>
             <td>Bonusové úlohy</td>
             <td>
-              {earnedBonusPoints || 0} z {maxBonusPoints || 0}
+              {earnedBonusPoints} z {maxBonusPoints}
             </td>
-            <td>{bonusPointsFromWeight || 0}</td>
-            <td>{bonusWeight || 0}</td>
+            <td>{bonusPointsFromWeight}</td>
+            <td>{bonusWeight}</td>
           </tr>
 
           <tr>
             <td>
               <strong>Spolu</strong>
             </td>
-            <td colSpan="3">{sumOfPercents || 0} %</td>
+            <td colSpan="3">{sumOfPercents} %</td>
           </tr>
           <tr>
             <td>
               <strong>Známka</strong>
             </td>
             <td colSpan="3">
-              <strong>{grade || 0}</strong>
+              <strong>{grade}</strong>
             </td>
           </tr>
         </tbody>
