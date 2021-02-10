@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import MyPresentationList from "./MyPresentationList";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
-import { loadMyPresentation, getMyPresentation } from "../homeStudentSlice";
+import { loadMyPresentation, getMyPresentation } from "../homeSlice";
 
 function MyPresentation() {
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ function MyPresentation() {
   const myPresentation = useSelector(getMyPresentation);
 
   useEffect(() => {
-    dispatch(loadMyPresentation(currentUserId));
+    if (currentUserId) dispatch(loadMyPresentation(currentUserId));
   }, []);
 
   return <MyPresentationList myPresentation={myPresentation} />;

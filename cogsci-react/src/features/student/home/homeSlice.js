@@ -4,7 +4,7 @@ import { apiCallBegan } from "../../../app/apiConstants";
 // import moment from "moment";
 
 export const slice = createSlice({
-  name: "homeStudent",
+  name: "home",
   initialState: {
     attendances: [],
     bonuses: [],
@@ -70,7 +70,7 @@ export default slice.reducer;
 
 // Action Creators
 // function dataInReduxAreRecent(getState) {
-//   const { lastFetch } = getState().features.homeStudent;
+//   const { lastFetch } = getState().features.home;
 
 //   const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
 //   if (diffInMinutes < TIME_TO_WAIT_FOR_FETCHING) return true;
@@ -168,15 +168,14 @@ export const loadSubjectValuation = () => (dispatch) => {
 };
 
 // Selectors
-export const getLoading = (state) => state.features.student.homeStudent.loading;
-export const getAttendance = (state) =>
-  state.features.student.homeStudent.attendances;
-export const getBonuses = (state) => state.features.student.homeStudent.bonuses;
+export const getLoading = (state) => state.features.student.home.loading;
+export const getAttendance = (state) => state.features.student.home.attendances;
+export const getBonuses = (state) => state.features.student.home.bonuses;
 export const getTeacherPresentations = (state) =>
-  state.features.student.homeStudent.teacherPresentations;
+  state.features.student.home.teacherPresentations;
 export const getStudentPresentations = (state) =>
-  state.features.student.homeStudent.studentPresentations;
+  state.features.student.home.studentPresentations;
 export const getMyPresentation = (state) =>
-  state.features.student.homeStudent.myPresentation;
+  state.features.student.home.myPresentation;
 export const getSubjectValuation = (state) =>
-  state.features.student.homeStudent.subjectValuation;
+  state.features.student.home.subjectValuation;

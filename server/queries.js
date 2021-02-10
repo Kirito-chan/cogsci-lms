@@ -11,6 +11,20 @@ const execute = async (queryString, paramsArr) => {
   return rows;
 };
 
+export const getStudentSubjects = async (userId) => {
+  const [rows] = await execute(
+    `SELECT s.id, s.name, s.year, s.season, s.about, 
+            CASE WHEN usl.user_id IS NOT NULL THEN TRUE ELSE FALSE END as is_enrolled
+      FROM subject s LEFT JOIN user_subject_lookup usl ON
+           usl.user_id = ? AND s.id = usl.subject_id
+           WHERE s.status = 1
+           ORDER BY is_enrolled DESC
+     `,
+    [userId]
+  );
+  return rows;
+};
+
 export const getSubjectValuation = async (subjectId) => {
   const [
     row,

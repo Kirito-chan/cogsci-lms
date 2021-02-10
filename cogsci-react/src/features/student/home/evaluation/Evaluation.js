@@ -9,7 +9,7 @@ import {
   loadBonuses,
   loadSubjectValuation,
   getSubjectValuation,
-} from "../homeStudentSlice";
+} from "../homeSlice";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
 

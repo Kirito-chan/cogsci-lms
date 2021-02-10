@@ -16,6 +16,12 @@ const isCorrectPassword = (typedPassword, DBpassword, salt) => {
   return typedPassword === `${DBpassword}{${salt}}`;
 };
 
+app.get("/api/subjects/:userId", async function (req, res) {
+  const { userId } = req.params;
+  const rows = await queries.getStudentSubjects(userId);
+  res.json(rows);
+});
+
 app.post("/api/checkToken", withAuth, function (req, res) {
   res.sendStatus(200);
 });

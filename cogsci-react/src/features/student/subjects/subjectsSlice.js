@@ -6,6 +6,7 @@ import { apiCallBegan } from "../../../app/apiConstants";
 export const slice = createSlice({
   name: "subjects",
   initialState: {
+    currentSubjectId: null,
     subjects: [],
     loading: false,
     lastFetch: null,
@@ -16,10 +17,17 @@ export const slice = createSlice({
     },
     subjectsReceived: (state, action) => {
       state.subjects = action.payload;
-      state.lastFetch = new Date();
+      state.lastFetch = Date.now();
     },
     subjectsRequestFailed: (state) => {
       state.loading = false;
+    },
+    currentSubjectReceived: (state, action) => {
+      console.log(action.payload);
+      state.currentSubjectId = action.payload;
+    },
+    clearedCurrentSubject: (state) => {
+      state.currentSubject = null;
     },
   },
 });
@@ -28,6 +36,8 @@ export const {
   subjectsRequested,
   subjectsReceived,
   subjectsRequestFailed,
+  currentSubjectReceived,
+  clearedCurrentSubject,
 } = slice.actions;
 
 export default slice.reducer;
@@ -56,4 +66,14 @@ export const loadSubjects = (userId) => (dispatch) => {
   );
 };
 
+export const loadCurrentSubject = (subjectId) => (dispatch) => {
+  dispatch({ type: currentSubjectReceived.type, payload: subjectId });
+};
+
+export const clearCurrentSubject = () => (dispatch) => {
+  dispatch({ type: clearedCurrentSubject.type });
+};
+
 export const getSubjects = (state) => state.features.student.subjects.subjects;
+export const getCurrentSubject = (state) =>
+  state.features.student.subjects.currentSubject;

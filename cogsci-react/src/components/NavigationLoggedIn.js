@@ -7,8 +7,9 @@ import { useDispatch } from "react-redux";
 import { clearToken } from "../app/currentUserSlice";
 import { LOGOUT_EVENT } from "../constants";
 
-function NavigationLoggedIn() {
+function NavigationLoggedIn({ currentUserName }) {
   const dispatch = useDispatch();
+
   const handleDropdown = (event) => {
     if (event == LOGOUT_EVENT) {
       localStorage.clear();
@@ -21,11 +22,11 @@ function NavigationLoggedIn() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href="#predmety2">
+          <Nav.Link href="/subjects">
             <FaBrain size={25} />
           </Nav.Link>
 
-          <Nav.Link href="#predmety">Cogsci predmety</Nav.Link>
+          <Nav.Link href="/subjects">Predmety</Nav.Link>
         </Nav>
 
         <Nav>
@@ -35,7 +36,7 @@ function NavigationLoggedIn() {
           <NavDropdown
             title={
               <span>
-                <FaUser /> František Kochjar
+                <FaUser /> {currentUserName}
               </span>
             }
             id="nav-dropdown"

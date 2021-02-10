@@ -4,11 +4,11 @@ import Button from "react-bootstrap/Button";
 import "./Login.css";
 import { loadUserAndToken } from "../../app/currentUserSlice";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 
 function Login() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  //const history = useHistory();
 
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -16,7 +16,6 @@ function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
     dispatch(loadUserAndToken(username, password));
-    history.push("/subjects");
   };
 
   return (

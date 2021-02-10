@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import BonusesList from "./BonusesList";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
-import { loadBonuses, getBonuses } from "../homeStudentSlice";
+import { loadBonuses, getBonuses } from "../homeSlice";
 
 function Bonuses() {
   const dispatch = useDispatch();
@@ -11,7 +11,7 @@ function Bonuses() {
   const currentUserId = useSelector(getCurrentUserId);
 
   useEffect(() => {
-    dispatch(loadBonuses(currentUserId));
+    if (currentUserId) dispatch(loadBonuses(currentUserId));
   }, [currentUserId]);
 
   return <BonusesList bonuses={bonuses} />;

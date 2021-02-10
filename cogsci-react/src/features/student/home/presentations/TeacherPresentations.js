@@ -5,7 +5,7 @@ import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import {
   loadTeacherPresentations,
   getTeacherPresentations,
-} from "../homeStudentSlice";
+} from "../homeSlice";
 
 function TeacherPresentations() {
   const dispatch = useDispatch();
@@ -13,8 +13,8 @@ function TeacherPresentations() {
   const teacherPresentations = useSelector(getTeacherPresentations);
 
   useEffect(() => {
-    dispatch(loadTeacherPresentations(currentUserId));
-  }, []);
+    if (currentUserId) dispatch(loadTeacherPresentations(currentUserId));
+  }, [currentUserId]);
 
   return (
     <TeacherPresentationsList teacherPresentations={teacherPresentations} />
