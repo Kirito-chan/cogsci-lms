@@ -4,6 +4,9 @@ import cors from "cors";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import withAuth from "./middleware/auth.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -27,7 +30,8 @@ app.post("/api/checkToken", withAuth, function (req, res) {
 });
 
 // POST route to login a user
-const secret = "secret";
+const secret = process.env.JWT_PRIVATE_KEY;
+
 app.post("/api/login", async function (req, res) {
   const { username, password } = req.body;
   const query = `SELECT * FROM user WHERE username = ${username}`;
@@ -82,10 +86,11 @@ app.post("/api/register", function (req, res) {
 });
 
 // get attendance
-app.get("/api/attendance/:userId", async (req, res) => {
-  const { userId } = req.params;
+app.get("/api/attendance/:userId/:subjectId", async (req, res) => {
+  const { userId, subjectId } = req.params;
+
   //userId = 346;
-  const subjectId = 18;
+  //const subjectId = 18;
   const rows = await queries.getAttedance(userId, subjectId);
   res.json(rows);
 });
@@ -130,7 +135,7 @@ app.get("/api/subject-valuation", async (req, res) => {
 });
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.SERVER_PORT;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

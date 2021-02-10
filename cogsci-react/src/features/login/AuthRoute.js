@@ -13,6 +13,7 @@ import jwt from "jwt-decode";
 
 const AuthRoute = (props) => {
   const [component, setComponent] = useState(<div></div>);
+  //const history = useHistory();
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
   let token = useSelector(getToken);
@@ -38,6 +39,7 @@ const AuthRoute = (props) => {
   }, [currentUserId]);
 
   useEffect(() => {
+    console.log("asi tuuuuuuu");
     if (token) {
       if (!error) {
         dispatch(checkToken(token));
@@ -46,6 +48,7 @@ const AuthRoute = (props) => {
         if (props.type === "login") {
           setComponent(<Redirect to="/subjects" />);
         } else {
+          console.log("asi tu0 ");
           setComponent(<Route {...props} />);
         }
       } else {
@@ -53,6 +56,7 @@ const AuthRoute = (props) => {
         if (props.type === "login") {
           setComponent(<Route {...props} />);
         } else {
+          console.log("asi tu1 ");
           setComponent(<Redirect to="/login" />);
         }
       }
@@ -60,6 +64,7 @@ const AuthRoute = (props) => {
       if (props.type === "login") {
         setComponent(<Route {...props} />);
       } else {
+        console.log("asi tu 2");
         setComponent(<Redirect to="/login" />);
       }
     }

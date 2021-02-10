@@ -2,8 +2,11 @@ import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { FaBrain, FaUser, FaUserPlus } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
-function NavigationLoggedOut({ location }) {
+function NavigationLoggedOut() {
+  const location = useLocation();
+
   return (
     <Navbar bg="dark" variant="dark" fixed="top" expand="md">
       <Nav className="mr-auto">

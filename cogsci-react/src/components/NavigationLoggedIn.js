@@ -6,9 +6,12 @@ import { FaBrain, FaUser } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { clearToken } from "../app/currentUserSlice";
 import { LOGOUT_EVENT } from "../constants";
+import { useParams, useLocation } from "react-router";
 
 function NavigationLoggedIn({ currentUserName }) {
   const dispatch = useDispatch();
+  const { subjectId } = useParams();
+  const location = useLocation();
 
   const handleDropdown = (event) => {
     if (event == LOGOUT_EVENT) {
@@ -29,8 +32,10 @@ function NavigationLoggedIn({ currentUserName }) {
           <Nav.Link href="/subjects">Predmety</Nav.Link>
         </Nav>
 
-        <Nav>
-          <Nav.Link href="#predmet" disabled></Nav.Link>
+        <Nav activeKey={location.pathname}>
+          <Nav.Link href={"/home-student/" + subjectId} disabled={!subjectId}>
+            {subjectId || ""}
+          </Nav.Link>
           <Nav.Link href="#domace">Bonusové úlohy</Nav.Link>
           <Nav.Link href="#podmienky">Podmienky predmetu</Nav.Link>
           <NavDropdown

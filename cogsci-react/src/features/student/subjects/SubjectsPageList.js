@@ -2,31 +2,21 @@ import React from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-// import { loadCurrentSubject } from "./subjectsSlice";
-// import { useDispatch } from "react-redux";
-//import { Link } from "react-router-dom";
-//import { useHistory } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import { loadCurrentSubject } from "./subjectsSlice";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 function SubjectsPageList(props) {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { subjects } = props;
-  //const history = useHistory();
-  const history = createBrowserHistory();
-
-  //const [subjectIdStorage] = useState(localStorage.getItem("subjectId"));
-
-  // useEffect(() => {
-  //   if (subjectIdStorage) dispatch(loadCurrentSubject(subjectIdStorage));
-  //   else dispatch(clearCurrentSubject());
-  // }, [subjectIdStorage]);
+  const history = useHistory();
 
   const handleEnterClick = (event) => {
-    event.preventDefault();
-    //dispatch(loadCurrentSubject(parseInt(event.target.id)));
-    console.log("som tuuuuuuuuu");
-    history.push("/home-student");
+    const subjectId = parseInt(event.target.id);
+    console.log(subjectId);
+    dispatch(loadCurrentSubject(subjectId));
+    history.replace({ pathname: `/home-student/${subjectId}` });
+    //history.push({ pathname: `/home-student/18` });
 
     //localStorage.setItem("subjectId", parseInt(event.target.id));
   };
@@ -58,23 +48,14 @@ function SubjectsPageList(props) {
                 <Col>
                   <p>
                     {subject.is_enrolled ? (
-                      <Form
-                        className="login-wrapper"
-                        onSubmit={handleEnterClick}
+                      <Button
+                        variant="success"
+                        id={subject.id}
+                        onClick={handleEnterClick}
                       >
-                        <Button variant="primary" type="submit">
-                          Prihlásiť
-                        </Button>
-                      </Form>
+                        Vstúp
+                      </Button>
                     ) : (
-                      // <button
-                      //   // variant="success"
-                      //   // size="sm"
-                      //   // id={subject.id}
-                      //   onClick={() => history.push("/home-student")}
-                      // >
-                      //   Vstúp
-                      // </button>
                       <Button variant="warning" size="sm">
                         Prihlásiť sa
                       </Button>

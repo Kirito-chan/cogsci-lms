@@ -4,9 +4,11 @@ import "./Attendance.css";
 import { getAttendance, loadAttendance } from "../homeSlice";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import AttendanceTable from "./AttendanceTable";
+import { useParams } from "react-router";
 
 export default function Attendance() {
   const dispatch = useDispatch();
+  const { subjectId } = useParams();
 
   const currentUserId = useSelector(getCurrentUserId);
   const attendances = useSelector(getAttendance);
@@ -15,8 +17,10 @@ export default function Attendance() {
   // radsej by som to furt tahal z databazy
 
   useEffect(() => {
-    if (currentUserId) dispatch(loadAttendance(currentUserId));
-  }, [currentUserId]);
+    if (currentUserId && subjectId) {
+      dispatch(loadAttendance(currentUserId, subjectId));
+    }
+  }, [currentUserId, subjectId]);
 
   return <AttendanceTable attendances={attendances} />;
 }

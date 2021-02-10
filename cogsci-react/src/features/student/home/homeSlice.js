@@ -79,12 +79,12 @@ export default slice.reducer;
 
 const urlAttendance = "/attendance";
 
-export const loadAttendance = (userId) => (dispatch) => {
+export const loadAttendance = (userId, subjectId) => (dispatch) => {
   //if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
-      url: urlAttendance + "/" + userId,
+      url: urlAttendance + "/" + userId + "/" + subjectId,
       onStart: allDataRequested.type,
       onSuccess: attendancesReceived.type,
       onError: allDataRequestFailed.type,

@@ -1,15 +1,18 @@
 // config db ====================================
 import mysql from "mysql2";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Mysql305",
-  port: "5001",
-  database: "prezentacie_db",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  port: process.env.DB_PORT,
+  database: process.env.DB,
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+  connectionLimit: 50,
+  queueLimit: 25,
 });
 
 export default pool;

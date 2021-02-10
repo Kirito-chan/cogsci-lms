@@ -4,23 +4,20 @@ import { getToken, getCurrentUserName } from "../app/currentUserSlice";
 import "./Navigation.css";
 import NavigationLoggedIn from "./NavigationLoggedIn";
 import NavigationLoggedOut from "./NavigationLoggedOut";
-import { withRouter } from "react-router";
 
-function Navigation(props) {
-  // prettier-ignore
+function Navigation() {
   const loggedIn = useSelector(getToken);
   const currenUserName = useSelector(getCurrentUserName);
 
   return (
     <div>
       {loggedIn ? (
-        <NavigationLoggedIn {...props} currentUserName={currenUserName} />
+        <NavigationLoggedIn currentUserName={currenUserName} />
       ) : (
-        <NavigationLoggedOut {...props} />
+        <NavigationLoggedOut />
       )}
     </div>
   );
 }
 
-const NavbarWithRouter = withRouter(Navigation);
-export default NavbarWithRouter;
+export default Navigation;

@@ -12,6 +12,7 @@ import {
 } from "../homeSlice";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
+import { useParams } from "react-router";
 
 export default function Evaluation() {
   const dispatch = useDispatch();
@@ -21,15 +22,16 @@ export default function Evaluation() {
   const attendances = useSelector(getAttendance);
   const bonuses = useSelector(getBonuses);
   const subjectValuation = useSelector(getSubjectValuation);
+  const { subjectId } = useParams();
 
   useEffect(() => {
-    if (currentUserId) {
+    if (currentUserId && subjectId) {
       dispatch(loadMyPresentation(currentUserId));
-      dispatch(loadAttendance(currentUserId));
+      dispatch(loadAttendance(currentUserId, subjectId));
       dispatch(loadBonuses(currentUserId));
       dispatch(loadSubjectValuation(currentUserId));
     }
-  }, [currentUserId]);
+  }, [currentUserId, subjectId]);
 
   return (
     <EvaluationTable
