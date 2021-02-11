@@ -9,9 +9,9 @@ const api = ({ dispatch }) => (next) => async (action) => {
   if (onStart) dispatch({ type: onStart });
 
   next(action);
-
+  let response = null;
   try {
-    const response = await axios.request({
+    response = await axios.request({
       baseURL: process.env.REACT_APP_API_URL,
       url: url,
       method: method,
@@ -25,7 +25,10 @@ const api = ({ dispatch }) => (next) => async (action) => {
     // General
     dispatch(actions.apiCallFailed(error.message));
     // Specific
-    if (onError) dispatch({ type: onError, payload: error.message });
+    if (onError) {
+      console.log(error);
+      dispatch({ type: onError, payload: error.message });
+    }
   }
 };
 

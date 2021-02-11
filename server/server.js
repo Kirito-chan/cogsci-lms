@@ -15,8 +15,13 @@ app.use(cors());
 // parse requests of content-type - application/json
 app.use(express.json());
 
-const isCorrectPassword = (typedPassword, DBpassword, salt) => {
-  return typedPassword === `${DBpassword}{${salt}}`;
+const isCorrectPassword = (typedPassword, salt, DBpassword) => {
+  const password = `${typedPassword}{${salt}}`;
+  const hashedPassword = crypto
+    .createHash("sha512")
+    .update(password)
+    .digest("base64");
+  return hashedPassword === DBpassword;
 };
 
 app.get("/api/subjects/:userId", async function (req, res) {
@@ -44,34 +49,23 @@ app.post("/api/login", async function (req, res) {
 
   const user = await queries.getUser(username);
 
-  if (
-    user != undefined /*isCorrectPassword(hashedPassword, DBpassword, salt)*/
-  ) {
+  if (user === undefined) res.status(404).send("User not found!");
+
+  if (isCorrectPassword(password, user.salt, user.password)) {
     // Issue token
     const DBpassword = user.password;
     const payload = { username, password };
     const token = jwt.sign(payload, secret, { expiresIn: "1h" });
     const salt = user.salt;
 
-    // console.log(password);
-
-    // const pass = `${password}{${salt}}`;
-    // console.log(pass);
-
-    // const hashedPassword = crypto
-    //   .createHash("sha512")
-    //   .update(pass)
-    //   .digest("hex");
-    // console.log(hashedPassword);
-    // console.log("a");
-    // console.log(DBpassword);
-    // if (hashedPassword == DBpassword) {
-    //   console.log("juchuu");
-    // }
+    // vygenerujem salt - vygenerujem nanoId
+    // spojim password z registracneho formu a spojim so saltom (ako v pass o 2 riadky nizsie)
+    // a zahshujem ako hashedPassword
 
     res.json({ token, user });
   } else {
-    res.json({ token: "" });
+    res.status(401).send("Unauthorized: Invalid password");
+    //res.json({ token: "" });
   }
 });
 
@@ -107,6 +101,9 @@ app.get("/api/bonuses/:userId/:subjectId", async (req, res) => {
 
 // get teacher's presentations
 app.get("/api/teacher-presentations/:userId/:subjectId", async (req, res) => {
+  //
+  // /api/teacher-presentation/           // /api/teacher-presentation/?user_id=241&subject_id=18
+  // /api/teacher-presentation/:id
   const { userId, subjectId } = req.params;
   //subjectId = 14;
   const row = await queries.getTeacherPresentations(userId, subjectId);

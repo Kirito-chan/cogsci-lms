@@ -30,8 +30,12 @@ function StudentHomePage() {
               <div className="pl-lg-4">
                 <Attendance />
                 <Bonuses />
-                <Evaluation />
               </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Evaluation />
             </Col>
           </Row>
         </Container>

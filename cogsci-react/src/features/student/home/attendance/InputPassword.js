@@ -9,16 +9,14 @@ function InputPassword() {
       <Form>
         <Form.Row>
           <Col>
-            <label htmlFor="password" className="d-none"></label>
-            <Form.Control
-              id="password"
-              type="password"
-              placeholder="Password"
-            />
+            <label htmlFor="password" className="sr-only">
+              Heslo:
+            </label>
+            <Form.Control id="password" type="password" placeholder="Heslo" />
           </Col>
           <Col>
             <Button variant="primary" type="submit">
-              Submit
+              Potvrdiť účasť
             </Button>
           </Col>
         </Form.Row>
