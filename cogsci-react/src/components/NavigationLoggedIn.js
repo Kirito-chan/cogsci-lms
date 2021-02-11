@@ -1,17 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { FaBrain, FaUser } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../app/currentUserSlice";
 import { LOGOUT_EVENT } from "../constants";
 import { useParams, useLocation } from "react-router";
+import {
+  loadSubject,
+  getCurrentSubjectName,
+} from "../features/student/subjects/subjectsSlice";
 
 function NavigationLoggedIn({ currentUserName }) {
   const dispatch = useDispatch();
   const { subjectId } = useParams();
   const location = useLocation();
+  const subjectName = useSelector(getCurrentSubjectName);
+
+  useEffect(() => {
+    if (subjectId) dispatch(loadSubject(subjectId));
+  }, [subjectId]);
 
   const handleDropdown = (event) => {
     if (event == LOGOUT_EVENT) {
@@ -34,10 +43,14 @@ function NavigationLoggedIn({ currentUserName }) {
 
         <Nav activeKey={location.pathname}>
           <Nav.Link href={"/home-student/" + subjectId} disabled={!subjectId}>
-            {subjectId || ""}
+            {subjectName || ""}
           </Nav.Link>
-          <Nav.Link href="#domace">Bonusové úlohy</Nav.Link>
-          <Nav.Link href="#podmienky">Podmienky predmetu</Nav.Link>
+          <Nav.Link href="#domace" disabled={!subjectId}>
+            {subjectId && "Bonusové úlohy"}
+          </Nav.Link>
+          <Nav.Link href="#podmienky" disabled={!subjectId}>
+            {subjectId && "Podmienky predmetu"}
+          </Nav.Link>
           <NavDropdown
             title={
               <span>

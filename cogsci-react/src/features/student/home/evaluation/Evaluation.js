@@ -26,10 +26,10 @@ export default function Evaluation() {
 
   useEffect(() => {
     if (currentUserId && subjectId) {
-      dispatch(loadMyPresentation(currentUserId));
+      dispatch(loadMyPresentation(currentUserId, subjectId));
       dispatch(loadAttendance(currentUserId, subjectId));
-      dispatch(loadBonuses(currentUserId));
-      dispatch(loadSubjectValuation(currentUserId));
+      dispatch(loadBonuses(currentUserId, subjectId));
+      dispatch(loadSubjectValuation(subjectId));
     }
   }, [currentUserId, subjectId]);
 

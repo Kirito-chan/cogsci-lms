@@ -3,16 +3,19 @@ import BonusesList from "./BonusesList";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import { loadBonuses, getBonuses } from "../homeSlice";
+import { useParams } from "react-router";
 
 function Bonuses() {
   const dispatch = useDispatch();
+  const { subjectId } = useParams();
 
   const bonuses = useSelector(getBonuses);
   const currentUserId = useSelector(getCurrentUserId);
 
   useEffect(() => {
-    if (currentUserId) dispatch(loadBonuses(currentUserId));
-  }, [currentUserId]);
+    if (currentUserId && subjectId)
+      dispatch(loadBonuses(currentUserId, subjectId));
+  }, [currentUserId, subjectId]);
 
   return <BonusesList bonuses={bonuses} />;
 }

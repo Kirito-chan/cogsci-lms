@@ -25,6 +25,12 @@ app.get("/api/subjects/:userId", async function (req, res) {
   res.json(rows);
 });
 
+app.get("/api/subject/:subjectId", async function (req, res) {
+  const { subjectId } = req.params;
+  const row = await queries.getSubject(subjectId);
+  res.json(row);
+});
+
 app.post("/api/checkToken", withAuth, function (req, res) {
   res.sendStatus(200);
 });
@@ -88,48 +94,44 @@ app.post("/api/register", function (req, res) {
 // get attendance
 app.get("/api/attendance/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
-
-  //userId = 346;
-  //const subjectId = 18;
   const rows = await queries.getAttedance(userId, subjectId);
   res.json(rows);
 });
 
 // get bonuses
-app.get("/api/bonuses/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const subjectId = 18;
+app.get("/api/bonuses/:userId/:subjectId", async (req, res) => {
+  const { userId, subjectId } = req.params;
   const rows = await queries.getBonuses(userId, subjectId);
   res.json(rows);
 });
 
 // get teacher's presentations
-app.get("/api/teacher-presentations/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const subjectId = 14;
+app.get("/api/teacher-presentations/:userId/:subjectId", async (req, res) => {
+  const { userId, subjectId } = req.params;
+  //subjectId = 14;
   const row = await queries.getTeacherPresentations(userId, subjectId);
   res.json(row);
 });
 
 // get student's presentations
-app.get("/api/student-presentations/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const subjectId = 15;
+app.get("/api/student-presentations/:userId/:subjectId", async (req, res) => {
+  const { userId, subjectId } = req.params;
+  //const subjectId = 15;
   const rows = await queries.getStudentPresentations(userId, subjectId);
   res.json(rows);
 });
 
 // get my presentation - title and points
-app.get("/api/my-presentation/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const subjectId = 15;
+app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
+  const { userId, subjectId } = req.params;
+  //const subjectId = 15;
   const rows = await queries.getMyPresentation(userId, subjectId);
   res.json(rows);
 });
 
 // get valuation of a certain subject - finds info about given subject e.g. weight of attendance, bonuses, presentation
-app.get("/api/subject-valuation", async (req, res) => {
-  const subjectId = 18;
+app.get("/api/subject-valuation/:subjectId", async (req, res) => {
+  const { subjectId } = req.params;
   const row = await queries.getSubjectValuation(subjectId);
   res.json(row);
 });

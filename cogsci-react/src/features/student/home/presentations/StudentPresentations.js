@@ -6,15 +6,18 @@ import {
   loadStudentPresentations,
   getStudentPresentations,
 } from "../homeSlice";
+import { useParams } from "react-router";
 
 function StudentPresentations() {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
   const studentPresentations = useSelector(getStudentPresentations);
+  const { subjectId } = useParams();
 
   useEffect(() => {
-    if (currentUserId) dispatch(loadStudentPresentations(currentUserId));
-  }, []);
+    if (currentUserId && subjectId)
+      dispatch(loadStudentPresentations(currentUserId, subjectId));
+  }, [currentUserId, subjectId]);
 
   return (
     <StudentPresentationsList studentPresentations={studentPresentations} />

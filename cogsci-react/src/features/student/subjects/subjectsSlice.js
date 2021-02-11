@@ -7,6 +7,7 @@ export const slice = createSlice({
   name: "subjects",
   initialState: {
     currentSubjectId: null,
+    currentSubjectName: null,
     subjects: [],
     loading: false,
     lastFetch: null,
@@ -22,9 +23,11 @@ export const slice = createSlice({
     subjectsRequestFailed: (state) => {
       state.loading = false;
     },
-    currentSubjectReceived: (state, action) => {
-      console.log(action.payload);
+    currentSubjectIdReceived: (state, action) => {
       state.currentSubjectId = action.payload;
+    },
+    subjectReceived: (state, action) => {
+      state.currentSubjectName = action.payload.name;
     },
     clearedCurrentSubject: (state) => {
       state.currentSubject = null;
@@ -36,8 +39,9 @@ export const {
   subjectsRequested,
   subjectsReceived,
   subjectsRequestFailed,
-  currentSubjectReceived,
+  subjectReceived,
   clearedCurrentSubject,
+  currentSubjectIdReceived,
 } = slice.actions;
 
 export default slice.reducer;
@@ -66,8 +70,21 @@ export const loadSubjects = (userId) => (dispatch) => {
   );
 };
 
-export const loadCurrentSubject = (subjectId) => (dispatch) => {
-  dispatch({ type: currentSubjectReceived.type, payload: subjectId });
+const urlSubject = "/subject";
+
+export const loadSubject = (subjectId) => (dispatch) => {
+  //if (dataInReduxAreRecent(getState)) return;
+
+  return dispatch(
+    apiCallBegan({
+      url: urlSubject + "/" + subjectId,
+      onSuccess: subjectReceived.type,
+    })
+  );
+};
+
+export const loadCurrentSubjectId = (subjectId) => (dispatch) => {
+  dispatch({ type: currentSubjectIdReceived.type, payload: subjectId });
 };
 
 export const clearCurrentSubject = () => (dispatch) => {
@@ -76,4 +93,6 @@ export const clearCurrentSubject = () => (dispatch) => {
 
 export const getSubjects = (state) => state.features.student.subjects.subjects;
 export const getCurrentSubject = (state) =>
-  state.features.student.subjects.currentSubject;
+  state.features.student.subjects.currentSubjectId;
+export const getCurrentSubjectName = (state) =>
+  state.features.student.subjects.currentSubjectName;

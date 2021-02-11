@@ -2,7 +2,7 @@ import React from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { loadCurrentSubject } from "./subjectsSlice";
+import { loadCurrentSubjectId } from "./subjectsSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 
@@ -14,7 +14,7 @@ function SubjectsPageList(props) {
   const handleEnterClick = (event) => {
     const subjectId = parseInt(event.target.id);
     console.log(subjectId);
-    dispatch(loadCurrentSubject(subjectId));
+    dispatch(loadCurrentSubjectId(subjectId));
     history.replace({ pathname: `/home-student/${subjectId}` });
     //history.push({ pathname: `/home-student/18` });
 

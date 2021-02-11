@@ -9,11 +9,12 @@ import {
   loadUserAndToken,
 } from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import jwt from "jwt-decode";
 
 const AuthRoute = (props) => {
   const [component, setComponent] = useState(<div></div>);
-  //const history = useHistory();
+  const history = useHistory();
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
   let token = useSelector(getToken);
@@ -39,7 +40,6 @@ const AuthRoute = (props) => {
   }, [currentUserId]);
 
   useEffect(() => {
-    console.log("asi tuuuuuuu");
     if (token) {
       if (!error) {
         dispatch(checkToken(token));
@@ -48,27 +48,26 @@ const AuthRoute = (props) => {
         if (props.type === "login") {
           setComponent(<Redirect to="/subjects" />);
         } else {
-          console.log("asi tu0 ");
           setComponent(<Route {...props} />);
         }
       } else {
         clearTokens();
         if (props.type === "login") {
           setComponent(<Route {...props} />);
+          history.push("/login");
         } else {
-          console.log("asi tu1 ");
           setComponent(<Redirect to="/login" />);
         }
       }
     } else {
       if (props.type === "login") {
         setComponent(<Route {...props} />);
+        history.push("/login");
       } else {
-        console.log("asi tu 2");
         setComponent(<Redirect to="/login" />);
       }
     }
-  }, [props.type, token, error]);
+  }, [props.component, token, error]);
 
   return component;
 };

@@ -25,6 +25,13 @@ export const getStudentSubjects = async (userId) => {
   return rows;
 };
 
+export const getSubject = async (subjectId) => {
+  const [row] = await execute("SELECT * FROM subject WHERE id = ?", [
+    subjectId,
+  ]);
+  return row[0];
+};
+
 export const getSubjectValuation = async (subjectId) => {
   const [
     row,

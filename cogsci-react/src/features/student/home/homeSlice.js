@@ -94,12 +94,12 @@ export const loadAttendance = (userId, subjectId) => (dispatch) => {
 
 const urlBonuses = "/bonuses";
 
-export const loadBonuses = (userId) => (dispatch) => {
+export const loadBonuses = (userId, subjectId) => (dispatch) => {
   // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
-      url: urlBonuses + "/" + userId,
+      url: urlBonuses + "/" + userId + "/" + subjectId,
       onStart: allDataRequested.type,
       onSuccess: bonusesReceived.type,
       onError: allDataRequestFailed.type,
@@ -109,12 +109,12 @@ export const loadBonuses = (userId) => (dispatch) => {
 
 const urlTeacherPresentations = "/teacher-presentations";
 
-export const loadTeacherPresentations = (userId) => (dispatch) => {
+export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
   // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
-      url: urlTeacherPresentations + "/" + userId,
+      url: urlTeacherPresentations + "/" + userId + "/" + subjectId,
       onStart: allDataRequested.type,
       onSuccess: teacherPresentationsReceived.type,
       onError: allDataRequestFailed.type,
@@ -124,12 +124,12 @@ export const loadTeacherPresentations = (userId) => (dispatch) => {
 
 const urlStudentPresentations = "/student-presentations";
 
-export const loadStudentPresentations = (userId) => (dispatch) => {
+export const loadStudentPresentations = (userId, subjectId) => (dispatch) => {
   // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
-      url: urlStudentPresentations + "/" + userId,
+      url: urlStudentPresentations + "/" + userId + "/" + subjectId,
       onStart: allDataRequested.type,
       onSuccess: studentPresentationsReceived.type,
       onError: allDataRequestFailed.type,
@@ -139,12 +139,12 @@ export const loadStudentPresentations = (userId) => (dispatch) => {
 
 const urlMyPresentation = "/my-presentation";
 
-export const loadMyPresentation = (userId) => (dispatch) => {
+export const loadMyPresentation = (userId, subjectId) => (dispatch) => {
   // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
-      url: urlMyPresentation + "/" + userId,
+      url: urlMyPresentation + "/" + userId + "/" + subjectId,
       onStart: allDataRequested.type,
       onSuccess: myPresentationReceived.type,
       onError: allDataRequestFailed.type,
@@ -154,12 +154,12 @@ export const loadMyPresentation = (userId) => (dispatch) => {
 
 const urlSubjectValuation = "/subject-valuation";
 
-export const loadSubjectValuation = () => (dispatch) => {
+export const loadSubjectValuation = (subjectId) => (dispatch) => {
   // if (dataInReduxAreRecent(getState)) return;
 
   return dispatch(
     apiCallBegan({
-      url: urlSubjectValuation,
+      url: urlSubjectValuation + "/" + subjectId,
       onStart: allDataRequested.type,
       onSuccess: subjectValuationReceived.type,
       onError: allDataRequestFailed.type,

@@ -9,6 +9,11 @@ import Login from "./features/login/Login";
 import AuthRoute from "./features/login/AuthRoute";
 import NavbarWithRouter from "./components/Navigation";
 
+// TO-DO
+// taha z API veci pomocou subjektID nielen pre Attendance, ale ja ostatne, aby to netahal z konstanty, ale z req.params
+// premenovat nazov predmetu '18' na .title z DB
+// AKO oddelit prezencny a logicky komponent, ak je tam reagovanie na udalost..napr. ak klikne na buttom tak urobi API request v NavigationLoggedIn
+// ten last fetch musim fakt nastavovat pre kazdy samostatne?
 function App() {
   const isLoading = useSelector(getLoading);
 
@@ -22,7 +27,7 @@ function App() {
         <NavbarWithRouter />
         <Switch>
           <AuthRoute path="/" exact component={SubjectsPage} type="student" />
-          <AuthRoute path="/login" type="login" component={Login} />
+          <AuthRoute path="/login" component={Login} type="login" />
           {/* prettier-ignore */}
           <AuthRoute path="/home-student/:subjectId" component={StudentHomePage} type="home-student"/>
           <AuthRoute path="/subjects" component={SubjectsPage} type="student" />
