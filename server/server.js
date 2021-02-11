@@ -49,14 +49,15 @@ app.post("/api/login", async function (req, res) {
 
   const user = await queries.getUser(username);
 
-  if (user === undefined) res.status(404).send("User not found!");
+  if (user === undefined) {
+    res.status(404).send(`Užívateľ s menom "${username}" neexistuje`);
+    return;
+  }
 
   if (isCorrectPassword(password, user.salt, user.password)) {
     // Issue token
-    const DBpassword = user.password;
     const payload = { username, password };
     const token = jwt.sign(payload, secret, { expiresIn: "1h" });
-    const salt = user.salt;
 
     // vygenerujem salt - vygenerujem nanoId
     // spojim password z registracneho formu a spojim so saltom (ako v pass o 2 riadky nizsie)
@@ -64,8 +65,7 @@ app.post("/api/login", async function (req, res) {
 
     res.json({ token, user });
   } else {
-    res.status(401).send("Unauthorized: Invalid password");
-    //res.json({ token: "" });
+    res.status(401).send("Nesprávne heslo");
   }
 });
 

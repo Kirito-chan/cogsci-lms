@@ -5,9 +5,11 @@ export const slice = createSlice({
   name: "currentUser",
   initialState: {
     id: null, // 346 je dobry testovaci user, 241 som ja
-    name: null,
+    name: "",
     token: "",
+    tokenError: "",
     error: "",
+    errorCustomMessage: "",
   },
   reducers: {
     tokenUserReceived: (state, action) => {
@@ -18,10 +20,16 @@ export const slice = createSlice({
     },
     tokenCleared: (state) => {
       state.token = "";
+      state.id = null;
+      state.name = "";
     },
     tokenChecked: () => {},
-    apiFailed: (state, action) => {
-      state.error = action.payload;
+    tokenRequestFailed: (state, action) => {
+      state.error = action.payload.message;
+      state.errorCustomMessage = action.payload.customMessage;
+    },
+    checkTokenFailed: (state, action) => {
+      state.tokenError = action.payload.message;
     },
   },
 });
@@ -30,7 +38,8 @@ export const {
   tokenUserReceived,
   tokenCleared,
   tokenChecked,
-  apiFailed,
+  tokenRequestFailed,
+  checkTokenFailed,
 } = slice.actions;
 
 export default slice.reducer;
@@ -47,7 +56,7 @@ export const loadUserAndToken = (username, password) => (dispatch) => {
         username,
         password,
       },
-      onError: apiFailed.type,
+      onError: tokenRequestFailed.type,
     })
   );
 };
@@ -63,7 +72,7 @@ export const checkToken = (token) => (dispatch) => {
       data: {
         token,
       },
-      onError: apiFailed.type,
+      onError: checkTokenFailed.type,
     })
   );
 };
@@ -77,3 +86,5 @@ export const getCurrentUserId = (state) => state.currentUser.id;
 export const getCurrentUserName = (state) => state.currentUser.name;
 export const getToken = (state) => state.currentUser.token;
 export const getError = (state) => state.currentUser.error;
+export const getTokenError = (state) => state.currentUser.tokenError;
+export const getCustomError = (state) => state.currentUser.errorCustomMessage;

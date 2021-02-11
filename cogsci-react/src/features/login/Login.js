@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./Login.css";
-import { loadUserAndToken } from "../../app/currentUserSlice";
-import { useDispatch } from "react-redux";
-//import { useHistory } from "react-router-dom";
+import { getCustomError, loadUserAndToken } from "../../app/currentUserSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Login() {
   const dispatch = useDispatch();
-  //const history = useHistory();
+  const error = useSelector(getCustomError);
 
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -25,18 +24,22 @@ function Login() {
         <Form.Control
           required
           type="text"
-          placeholder="Meno"
+          placeholder="Username"
           onChange={(e) => setUsername(e.target.value)}
+          isInvalid={Boolean(error.includes("meno"))}
         />
+        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
       </Form.Group>
 
       <Form.Group controlId="formBasicPassword">
         <Form.Label>Heslo</Form.Label>
         <Form.Control
           type="password"
-          placeholder="Password"
+          placeholder="Heslo"
           onChange={(e) => setPassword(e.target.value)}
+          isInvalid={Boolean(error.includes("heslo"))}
         />
+        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
       </Form.Group>
 
       <Button variant="primary" type="submit">

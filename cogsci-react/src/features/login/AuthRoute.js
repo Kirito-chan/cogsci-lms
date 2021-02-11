@@ -4,7 +4,7 @@ import {
   getToken,
   clearToken,
   checkToken,
-  getError,
+  getTokenError,
   getCurrentUserId,
   loadUserAndToken,
 } from "../../app/currentUserSlice";
@@ -18,7 +18,7 @@ const AuthRoute = (props) => {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
   let token = useSelector(getToken);
-  const error = useSelector(getError);
+  const checkTokenError = useSelector(getTokenError);
 
   if (!token) {
     token = localStorage.getItem("token");
@@ -41,7 +41,7 @@ const AuthRoute = (props) => {
 
   useEffect(() => {
     if (token) {
-      if (!error) {
+      if (!checkTokenError) {
         dispatch(checkToken(token));
         localStorage.setItem("token", token);
 
@@ -52,12 +52,7 @@ const AuthRoute = (props) => {
         }
       } else {
         clearTokens();
-        if (props.type === "login") {
-          setComponent(<Route {...props} />);
-          history.push("/login");
-        } else {
-          setComponent(<Redirect to="/login" />);
-        }
+        setComponent(<Redirect to="/login" />);
       }
     } else {
       if (props.type === "login") {
@@ -67,7 +62,7 @@ const AuthRoute = (props) => {
         setComponent(<Redirect to="/login" />);
       }
     }
-  }, [props.component, token, error]);
+  }, [props.component, token, checkTokenError]);
 
   return component;
 };
