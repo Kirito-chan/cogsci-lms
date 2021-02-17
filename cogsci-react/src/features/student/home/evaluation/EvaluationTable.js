@@ -4,12 +4,12 @@ import getGrade from "../../../../components/Math";
 
 export default function EvaluationTable({
   presentation,
+  presentationWeight,
   attendances,
   bonuses,
   subjectValuation,
 }) {
   const presentationPoints = parseFloat(presentation?.points) || 0;
-  const presentationWeight = presentation?.weight || 0;
   // prettier-ignore
   const earnedAttendancePoints = attendances.filter((it) => it.got_point).length || 0;
   const maxAttendancePoints = attendances.length || 0;

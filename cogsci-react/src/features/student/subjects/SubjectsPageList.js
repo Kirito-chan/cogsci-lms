@@ -5,6 +5,8 @@ import Button from "react-bootstrap/Button";
 import { loadCurrentSubjectId } from "./subjectsSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { URL_HOME_STUDENT } from "../../../constants";
+import Navigation from "../../../components/Navigation";
 
 function SubjectsPageList(props) {
   const dispatch = useDispatch();
@@ -13,16 +15,13 @@ function SubjectsPageList(props) {
 
   const handleEnterClick = (event) => {
     const subjectId = parseInt(event.target.id);
-    console.log(subjectId);
     dispatch(loadCurrentSubjectId(subjectId));
-    history.replace({ pathname: `/home-student/${subjectId}` });
-    //history.push({ pathname: `/home-student/18` });
-
-    //localStorage.setItem("subjectId", parseInt(event.target.id));
+    history.replace({ pathname: `${URL_HOME_STUDENT}/${subjectId}` });
   };
 
   return (
     <div>
+      <Navigation />
       <h2 className="text-center mb-5">Predmety</h2>
       <Row>
         <Col></Col>

@@ -80,7 +80,6 @@ app.post("/api/register", function (req, res) {
   const salt = "generateSalt()";
   // prettier-ignore
   const date = new Date().toISOString().slice(0, 10) + " " + new Date().toLocaleTimeString("en-GB");
-  console.log(date);
   // prettier-ignore
   const array = [firstName, lastName, username, hashedPassword, email, studentRole, salt, date];
 });
@@ -92,11 +91,17 @@ app.get("/api/attendance/:userId/:subjectId", async (req, res) => {
   res.json(rows);
 });
 
-// get bonuses
-app.get("/api/bonuses/:userId/:subjectId", async (req, res) => {
-  const { userId, subjectId } = req.params;
+// Bonuses
+app.get("/api/bonus/", async (req, res) => {
+  const { userId, subjectId } = req.query;
   const rows = await queries.getBonuses(userId, subjectId);
   res.json(rows);
+});
+
+app.get("/api/bonus/:bonusId", async (req, res) => {
+  const { bonusId } = req.params;
+  const row = await queries.getBonus(bonusId);
+  res.json(row);
 });
 
 // get teacher's presentations
@@ -122,8 +127,9 @@ app.get("/api/student-presentations/:userId/:subjectId", async (req, res) => {
 app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
   //const subjectId = 15;
-  const rows = await queries.getMyPresentation(userId, subjectId);
-  res.json(rows);
+  const presentations = await queries.getMyPresentation(userId, subjectId);
+  const presentationWeight = await queries.getPresentationWeight(subjectId);
+  res.json({ presentations, presentationWeight });
 });
 
 // get valuation of a certain subject - finds info about given subject e.g. weight of attendance, bonuses, presentation

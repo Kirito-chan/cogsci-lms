@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../../app/apiConstants";
-// import { TIME_TO_WAIT_FOR_FETCHING } from "../../constants";
-// import moment from "moment";
+import { dataInReduxAreRecent } from "../../../components/DateUtils";
 
 export const slice = createSlice({
   name: "subjects",
@@ -19,6 +18,7 @@ export const slice = createSlice({
     subjectsReceived: (state, action) => {
       state.subjects = action.payload;
       state.lastFetch = Date.now();
+      state.loading = false;
     },
     subjectsRequestFailed: (state) => {
       state.loading = false;
@@ -27,10 +27,12 @@ export const slice = createSlice({
       state.currentSubjectId = action.payload;
     },
     subjectReceived: (state, action) => {
+      state.currentSubjectId = action.payload.id;
       state.currentSubjectName = action.payload.name;
     },
     clearedCurrentSubject: (state) => {
-      state.currentSubject = null;
+      state.currentSubjectId = null;
+      state.currentSubjectName = null;
     },
   },
 });
@@ -47,18 +49,11 @@ export const {
 export default slice.reducer;
 
 // Action Creators
-// function dataInReduxAreRecent(getState) {
-//   const { lastFetch } = getState().features.homeStudent;
-
-//   const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
-//   if (diffInMinutes < TIME_TO_WAIT_FOR_FETCHING) return true;
-//   return false;
-// }
 
 const urlSubjects = "/subjects";
 
-export const loadSubjects = (userId) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState)) return;
+export const loadSubjects = (userId) => (dispatch, getState) => {
+  if (dataInReduxAreRecent(getState().features.student.home.lastFetch)) return;
 
   return dispatch(
     apiCallBegan({
@@ -72,8 +67,8 @@ export const loadSubjects = (userId) => (dispatch) => {
 
 const urlSubject = "/subject";
 
-export const loadSubject = (subjectId) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState)) return;
+export const loadSubject = (subjectId) => (dispatch, getState) => {
+  if (dataInReduxAreRecent(getState().features.student.home.lastFetch)) return;
 
   return dispatch(
     apiCallBegan({
@@ -92,7 +87,7 @@ export const clearCurrentSubject = () => (dispatch) => {
 };
 
 export const getSubjects = (state) => state.features.student.subjects.subjects;
-export const getCurrentSubject = (state) =>
+export const getCurrentSubjectId = (state) =>
   state.features.student.subjects.currentSubjectId;
 export const getCurrentSubjectName = (state) =>
   state.features.student.subjects.currentSubjectName;

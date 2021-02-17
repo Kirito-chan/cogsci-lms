@@ -3,26 +3,26 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import formatTranslation from "../../../../components/StringUtils";
 
-function MyPresentationList({ myPresentation }) {
+function MyPresentationList({ myPresentations, presentationWeight }) {
   return (
     <div className="mt-5">
       <h3>Moja prezentácia</h3>
       <div>
-        {myPresentation.length ? (
+        {myPresentations.length ? (
           ""
         ) : (
           <span className="text-secondary font-italic">
             Neodovzdaná prezentácia
           </span>
         )}
-        {myPresentation.map((presentation) => (
+        {myPresentations.map((presentation) => (
           <div key={presentation.id}>
             <Nav.Link href="#subor.ppt" className="pl-0">
               {presentation.title}
             </Nav.Link>
             <p>
-              <b>Hodnotenie:</b> {presentation.points} z {presentation.weight}{" "}
-              {formatTranslation(presentation.weight, "bod")}
+              <b>Hodnotenie:</b> {presentation.points} z {presentationWeight}{" "}
+              {formatTranslation(presentationWeight, "bod")}
             </p>
           </div>
         ))}

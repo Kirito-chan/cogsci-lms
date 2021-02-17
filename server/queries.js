@@ -82,6 +82,14 @@ export const getAttedance = async (userId, subjectId) => {
 };
 
 // bonuses
+
+export const getBonus = async (bonusId) => {
+  const [row] = await execute("SELECT * FROM announcement WHERE id = ?", [
+    bonusId,
+  ]);
+  return row[0];
+};
+
 export const getBonuses = async (userId, subjectId) => {
   const [row] = await execute(
     `
@@ -89,6 +97,9 @@ export const getBonuses = async (userId, subjectId) => {
   tab1 AS (
   SELECT a.id, 
          a.title,
+         a.content,
+         a.video_URL,
+         a.created,
          c.user_id,
          CASE
           WHEN sum(c.valuated) is NULL THEN 'nehodnotené'
@@ -161,6 +172,16 @@ export const getStudentPresentations = async (userId, subjectId) => {
   return row;
 };
 
+export const getPresentationWeight = async (subjectId) => {
+  const [row] = await execute(
+    `
+      SELECT val_presentation as weight FROM subject s WHERE s.id = ?
+    `,
+    [subjectId]
+  );
+  return row[0];
+};
+
 export const getMyPresentation = async (userId, subjectId) => {
   const [row] = await execute(
     `
@@ -190,9 +211,8 @@ export const getMyPresentation = async (userId, subjectId) => {
 
     tab4 as (SELECT presentation_id as id, 
            title, 
-           ROUND(sum(points_per_category)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points,
-           weight
-    FROM tab3 CROSS JOIN pres_weight)
+           ROUND(sum(points_per_category)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points
+    FROM tab3)
 
     SELECT * FROM tab4
     WHERE tab4.id is not null;

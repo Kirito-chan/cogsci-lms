@@ -6,3 +6,6 @@ export const GOT_0_BONUS_POINTS = 0;
 export const GOT_1_BONUS_POINTS = 1;
 export const NOT_YET_EVALUATED_BONUS_POINTS = "nehodnotené";
 export const LOGOUT_EVENT = "logout";
+export const URL_HOME_STUDENT = "/home-student/subject";
+export const URL_SUBJECTS = "/subjects";
+export const URL_BONUSES = "/bonus";

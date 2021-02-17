@@ -11,6 +11,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import jwt from "jwt-decode";
+import { URL_SUBJECTS } from "../../constants";
 
 const AuthRoute = (props) => {
   const [component, setComponent] = useState(<div></div>);
@@ -19,6 +20,7 @@ const AuthRoute = (props) => {
   const currentUserId = useSelector(getCurrentUserId);
   let token = useSelector(getToken);
   const checkTokenError = useSelector(getTokenError);
+  const log = false;
 
   if (!token) {
     token = localStorage.getItem("token");
@@ -44,22 +46,28 @@ const AuthRoute = (props) => {
       if (!checkTokenError) {
         dispatch(checkToken(token));
         localStorage.setItem("token", token);
+        if (log) console.log("tu som0");
 
         if (props.type === "login") {
-          setComponent(<Redirect to="/subjects" />);
+          setComponent(<Redirect to={URL_SUBJECTS} />);
+          if (log) console.log("tu som1");
         } else {
           setComponent(<Route {...props} />);
+          if (log) console.log("tu som2");
         }
       } else {
         clearTokens();
+        if (log) console.log("tu som3");
         setComponent(<Redirect to="/login" />);
       }
     } else {
       if (props.type === "login") {
+        if (log) console.log("tu som4");
         setComponent(<Route {...props} />);
         history.push("/login");
       } else {
         setComponent(<Redirect to="/login" />);
+        if (log) console.log("tu som5");
       }
     }
   }, [props.component, token, checkTokenError]);

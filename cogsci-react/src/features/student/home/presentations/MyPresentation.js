@@ -8,7 +8,7 @@ import { useParams } from "react-router";
 function MyPresentation() {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
-  const myPresentation = useSelector(getMyPresentation);
+  const myPresentations = useSelector(getMyPresentation);
   const { subjectId } = useParams();
 
   useEffect(() => {
@@ -16,7 +16,12 @@ function MyPresentation() {
       dispatch(loadMyPresentation(currentUserId, subjectId));
   }, [currentUserId, subjectId]);
 
-  return <MyPresentationList myPresentation={myPresentation} />;
+  return (
+    <MyPresentationList
+      myPresentations={myPresentations.presentations}
+      presentationWeight={myPresentations.presentationWeight}
+    />
+  );
 }
 
 export default MyPresentation;

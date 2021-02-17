@@ -5,27 +5,36 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { FaBrain, FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../app/currentUserSlice";
-import { LOGOUT_EVENT } from "../constants";
-import { useParams, useLocation } from "react-router";
+import {
+  LOGOUT_EVENT,
+  URL_BONUSES,
+  URL_HOME_STUDENT,
+  URL_SUBJECTS,
+} from "../constants";
+import { useParams } from "react-router";
 import {
   loadSubject,
   getCurrentSubjectName,
+  clearCurrentSubject,
+  getCurrentSubjectId,
 } from "../features/student/subjects/subjectsSlice";
+import { NavLink } from "react-router-dom";
 
 function NavigationLoggedIn({ currentUserName }) {
   const dispatch = useDispatch();
-  const { subjectId } = useParams();
-  const location = useLocation();
+  const subjectIdParams = useParams().subjectId;
   const subjectName = useSelector(getCurrentSubjectName);
+  const subjectId = useSelector(getCurrentSubjectId);
 
   useEffect(() => {
-    if (subjectId) dispatch(loadSubject(subjectId));
-  }, [subjectId]);
+    if (subjectIdParams) dispatch(loadSubject(subjectIdParams));
+  }, [subjectIdParams]);
 
   const handleDropdown = (event) => {
     if (event == LOGOUT_EVENT) {
       localStorage.clear();
       dispatch(clearToken());
+      window.location.reload();
     }
   };
 
@@ -34,23 +43,41 @@ function NavigationLoggedIn({ currentUserName }) {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href="/subjects">
+          <NavLink
+            to={URL_SUBJECTS}
+            onClick={() => dispatch(clearCurrentSubject())}
+            className="nav-link"
+          >
             <FaBrain size={25} />
-          </Nav.Link>
+          </NavLink>
 
-          <Nav.Link href="/subjects">Predmety</Nav.Link>
+          <NavLink
+            to={URL_SUBJECTS}
+            onClick={() => dispatch(clearCurrentSubject())}
+            className="nav-link"
+          >
+            Predmety
+          </NavLink>
         </Nav>
 
-        <Nav activeKey={location.pathname}>
-          <Nav.Link href={"/home-student/" + subjectId} disabled={!subjectId}>
+        <Nav>
+          <NavLink
+            to={URL_HOME_STUDENT + "/" + subjectId}
+            disabled={!subjectId}
+            className="nav-link"
+          >
             {subjectName || ""}
-          </Nav.Link>
-          <Nav.Link href="#domace" disabled={!subjectId}>
+          </NavLink>
+          <NavLink
+            to={URL_BONUSES + "/subject/" + subjectId}
+            disabled={!subjectId}
+            className="nav-link"
+          >
             {subjectId && "Bonusové úlohy"}
-          </Nav.Link>
-          <Nav.Link href="#podmienky" disabled={!subjectId}>
+          </NavLink>
+          <NavLink to="/something" disabled={!subjectId} className="nav-link">
             {subjectId && "Podmienky predmetu"}
-          </Nav.Link>
+          </NavLink>
           <NavDropdown
             title={
               <span>

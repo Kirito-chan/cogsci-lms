@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../../app/apiConstants";
-// import { TIME_TO_WAIT_FOR_FETCHING } from "../../constants";
-// import moment from "moment";
+import { dataInReduxAreRecent } from "../../../components/DateUtils";
 
 export const slice = createSlice({
   name: "home",
@@ -10,10 +9,17 @@ export const slice = createSlice({
     bonuses: [],
     teacherPresentations: [],
     studentPresentations: [],
-    myPresentation: [],
+    myPresentation: { presentations: [], presentationWeight: null },
     subjectValuation: {},
     loading: false,
-    lastFetch: null,
+    lastFetch: {
+      bonus: null,
+      attendance: null,
+      teacherPresentations: null,
+      studentPresentations: null,
+      myPresentation: null,
+      subjectValuation: null,
+    },
   },
   reducers: {
     allDataRequested: (state) => {
@@ -22,32 +28,34 @@ export const slice = createSlice({
     attendancesReceived: (state, action) => {
       state.attendances = action.payload;
       state.loading = false;
-      state.lastFetch = Date.now();
+      state.lastFetch.attendance = Date.now();
     },
     bonusesReceived: (state, action) => {
       state.bonuses = action.payload;
       state.loading = false;
-      state.lastFetch = Date.now();
+      state.lastFetch.bonus = Date.now();
     },
     teacherPresentationsReceived: (state, action) => {
       state.teacherPresentations = action.payload;
       state.loading = false;
-      state.lastFetch = Date.now();
+      state.lastFetch.teacherPresentations = Date.now();
     },
     studentPresentationsReceived: (state, action) => {
       state.studentPresentations = action.payload;
       state.loading = false;
-      state.lastFetch = Date.now();
+      state.lastFetch.studentPresentations = Date.now();
     },
     myPresentationReceived: (state, action) => {
-      state.myPresentation = action.payload;
+      state.myPresentation.presentations = action.payload.presentations;
+      state.myPresentation.presentationWeight =
+        action.payload.presentationWeight.weight;
       state.loading = false;
-      state.lastFetch = Date.now();
+      state.lastFetch.myPresentation = Date.now();
     },
     subjectValuationReceived: (state, action) => {
       state.subjectValuation = action.payload;
       state.loading = false;
-      state.lastFetch = Date.now();
+      state.lastFetch.subjectValuation = Date.now();
     },
     allDataRequestFailed: (state) => {
       state.loading = false;
@@ -69,18 +77,14 @@ export const {
 export default slice.reducer;
 
 // Action Creators
-// function dataInReduxAreRecent(getState) {
-//   const { lastFetch } = getState().features.home;
-
-//   const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
-//   if (diffInMinutes < TIME_TO_WAIT_FOR_FETCHING) return true;
-//   return false;
-// }
 
 const urlAttendance = "/attendance";
 
-export const loadAttendance = (userId, subjectId) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState)) return;
+export const loadAttendance = (userId, subjectId) => (dispatch, getState) => {
+  if (
+    dataInReduxAreRecent(getState().features.student.home.lastFetch.attendance)
+  )
+    return;
 
   return dispatch(
     apiCallBegan({
@@ -92,14 +96,15 @@ export const loadAttendance = (userId, subjectId) => (dispatch) => {
   );
 };
 
-const urlBonuses = "/bonuses";
+const urlBonuses = "/bonus";
 
-export const loadBonuses = (userId, subjectId) => (dispatch) => {
-  // if (dataInReduxAreRecent(getState)) return;
+export const loadBonuses = (userId, subjectId) => (dispatch, getState) => {
+  if (dataInReduxAreRecent(getState().features.student.home.lastFetch.bonus))
+    return;
 
   return dispatch(
     apiCallBegan({
-      url: urlBonuses + "/" + userId + "/" + subjectId,
+      url: urlBonuses + "/?userId=" + userId + "&subjectId=" + subjectId,
       onStart: allDataRequested.type,
       onSuccess: bonusesReceived.type,
       onError: allDataRequestFailed.type,
@@ -109,8 +114,16 @@ export const loadBonuses = (userId, subjectId) => (dispatch) => {
 
 const urlTeacherPresentations = "/teacher-presentations";
 
-export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
-  // if (dataInReduxAreRecent(getState)) return;
+export const loadTeacherPresentations = (userId, subjectId) => (
+  dispatch,
+  getState
+) => {
+  if (
+    dataInReduxAreRecent(
+      getState().features.student.home.lastFetch.teacherPresentations
+    )
+  )
+    return;
 
   return dispatch(
     apiCallBegan({
@@ -124,8 +137,16 @@ export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
 
 const urlStudentPresentations = "/student-presentations";
 
-export const loadStudentPresentations = (userId, subjectId) => (dispatch) => {
-  // if (dataInReduxAreRecent(getState)) return;
+export const loadStudentPresentations = (userId, subjectId) => (
+  dispatch,
+  getState
+) => {
+  if (
+    dataInReduxAreRecent(
+      getState().features.student.home.lastFetch.studentPresentations
+    )
+  )
+    return;
 
   return dispatch(
     apiCallBegan({
@@ -139,8 +160,16 @@ export const loadStudentPresentations = (userId, subjectId) => (dispatch) => {
 
 const urlMyPresentation = "/my-presentation";
 
-export const loadMyPresentation = (userId, subjectId) => (dispatch) => {
-  // if (dataInReduxAreRecent(getState)) return;
+export const loadMyPresentation = (userId, subjectId) => (
+  dispatch,
+  getState
+) => {
+  if (
+    dataInReduxAreRecent(
+      getState().features.student.home.lastFetch.myPresentation
+    )
+  )
+    return;
 
   return dispatch(
     apiCallBegan({
@@ -154,8 +183,13 @@ export const loadMyPresentation = (userId, subjectId) => (dispatch) => {
 
 const urlSubjectValuation = "/subject-valuation";
 
-export const loadSubjectValuation = (subjectId) => (dispatch) => {
-  // if (dataInReduxAreRecent(getState)) return;
+export const loadSubjectValuation = (subjectId) => (dispatch, getState) => {
+  if (
+    dataInReduxAreRecent(
+      getState().features.student.home.lastFetch.subjectValuation
+    )
+  )
+    return;
 
   return dispatch(
     apiCallBegan({

@@ -10,12 +10,15 @@ import TeacherPresentations from "./presentations/TeacherPresentations";
 import StudentPresentations from "./presentations/StudentPresentations";
 import MyPresentation from "./presentations/MyPresentation";
 import Evaluation from "./evaluation/Evaluation";
+import { useSelector } from "react-redux";
+import { getCurrentSubjectName } from "../subjects/subjectsSlice";
 
 function StudentHomePage() {
+  const subjectName = useSelector(getCurrentSubjectName);
   return (
     <div>
       <Navigation />
-      <h1 className="text-center">Kognitívne vedy: mozog a myseľ</h1>
+      <h1 className="text-center">{subjectName}</h1>
       <section className="App-header">
         <Container fluid>
           <Row>

@@ -7,7 +7,9 @@ import { BrowserRouter, Switch } from "react-router-dom";
 import SubjectsPage from "./features/student/subjects/SubjectsPage";
 import Login from "./features/login/Login";
 import AuthRoute from "./features/login/AuthRoute";
-import NavbarWithRouter from "./components/Navigation";
+import { URL_BONUSES, URL_HOME_STUDENT, URL_SUBJECTS } from "./constants";
+import BonusesPage from "./features/student/bonuses/BonusesPage";
+import BonusPage from "./features/student/bonus/BonusPage";
 
 // TO-DO
 // taha z API veci pomocou subjektID nielen pre Attendance, ale ja ostatne, aby to netahal z konstanty, ale z req.params
@@ -24,13 +26,27 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <NavbarWithRouter />
         <Switch>
           <AuthRoute path="/" exact component={SubjectsPage} type="student" />
           <AuthRoute path="/login" component={Login} type="login" />
           {/* prettier-ignore */}
-          <AuthRoute path="/home-student/:subjectId" component={StudentHomePage} type="home-student"/>
-          <AuthRoute path="/subjects" component={SubjectsPage} type="student" />
+          <AuthRoute path={URL_HOME_STUDENT + "/:subjectId"} component={StudentHomePage} type="home-student"/>
+          <AuthRoute
+            path={URL_SUBJECTS}
+            component={SubjectsPage}
+            type="student"
+          />
+
+          <AuthRoute
+            path={URL_BONUSES + "/subject/:subjectId"}
+            component={BonusesPage}
+            type="bonus"
+          />
+          <AuthRoute
+            path={URL_BONUSES + "/:bonusId/subject/:subjectId"}
+            component={BonusPage}
+            type="bonus"
+          />
           {/* defaultna route, ak nematchne nic: /login, ak je prihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />
         </Switch>
