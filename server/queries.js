@@ -81,6 +81,16 @@ export const getAttedance = async (userId, subjectId) => {
   return row;
 };
 
+// comments
+export const getComments = async (bonusId) => {
+  const [rows] = await execute(
+    `SELECT ac.*, user.first_name, user.last_name
+     FROM announcement_comments ac JOIN user ON user.id = ac.user_id WHERE ac.announcement_id = ?`,
+    [bonusId]
+  );
+  return rows;
+};
+
 // bonuses
 
 export const getBonus = async (bonusId) => {

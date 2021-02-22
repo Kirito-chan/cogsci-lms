@@ -100,8 +100,16 @@ app.get("/api/bonus/", async (req, res) => {
 
 app.get("/api/bonus/:bonusId", async (req, res) => {
   const { bonusId } = req.params;
-  const row = await queries.getBonus(bonusId);
-  res.json(row);
+  const rows = await queries.getBonus(bonusId);
+  res.json(rows);
+});
+
+// comments
+app.get("/api/comment", async (req, res) => {
+  const { bonusId } = req.query;
+  const rows = await queries.getComments(bonusId);
+  //console.log(rows);
+  res.json(rows);
 });
 
 // get teacher's presentations

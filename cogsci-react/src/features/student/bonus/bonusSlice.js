@@ -22,6 +22,18 @@ export const slice = createSlice({
     bonusRequestFailed: (state) => {
       state.loading = false;
     },
+
+    commentsRequested: (state) => {
+      state.loading = true;
+    },
+    commentsReceived: (state, action) => {
+      state.comments = action.payload;
+      state.lastFetch = Date.now();
+      state.loading = false;
+    },
+    commentsRequestFailed: (state) => {
+      state.loading = false;
+    },
   },
 });
 
@@ -29,6 +41,9 @@ export const {
   bonusRequested,
   bonusReceived,
   bonusRequestFailed,
+  commentsRequested,
+  commentsReceived,
+  commentsRequestFailed,
 } = slice.actions;
 
 export default slice.reducer;
@@ -50,5 +65,21 @@ export const loadBonus = (bonusId) => (dispatch) => {
   );
 };
 
+const urlComment = "/comment";
+
+export const loadComments = (bonusId) => (dispatch) => {
+  //if (dataInReduxAreRecent(getState().features.student.bonus.lastFetch)) return;
+
+  return dispatch(
+    apiCallBegan({
+      url: urlComment + "/?bonusId=" + bonusId,
+      onStart: commentsRequested.type,
+      onSuccess: commentsReceived.type,
+      onError: commentsRequestFailed.type,
+    })
+  );
+};
+
 export const getBonus = (state) => state.features.student.bonus.bonus;
 export const getBonusId = (state) => state.features.student.bonus.bonus.id;
+export const getComments = (state) => state.features.student.bonus.comments;

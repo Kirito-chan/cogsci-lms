@@ -4,8 +4,8 @@ import formatTranslation from "../../../components/StringUtils";
 import BonusEvaluation from "./bonuses/BonusEvaluation";
 
 function Discussion({ data, classAttribute, evaluation }) {
-  const num_of_all_comments = data.num_all_comments;
-  const num_of_my_comments = data.num_of_comments;
+  const num_of_all_comments = data?.num_all_comments;
+  const num_of_my_comments = data?.num_of_comments;
   return (
     <div className={classAttribute}>
       <p className={classAttribute}>

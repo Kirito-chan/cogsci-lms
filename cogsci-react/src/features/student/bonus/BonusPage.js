@@ -8,7 +8,6 @@ import { loadBonus, getBonus } from "./bonusSlice";
 
 function BonusPage() {
   const dispatch = useDispatch();
-  //const { subjectId } = useParams();    zatial netreba, az pri komponente Komentarov bude treba
   const { bonusId, subjectId } = useParams();
 
   const bonus = useSelector(getBonus);
@@ -17,6 +16,9 @@ function BonusPage() {
 
   const [bonusOrderId, setBonusOrderId] = useState(
     bonuses.findIndex((x) => x.id === bonus.id)
+  );
+  const [bonusik, setBonusik] = useState(
+    bonuses.filter((bonusik) => bonusik.id === bonus.id)[0]
   );
 
   useEffect(() => {
@@ -36,7 +38,19 @@ function BonusPage() {
       dispatch(loadBonuses(currentUserId, subjectId));
   }, [currentUserId, subjectId]);
 
-  return <BonusPageView bonus={bonus} bonusOrderId={bonusOrderId} />;
+  useEffect(() => {
+    if (bonuses.length > 0) {
+      setBonusik(bonuses.filter((bonusik) => bonusik.id === bonus.id)[0]);
+    }
+  }, [bonuses, bonus]);
+
+  return (
+    <BonusPageView
+      bonus={bonusik}
+      bonusOrderId={bonusOrderId}
+      subjectId={subjectId}
+    />
+  );
 }
 
 export default BonusPage;

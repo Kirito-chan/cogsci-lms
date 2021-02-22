@@ -10,6 +10,7 @@ import AuthRoute from "./features/login/AuthRoute";
 import { URL_BONUSES, URL_HOME_STUDENT, URL_SUBJECTS } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 // TO-DO
 // taha z API veci pomocou subjektID nielen pre Attendance, ale ja ostatne, aby to netahal z konstanty, ale z req.params
@@ -26,6 +27,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+        <ScrollToTop />
         <Switch>
           <AuthRoute path="/" exact component={SubjectsPage} type="student" />
           <AuthRoute path="/login" component={Login} type="login" />

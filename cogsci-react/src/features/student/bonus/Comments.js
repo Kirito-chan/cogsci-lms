@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getComments, loadComments } from "./bonusSlice";
+import CommentsList from "./CommentsList";
 
 function Comments({ bonusId }) {
-  return (
-    <aside className="pl-2 mt-5">
-      <hr />
-      <h3 id={bonusId}>Komentáre</h3>
-    </aside>
-  );
+  const dispatch = useDispatch();
+
+  const comments = useSelector(getComments);
+
+  useEffect(() => {
+    if (bonusId) dispatch(loadComments(bonusId));
+  }, [bonusId]);
+  return <CommentsList bonusId={bonusId} comments={comments} />;
 }
 
 export default Comments;

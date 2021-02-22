@@ -19,6 +19,7 @@ import {
   getCurrentSubjectId,
 } from "../features/student/subjects/subjectsSlice";
 import { NavLink } from "react-router-dom";
+import NavDivider from "./NavDivider";
 
 function NavigationLoggedIn({ currentUserName }) {
   const dispatch = useDispatch();
@@ -58,9 +59,7 @@ function NavigationLoggedIn({ currentUserName }) {
           >
             Predmety
           </NavLink>
-        </Nav>
-
-        <Nav>
+          <NavDivider />
           <NavLink
             to={URL_HOME_STUDENT + "/" + subjectId}
             disabled={!subjectId}
@@ -73,11 +72,20 @@ function NavigationLoggedIn({ currentUserName }) {
             disabled={!subjectId}
             className="nav-link"
           >
-            {subjectId && "Bonusové úlohy"}
+            {subjectId && "Bonusy"}
+          </NavLink>
+          <NavLink
+            to={URL_BONUSES + "/subject/" + subjectId}
+            disabled={!subjectId}
+            className="nav-link"
+          >
+            {subjectId && "Prezentácie"}
           </NavLink>
           <NavLink to="/something" disabled={!subjectId} className="nav-link">
-            {subjectId && "Podmienky predmetu"}
+            {subjectId && "Podmienky"}
           </NavLink>
+        </Nav>
+        <Nav>
           <NavDropdown
             title={
               <span>

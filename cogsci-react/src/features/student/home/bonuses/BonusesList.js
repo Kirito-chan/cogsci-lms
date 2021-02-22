@@ -1,10 +1,12 @@
 import React from "react";
-import Nav from "react-bootstrap/Nav";
+
 import Discussion from "../Discussion";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { URL_BONUSES } from "../../../../constants";
+import { Link } from "react-router-dom";
 
-function BonusesList({ bonuses }) {
+function BonusesList({ bonuses, subjectId }) {
   return (
     <div className="mt-5">
       <h2>Bonusové úlohy</h2>
@@ -13,9 +15,12 @@ function BonusesList({ bonuses }) {
         <article key={bonus.id}>
           <Row>
             <Col>
-              <Nav.Link href={`bonus${bonus.id}`} className="pl-0">
+              <Link
+                to={URL_BONUSES + "/" + bonus?.id + "/subject/" + subjectId}
+                className="pl-0 nav-link"
+              >
                 {bonuses.length - i}. {bonus.title}
-              </Nav.Link>
+              </Link>
             </Col>
           </Row>
           <Row>

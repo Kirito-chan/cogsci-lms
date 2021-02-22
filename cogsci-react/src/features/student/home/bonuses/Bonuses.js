@@ -17,7 +17,7 @@ function Bonuses() {
       dispatch(loadBonuses(currentUserId, subjectId));
   }, [currentUserId, subjectId]);
 
-  return <BonusesList bonuses={bonuses} />;
+  return <BonusesList bonuses={bonuses} subjectId={subjectId} />;
 }
 
 export default Bonuses;
