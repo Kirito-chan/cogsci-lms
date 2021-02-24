@@ -15,7 +15,7 @@ function BonusInfo({ headerComponent, bonus, subjectId }) {
       <Row>
         <Col>
           <Link
-            to={URL_BONUSES + "/" + bonus?.id + "/subject/" + subjectId}
+            to={"/subject/" + subjectId + URL_BONUSES + "/" + bonus?.id}
             className="pl-0 font-weight-bold"
           >
             {headerComponent}

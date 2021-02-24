@@ -61,27 +61,27 @@ function NavigationLoggedIn({ currentUserName }) {
           </NavLink>
           <NavDivider />
           <NavLink
-            to={URL_HOME_STUDENT + "/" + subjectId}
-            disabled={!subjectId}
-            className="nav-link"
+            to={"/subject/" + subjectId + URL_HOME_STUDENT}
+            className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectName || ""}
           </NavLink>
           <NavLink
-            to={URL_BONUSES + "/subject/" + subjectId}
-            disabled={!subjectId}
-            className="nav-link"
+            to={"/subject/" + subjectId + URL_BONUSES}
+            className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectId && "Bonusy"}
           </NavLink>
           <NavLink
-            to={URL_BONUSES + "/subject/" + subjectId}
-            disabled={!subjectId}
-            className="nav-link"
+            to={"/subject/" + subjectId + URL_BONUSES}
+            className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectId && "Prezentácie"}
           </NavLink>
-          <NavLink to="/something" disabled={!subjectId} className="nav-link">
+          <NavLink
+            to="/something"
+            className={"nav-link " + (!subjectId ? "d-none" : "")}
+          >
             {subjectId && "Podmienky"}
           </NavLink>
         </Nav>

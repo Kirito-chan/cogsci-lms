@@ -1,12 +1,19 @@
-import React from "react";
-import formatDate from "../../../components/DateUtils";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import "./CommentsList.css";
+import React, { useState } from "react";
+import Comment from "./Comment";
+import MyComment from "./MyComment";
 
-function CommentsList({ bonusId, comments }) {
+function CommentsList({ bonusId, comments, currentUserName }) {
+  const [myCommentClass, setMyCommentClass] = useState(-1);
+
+  const handleOdpovedat = (event) => {
+    setMyCommentClass(event.target.id);
+    //dispatch(loadCurrentSubjectId(subjectId));
+  };
+
+  const handleZrusit = () => {
+    setMyCommentClass(-1);
+  };
+
   return (
     <aside className="pl-2 mt-5">
       <hr />
@@ -14,27 +21,26 @@ function CommentsList({ bonusId, comments }) {
         Komentáre
       </h3>
       {comments.map((comment, i) => (
-        <Container key={i} className="m-0 p-0">
-          <Row>
-            <Col md={7}>
-              <article className="p-3 mb-2 bg-light-grey ml-0">
-                <p className="small mb-1">
-                  <strong>
-                    {comment.first_name} {comment.last_name}
-                  </strong>{" "}
-                  <p className="d-inline-block small text-muted mb-0">
-                    {formatDate(comment.date)}
-                  </p>
-                </p>
-                <p>{comment.content}</p>
-                <Button variant="outline-secondary" className="small" size="sm">
-                  Odpovedať
-                </Button>{" "}
-              </article>
-            </Col>
-          </Row>
-        </Container>
+        <div key={i}>
+          <Comment comment={comment} handleOdpovedat={handleOdpovedat} />
+          <MyComment
+            classname={myCommentClass == comment.id ? "" : "d-none"}
+            currentUserName={currentUserName}
+            handleZrusit={handleZrusit}
+            placeholder="Reagovať na komentár..."
+            rows={3}
+          />
+        </div>
       ))}
+
+      <MyComment
+        classname="ml-0 pl-0"
+        currentUserName={currentUserName}
+        handleZrusit={handleZrusit}
+        placeholder="Pridať nový komentár..."
+        rows={5}
+        zrusitBtnClassname="d-none"
+      />
     </aside>
   );
 }

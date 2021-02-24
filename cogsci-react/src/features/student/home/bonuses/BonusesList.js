@@ -16,7 +16,7 @@ function BonusesList({ bonuses, subjectId }) {
           <Row>
             <Col>
               <Link
-                to={URL_BONUSES + "/" + bonus?.id + "/subject/" + subjectId}
+                to={"/subject/" + subjectId + URL_BONUSES + "/" + bonus?.id}
                 className="pl-0 nav-link"
               >
                 {bonuses.length - i}. {bonus.title}

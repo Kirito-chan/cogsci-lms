@@ -32,7 +32,7 @@ function App() {
           <AuthRoute path="/" exact component={SubjectsPage} type="student" />
           <AuthRoute path="/login" component={Login} type="login" />
           {/* prettier-ignore */}
-          <AuthRoute path={URL_HOME_STUDENT + "/:subjectId"} component={StudentHomePage} type="home-student"/>
+          <AuthRoute path={"/subject/:subjectId" + URL_HOME_STUDENT} component={StudentHomePage} type="home-student"/>
           <AuthRoute
             path={URL_SUBJECTS}
             component={SubjectsPage}
@@ -40,12 +40,13 @@ function App() {
           />
 
           <AuthRoute
-            path={URL_BONUSES + "/subject/:subjectId"}
+            exact
+            path={"/subject/:subjectId" + URL_BONUSES}
             component={BonusesPage}
             type="bonus"
           />
           <AuthRoute
-            path={URL_BONUSES + "/:bonusId/subject/:subjectId"}
+            path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"}
             component={BonusPage}
             type="bonus"
           />

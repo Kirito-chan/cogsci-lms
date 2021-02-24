@@ -16,7 +16,7 @@ function SubjectsPageList(props) {
   const handleEnterClick = (event) => {
     const subjectId = parseInt(event.target.id);
     dispatch(loadCurrentSubjectId(subjectId));
-    history.replace({ pathname: `${URL_HOME_STUDENT}/${subjectId}` });
+    history.replace({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
   };
 
   return (
