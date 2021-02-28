@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../app/apiConstants";
+import { IS_ADMIN } from "../constants";
 
 export const slice = createSlice({
   name: "currentUser",
   initialState: {
     id: null, // 346 je dobry testovaci user, 241 som ja
     name: "",
+    isAdmin: null,
     token: "",
     tokenError: "",
     error: "",
@@ -17,6 +19,7 @@ export const slice = createSlice({
       state.id = action.payload.user.id;
       state.name =
         action.payload.user.first_name + " " + action.payload.user.last_name;
+      state.isAdmin = action.payload.user.role == IS_ADMIN;
     },
     tokenCleared: (state) => {
       state.token = "";

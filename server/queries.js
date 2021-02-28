@@ -84,7 +84,7 @@ export const getAttedance = async (userId, subjectId) => {
 // comments
 export const getComments = async (bonusId) => {
   const [rows] = await execute(
-    `SELECT ac.*, user.first_name, user.last_name
+    `SELECT ac.*, user.first_name, user.last_name, user.role as user_role
      FROM announcement_comments ac JOIN user ON user.id = ac.user_id WHERE ac.announcement_id = ?`,
     [bonusId]
   );

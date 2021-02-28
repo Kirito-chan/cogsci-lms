@@ -11,7 +11,7 @@ import "./BonusInfo.css";
 function BonusInfo({ headerComponent, bonus, subjectId }) {
   const bonusCreated = bonus?.created && formatDate(bonus.created);
   return (
-    <article key={bonus?.id} className="mx-lg-3 p-3 mb-5">
+    <article key={bonus?.id} className="mb-5">
       <Row>
         <Col>
           <Link
@@ -24,10 +24,12 @@ function BonusInfo({ headerComponent, bonus, subjectId }) {
         </Col>
       </Row>
       <Row>
-        <Col lg={4} className="break-long-word">
+        <Col lg={6} className="break-long-word">
           <p>{bonus?.content}</p>
+          <p className="mb-0">
+            <b>Odkaz na bonus</b>
+          </p>
           <p>
-            <strong>Link na bonus: </strong>
             <a
               target="_blank"
               href={bonus?.video_URL}
@@ -36,20 +38,18 @@ function BonusInfo({ headerComponent, bonus, subjectId }) {
               {bonus?.video_URL}
             </a>
           </p>
-        </Col>
-
-        <Col lg={7}>
-          <BonusVideo url={bonus?.video_URL} />
-        </Col>
-      </Row>
-
-      <Row>
-        <Col>
+          <p className="mb-0">
+            <b>Diskusia</b>
+          </p>
           <Discussion
             data={bonus}
             classAttribute="d-inline-block mr-3"
             evaluation={bonus?.evaluation}
           />
+        </Col>
+
+        <Col lg={6}>
+          <BonusVideo url={bonus?.video_URL} />
         </Col>
       </Row>
     </article>

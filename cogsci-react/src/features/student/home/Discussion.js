@@ -2,10 +2,18 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import formatTranslation from "../../../components/StringUtils";
 import BonusEvaluation from "./bonuses/BonusEvaluation";
+import { useHistory } from "react-router-dom";
 
-function Discussion({ data, classAttribute, evaluation }) {
+function Discussion({ data, classAttribute, evaluation, redirectTo, hash }) {
   const num_of_all_comments = data?.num_all_comments;
   const num_of_my_comments = data?.num_of_comments;
+  const history = useHistory();
+
+  const handleClick = () => {
+    console.log(redirectTo);
+    history.replace({ pathname: `${redirectTo}`, hash: hash });
+  };
+
   return (
     <div className={classAttribute}>
       <p className={classAttribute}>
@@ -19,7 +27,7 @@ function Discussion({ data, classAttribute, evaluation }) {
         )}
       </p>
 
-      <Button variant="success" size="sm">
+      <Button variant="success" size="sm" onClick={handleClick}>
         Diskutovať
       </Button>
     </div>

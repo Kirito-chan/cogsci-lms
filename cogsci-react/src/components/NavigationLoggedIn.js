@@ -73,7 +73,7 @@ function NavigationLoggedIn({ currentUserName }) {
             {subjectId && "Bonusy"}
           </NavLink>
           <NavLink
-            to={"/subject/" + subjectId + URL_BONUSES}
+            to={"dakde"}
             className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectId && "Prezentácie"}

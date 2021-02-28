@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import { IS_ADMIN } from "../../../constants";
 import Comment from "./Comment";
 import MyComment from "./MyComment";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
-function CommentsList({ bonusId, comments, currentUserName }) {
+function CommentsList({ bonusId, comments, currentUserId }) {
   const [myCommentClass, setMyCommentClass] = useState(-1);
 
   const handleOdpovedat = (event) => {
@@ -15,32 +19,48 @@ function CommentsList({ bonusId, comments, currentUserName }) {
   };
 
   return (
-    <aside className="pl-2 mt-5">
+    <aside className="mt-5">
       <hr />
       <h3 id={bonusId} className="mb-3">
         Komentáre
       </h3>
-      {comments.map((comment, i) => (
-        <div key={i}>
-          <Comment comment={comment} handleOdpovedat={handleOdpovedat} />
-          <MyComment
-            classname={myCommentClass == comment.id ? "" : "d-none"}
-            currentUserName={currentUserName}
-            handleZrusit={handleZrusit}
-            placeholder="Reagovať na komentár..."
-            rows={3}
-          />
-        </div>
-      ))}
+      <Container className="m-0 p-0">
+        <Row>
+          <Col md={7}>
+            {comments.map((comment, i) => (
+              <div key={i}>
+                <Comment
+                  comment={comment}
+                  handleOdpovedat={handleOdpovedat}
+                  isMyComment={currentUserId == comment.user_id}
+                  isAdminComment={comment.user_role == IS_ADMIN}
+                />
+                <MyComment
+                  id="regular"
+                  classname={myCommentClass == comment.id ? "ml-5" : "d-none"}
+                  handleZrusit={handleZrusit}
+                  header="Odpoveď"
+                  rows={3}
+                  flexIndent="justify-content-between"
+                  placeholder="Text vašej odpovede..."
+                  buttonText="Pridať odpoveď"
+                />
+              </div>
+            ))}
 
-      <MyComment
-        classname="ml-0 pl-0"
-        currentUserName={currentUserName}
-        handleZrusit={handleZrusit}
-        placeholder="Pridať nový komentár..."
-        rows={5}
-        zrusitBtnClassname="d-none"
-      />
+            <MyComment
+              id="new"
+              handleZrusit={handleZrusit}
+              header="Nový komentár"
+              rows={5}
+              zrusitBtnClassname="d-none"
+              flexIndent="justify-content-end"
+              placeholder="Text vášho komentára..."
+              buttonText="Pridať komentár"
+            />
+          </Col>
+        </Row>
+      </Container>
     </aside>
   );
 }

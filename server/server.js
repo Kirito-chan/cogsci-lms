@@ -104,7 +104,7 @@ app.get("/api/bonus/:bonusId", async (req, res) => {
   res.json(rows);
 });
 
-// comments
+// bonus comments
 app.get("/api/comment", async (req, res) => {
   const { bonusId } = req.query;
   const rows = await queries.getComments(bonusId);

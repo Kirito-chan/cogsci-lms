@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentUserName } from "../../../app/currentUserSlice";
+import { getCurrentUserId } from "../../../app/currentUserSlice";
 import { getComments, loadComments } from "./bonusSlice";
 import CommentsList from "./CommentsList";
 
@@ -8,7 +8,7 @@ function Comments({ bonusId }) {
   const dispatch = useDispatch();
 
   const comments = useSelector(getComments);
-  const currentUserName = useSelector(getCurrentUserName);
+  const currentUserId = useSelector(getCurrentUserId);
 
   useEffect(() => {
     if (bonusId) dispatch(loadComments(bonusId));
@@ -17,7 +17,7 @@ function Comments({ bonusId }) {
     <CommentsList
       bonusId={bonusId}
       comments={comments}
-      currentUserName={currentUserName}
+      currentUserId={currentUserId}
     />
   );
 }

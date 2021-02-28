@@ -7,16 +7,17 @@ import { BrowserRouter, Switch } from "react-router-dom";
 import SubjectsPage from "./features/student/subjects/SubjectsPage";
 import Login from "./features/login/Login";
 import AuthRoute from "./features/login/AuthRoute";
-import { URL_BONUSES, URL_HOME_STUDENT, URL_SUBJECTS } from "./constants";
+import {
+  URL_BONUSES,
+  URL_HOME_STUDENT,
+  URL_PRESENTATIONS,
+  URL_SUBJECTS,
+} from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
 import ScrollToTop from "./components/ScrollToTop";
+import PresentationPage from "./features/student/presentation/PresentationPage";
 
-// TO-DO
-// taha z API veci pomocou subjektID nielen pre Attendance, ale ja ostatne, aby to netahal z konstanty, ale z req.params
-// premenovat nazov predmetu '18' na .title z DB
-// AKO oddelit prezencny a logicky komponent, ak je tam reagovanie na udalost..napr. ak klikne na buttom tak urobi API request v NavigationLoggedIn
-// ten last fetch musim fakt nastavovat pre kazdy samostatne?
 function App() {
   const isLoading = useSelector(getLoading);
 
@@ -48,6 +49,12 @@ function App() {
           <AuthRoute
             path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"}
             component={BonusPage}
+            type="bonus"
+          />
+          <AuthRoute
+            // prettier-ignore
+            path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"}
+            component={PresentationPage}
             type="bonus"
           />
           {/* defaultna route, ak nematchne nic: /login, ak je prihlaseny, /subjects ak je prihlaseny */}

@@ -29,6 +29,8 @@ function BonusesList({ bonuses, subjectId }) {
                 data={bonus}
                 classAttribute="d-inline-block mr-3"
                 evaluation={bonus.evaluation}
+                redirectTo={`/subject/${subjectId}${URL_BONUSES}/${bonus?.id}`}
+                hash="#myNewComment"
               />
             </Col>
           </Row>

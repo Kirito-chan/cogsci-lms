@@ -20,7 +20,10 @@ function StudentPresentations() {
   }, [currentUserId, subjectId]);
 
   return (
-    <StudentPresentationsList studentPresentations={studentPresentations} />
+    <StudentPresentationsList
+      studentPresentations={studentPresentations}
+      subjectId={subjectId}
+    />
   );
 }
 
