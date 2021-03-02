@@ -107,8 +107,21 @@ app.get("/api/bonus/:bonusId", async (req, res) => {
 // bonus comments
 app.get("/api/comment", async (req, res) => {
   const { bonusId } = req.query;
-  const rows = await queries.getComments(bonusId);
-  //console.log(rows);
+  const rows = await queries.getBonusComments(bonusId);
+  res.json(rows);
+});
+
+// presentation comments
+app.get("/api/presentation/comment", async (req, res) => {
+  const { presentationId } = req.query;
+  const rows = await queries.getPresentationComments(presentationId);
+  res.json(rows);
+});
+
+// presentation valuation types
+app.get("/api/presentation/valuation-types", async (req, res) => {
+  const { subjectId } = req.query;
+  const rows = await queries.getPresentationValuationTypes(subjectId);
   res.json(rows);
 });
 

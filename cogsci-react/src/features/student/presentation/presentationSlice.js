@@ -7,6 +7,7 @@ export const slice = createSlice({
   initialState: {
     presentation: {},
     comments: [],
+    valuationTypes: [],
     loading: false,
     lastFetch: null,
   },
@@ -34,6 +35,17 @@ export const slice = createSlice({
     commentsRequestFailed: (state) => {
       state.loading = false;
     },
+    valuationTypesRequested: (state) => {
+      state.loading = true;
+    },
+    valuationTypesReceived: (state, action) => {
+      state.valuationTypes = action.payload;
+      state.lastFetch = Date.now();
+      state.loading = false;
+    },
+    valuationTypesRequestFailed: (state) => {
+      state.loading = false;
+    },
   },
 });
 
@@ -44,6 +56,9 @@ export const {
   commentsRequested,
   commentsReceived,
   commentsRequestFailed,
+  valuationTypesRequested,
+  valuationTypesReceived,
+  valuationTypesRequestFailed,
 } = slice.actions;
 
 export default slice.reducer;
@@ -55,7 +70,7 @@ export const loadPresentation = (presentation) => (dispatch) => {
   dispatch({ type: presentationReceived.type, payload: presentation });
 };
 
-const urlComment = "/comment";
+const urlComment = "/presentation/comment";
 
 export const loadComments = (presentationId) => (dispatch) => {
   //if (dataInReduxAreRecent(getState().features.student.presentation.lastFetch)) return;
@@ -70,9 +85,26 @@ export const loadComments = (presentationId) => (dispatch) => {
   );
 };
 
+const urlValuationTypes = "/presentation/valuation-types";
+
+export const loadValuationTypes = (subjectId) => (dispatch) => {
+  //if (dataInReduxAreRecent(getState().features.student.presentation.lastFetch)) return;
+
+  return dispatch(
+    apiCallBegan({
+      url: urlValuationTypes + "/?subjectId=" + subjectId,
+      onStart: valuationTypesRequested.type,
+      onSuccess: valuationTypesReceived.type,
+      onError: valuationTypesRequestFailed.type,
+    })
+  );
+};
+
 export const getPresentation = (state) =>
   state.features.student.presentation.presentation;
 export const getPresentationId = (state) =>
   state.features.student.presentation.presentation.id;
 export const getComments = (state) =>
   state.features.student.presentation.comments;
+export const getValuationTypes = (state) =>
+  state.features.student.presentation.valuationTypes;

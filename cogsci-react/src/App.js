@@ -49,13 +49,18 @@ function App() {
           <AuthRoute
             path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"}
             component={BonusPage}
-            type="bonus"
+            type="bonusId"
+          />
+          <AuthRoute
+            path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"}
+            component={BonusPage}
+            type="bonusId"
           />
           <AuthRoute
             // prettier-ignore
             path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"}
             component={PresentationPage}
-            type="bonus"
+            type="presentation"
           />
           {/* defaultna route, ak nematchne nic: /login, ak je prihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />

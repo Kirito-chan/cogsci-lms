@@ -6,12 +6,11 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-function CommentsList({ bonusId, comments, currentUserId }) {
+function CommentsList({ comments, currentUserId }) {
   const [myCommentClass, setMyCommentClass] = useState(-1);
 
   const handleOdpovedat = (event) => {
     setMyCommentClass(event.target.id);
-    //dispatch(loadCurrentSubjectId(subjectId));
   };
 
   const handleZrusit = () => {
@@ -21,9 +20,7 @@ function CommentsList({ bonusId, comments, currentUserId }) {
   return (
     <aside className="mt-5">
       <hr />
-      <h3 id={bonusId} className="mb-3">
-        Komentáre
-      </h3>
+      <h3 className="mb-3">Komentáre</h3>
       <Container className="m-0 p-0">
         <Row>
           <Col md={7}>
@@ -36,7 +33,7 @@ function CommentsList({ bonusId, comments, currentUserId }) {
                   isAdminComment={comment.user_role == IS_ADMIN}
                 />
                 <MyComment
-                  id="regular"
+                  id={i}
                   classname={myCommentClass == comment.id ? "ml-5" : "d-none"}
                   handleZrusit={handleZrusit}
                   header="Odpoveď"

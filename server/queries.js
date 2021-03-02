@@ -81,12 +81,33 @@ export const getAttedance = async (userId, subjectId) => {
   return row;
 };
 
-// comments
-export const getComments = async (bonusId) => {
+// bonus comments
+export const getBonusComments = async (bonusId) => {
   const [rows] = await execute(
     `SELECT ac.*, user.first_name, user.last_name, user.role as user_role
      FROM announcement_comments ac JOIN user ON user.id = ac.user_id WHERE ac.announcement_id = ?`,
     [bonusId]
+  );
+  return rows;
+};
+
+// bonus comments
+export const getPresentationComments = async (presentationId) => {
+  const [rows] = await execute(
+    `SELECT upc.*, user.first_name, user.last_name, user.role as user_role
+     FROM user_presentation_comments upc JOIN user ON user.id = upc.user_id WHERE upc.presentation_id = ?`,
+    [presentationId]
+  );
+  return rows;
+};
+
+// presentation valuation types
+export const getPresentationValuationTypes = async (subjectId) => {
+  const [
+    rows,
+  ] = await execute(
+    `SELECT * FROM presentation_valuation_point pvp WHERE pvp.subject_id = ?`,
+    [subjectId]
   );
   return rows;
 };
@@ -149,7 +170,7 @@ export const getStudentPresentations = async (userId, subjectId) => {
     `
   WITH
    tab1 as 
-   (SELECT p.id as pres_id, p.title, p.owner_id as user_id, user.first_name, user.last_name,
+   (SELECT p.id as pres_id, p.title, p.owner_id as user_id, p.path, user.first_name, user.last_name,
            count(u.user_id) as num_all_comments   
    FROM ((presentation p JOIN user_subject_lookup as usl
        ON p.id = usl.presentation_id)

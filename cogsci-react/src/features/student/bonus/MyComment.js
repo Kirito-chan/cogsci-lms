@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import "./CommentsList.css";
-import { useLocation } from "react-router-dom";
 
 function MyComment({
   classname,
@@ -15,26 +14,10 @@ function MyComment({
   buttonText,
   id,
 }) {
-  const location = useLocation();
-  const myNewComment = useRef(null);
-  const regularComment = useRef(null);
-
-  useEffect(() => {
-    if (
-      myNewComment &&
-      id == "new" &&
-      location.hash.includes("#myNewComment")
-    ) {
-      myNewComment.current.scrollIntoView({
-        behaviour: "smooth",
-      });
-    }
-  });
-
   return (
     <article
       className={"p-3 mb-2 bg-light-grey ml-0 " + classname}
-      ref={id == "new" ? myNewComment : regularComment}
+      id={id == "new" ? "myNewComment" : id}
     >
       <Form>
         <Form.Group controlId="Form.ControlTextarea">

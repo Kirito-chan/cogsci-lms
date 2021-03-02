@@ -1,18 +1,11 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
 import formatTranslation from "../../../components/StringUtils";
 import BonusEvaluation from "./bonuses/BonusEvaluation";
-import { useHistory } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 function Discussion({ data, classAttribute, evaluation, redirectTo, hash }) {
   const num_of_all_comments = data?.num_all_comments;
   const num_of_my_comments = data?.num_of_comments;
-  const history = useHistory();
-
-  const handleClick = () => {
-    console.log(redirectTo);
-    history.replace({ pathname: `${redirectTo}`, hash: hash });
-  };
 
   return (
     <div className={classAttribute}>
@@ -26,10 +19,13 @@ function Discussion({ data, classAttribute, evaluation, redirectTo, hash }) {
           </span>
         )}
       </p>
-
-      <Button variant="success" size="sm" onClick={handleClick}>
+      <HashLink
+        smooth
+        to={`${redirectTo}${hash}`}
+        className="btn btn-success btn-sm"
+      >
         Diskutovať
-      </Button>
+      </HashLink>
     </div>
   );
 }

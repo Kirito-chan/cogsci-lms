@@ -5,7 +5,12 @@ import {
   getStudentPresentations,
   loadStudentPresentations,
 } from "../home/homeSlice";
-import { loadPresentation, getPresentation } from "./presentationSlice";
+import {
+  loadPresentation,
+  getPresentation,
+  getComments,
+  loadComments,
+} from "./presentationSlice";
 import PresentationPageView from "./PresentationPageView";
 import { getCurrentUserId } from "../../../app/currentUserSlice";
 
@@ -16,6 +21,11 @@ function PresentationPage() {
   const presentation = useSelector(getPresentation);
   const presentations = useSelector(getStudentPresentations);
   const currentUserId = useSelector(getCurrentUserId);
+  const comments = useSelector(getComments);
+
+  useEffect(() => {
+    if (presentationId) dispatch(loadComments(presentationId));
+  }, [presentationId]);
 
   const [studPresentation, setStudPresentation] = useState(
     presentations.filter((studPres) => studPres.pres_id == presentationId)[0]
@@ -37,7 +47,14 @@ function PresentationPage() {
     }
   }, [presentations, presentation]);
 
-  return <PresentationPageView presentation={studPresentation} />;
+  return (
+    <PresentationPageView
+      presentation={studPresentation}
+      comments={comments}
+      currentUserId={currentUserId}
+      subjectId={subjectId}
+    />
+  );
 }
 
 export default PresentationPage;

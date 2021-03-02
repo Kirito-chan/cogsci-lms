@@ -1,6 +1,7 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
+import Button from "react-bootstrap/Button";
 import formatTranslation from "../../../../components/StringUtils";
 
 function MyPresentationList({ myPresentations, presentationWeight }) {
@@ -11,9 +12,7 @@ function MyPresentationList({ myPresentations, presentationWeight }) {
         {myPresentations.length ? (
           ""
         ) : (
-          <span className="text-secondary font-italic">
-            Neodovzdaná prezentácia
-          </span>
+          <span className="text-secondary">Neodovzdaná prezentácia</span>
         )}
         {myPresentations.map((presentation) => (
           <div key={presentation.id}>
@@ -28,11 +27,11 @@ function MyPresentationList({ myPresentations, presentationWeight }) {
         ))}
         <Form className="mt-4">
           <Form.Group>
-            <Form.File
-              id="presentationUpload"
-              label="Uploadovanie prezentácie"
-            />
+            <Form.File id="presentationUpload" />
           </Form.Group>
+          <Button size="sm" type="submit" variant="success">
+            Pridať prezentáciu
+          </Button>
         </Form>
       </div>
     </div>

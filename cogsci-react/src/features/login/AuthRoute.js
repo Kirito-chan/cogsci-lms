@@ -19,7 +19,7 @@ const AuthRoute = (props) => {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
   let token = useSelector(getToken);
-  const checkTokenError = useSelector(getTokenError);
+  const tokenError = useSelector(getTokenError);
   const log = false;
 
   if (!token) {
@@ -43,7 +43,7 @@ const AuthRoute = (props) => {
 
   useEffect(() => {
     if (token) {
-      if (!checkTokenError) {
+      if (!tokenError) {
         dispatch(checkToken(token));
         localStorage.setItem("token", token);
         if (log) console.log("tu som0");
@@ -70,7 +70,7 @@ const AuthRoute = (props) => {
         if (log) console.log("tu som5");
       }
     }
-  }, [props.component, token, checkTokenError]);
+  }, [props.component, token, tokenError]);
 
   return component;
 };

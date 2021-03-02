@@ -1,10 +1,16 @@
 import React from "react";
 import Navigation from "../../../components/Navigation";
 import BonusInfo from "./BonusInfo";
-import Comments from "./Comments";
+import CommentsList from "./CommentsList";
 import Container from "react-bootstrap/Container";
 
-function BonusPageView({ bonus, bonusOrderId, subjectId }) {
+function BonusPageView({
+  bonus,
+  bonusOrderId,
+  subjectId,
+  comments,
+  currentUserId,
+}) {
   return (
     <div>
       <Navigation />
@@ -12,14 +18,18 @@ function BonusPageView({ bonus, bonusOrderId, subjectId }) {
         <BonusInfo
           headerComponent={
             <h2>
-              Bonusová úloha č. {bonusOrderId}: {bonus?.title}
+              {bonusOrderId > 0 && (
+                <span>
+                  Bonusová úloha č. {bonusOrderId}: {bonus?.title}
+                </span>
+              )}
             </h2>
           }
           subjectId={subjectId}
           bonus={bonus}
         />
 
-        <Comments bonusId={bonus?.id} />
+        <CommentsList comments={comments} currentUserId={currentUserId} />
       </Container>
     </div>
   );

@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { getCurrentUserId } from "../../../app/currentUserSlice";
 import { getBonuses, loadBonuses } from "../home/homeSlice";
 import BonusPageView from "./BonusPageView";
-import { loadBonus, getBonus } from "./bonusSlice";
+import { loadBonus, getBonus, getComments, loadComments } from "./bonusSlice";
+import { HashLink } from "react-router-hash-link";
+import { SCROLL_DELAY } from "../../../constants";
 
 function BonusPage() {
   const dispatch = useDispatch();
   const { bonusId, subjectId } = useParams();
+  const location = useLocation();
 
   const bonus = useSelector(getBonus);
   const bonuses = useSelector(getBonuses);
   const currentUserId = useSelector(getCurrentUserId);
+  const comments = useSelector(getComments);
+
+  useEffect(() => {
+    if (bonusId) dispatch(loadComments(bonusId));
+  }, [bonusId]);
 
   const [bonusOrderId, setBonusOrderId] = useState(
     bonuses.findIndex((x) => x.id === bonus.id)
@@ -44,12 +52,33 @@ function BonusPage() {
     }
   }, [bonuses, bonus]);
 
+  // niekedy sa stava, ze ked sa klikne Diskutovat na home-student page, tak to usera nascrolluje len do polky
+  // obrazovky, a teda je potrebne esteraz spustit scrollovania ku dolnemu elementu - a o to sa stara tato funkcia
+  useEffect(() => {
+    if (location.hash.includes("myNewComment")) {
+      setTimeout(function () {
+        document.getElementById("scrollDown").click();
+      }, SCROLL_DELAY);
+    }
+  }, [location.hash]);
+
   return (
-    <BonusPageView
-      bonus={bonusik}
-      bonusOrderId={bonusOrderId}
-      subjectId={subjectId}
-    />
+    <div>
+      <HashLink
+        smooth
+        to={location.pathname + location.hash}
+        id="scrollDown"
+        className="d-none"
+      ></HashLink>
+
+      <BonusPageView
+        bonus={bonusik}
+        bonusOrderId={bonusOrderId}
+        subjectId={subjectId}
+        comments={comments}
+        currentUserId={currentUserId}
+      />
+    </div>
   );
 }
 
