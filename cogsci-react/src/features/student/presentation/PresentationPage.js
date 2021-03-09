@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import {
-  getStudentPresentations,
-  loadStudentPresentations,
+  getStudentPresentationsClosed,
+  getStudentPresentationsOpened,
+  loadStudentPresentationsClosed,
+  loadStudentPresentationsOpened,
 } from "../home/homeSlice";
 import {
   loadPresentation,
@@ -13,13 +15,20 @@ import {
 } from "./presentationSlice";
 import PresentationPageView from "./PresentationPageView";
 import { getCurrentUserId } from "../../../app/currentUserSlice";
+import Loader from "react-loader-spinner";
+import Navigation from "../../../components/Navigation";
 
 function PresentationPage() {
   const dispatch = useDispatch();
   const { presentationId, subjectId } = useParams();
+  const location = useLocation();
+  const presIsOpened =
+    new URLSearchParams(location.search).get("is_opened") == "true";
 
   const presentation = useSelector(getPresentation);
-  const presentations = useSelector(getStudentPresentations);
+  const presentations = presIsOpened
+    ? useSelector(getStudentPresentationsOpened)
+    : useSelector(getStudentPresentationsClosed);
   const currentUserId = useSelector(getCurrentUserId);
   const comments = useSelector(getComments);
 
@@ -36,8 +45,11 @@ function PresentationPage() {
   }, [studPresentation]);
 
   useEffect(() => {
-    if (currentUserId && subjectId)
-      dispatch(loadStudentPresentations(currentUserId, subjectId));
+    if (currentUserId && subjectId) {
+      if (presIsOpened) {
+        dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
+      } else dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
+    }
   }, [currentUserId, subjectId]);
 
   useEffect(() => {
@@ -45,15 +57,27 @@ function PresentationPage() {
       // prettier-ignore
       setStudPresentation(presentations.filter((studPres) => studPres.pres_id == presentationId)[0]);
     }
-  }, [presentations, presentation]);
+  }, [presentations]);
 
   return (
-    <PresentationPageView
-      presentation={studPresentation}
-      comments={comments}
-      currentUserId={currentUserId}
-      subjectId={subjectId}
-    />
+    <div>
+      {Object.entries(presentation).length ? (
+        <PresentationPageView
+          presentation={presentation}
+          comments={comments}
+          currentUserId={currentUserId}
+          subjectId={subjectId}
+          presIsOpened={presIsOpened}
+        />
+      ) : (
+        <div>
+          <Navigation />
+          <div className="d-flex justify-content-center">
+            <Loader type="Oval" color="#00BFFF" height={100} width={100} />
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

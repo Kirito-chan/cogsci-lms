@@ -50,10 +50,8 @@ export default function SlidersForm() {
       <Form onSubmit={sendValuation}>
         <Form.Group>
           {values.map((type, i) => (
-            <div key={i}>
-              <Form.Label as="legend">
-                <b>{type.name}</b>
-              </Form.Label>
+            <div key={i} className="mb-4">
+              <Form.Label as="legend">{type.name}</Form.Label>
               <Slider
                 id={type.name}
                 value={type.value}
@@ -68,10 +66,11 @@ export default function SlidersForm() {
               />
             </div>
           ))}
-
-          <Button size="sm" type="submit" variant="success">
-            Ohodnotiť
-          </Button>
+          <div className="d-flex justify-content-end">
+            <Button size="sm" type="submit" variant="success">
+              Ohodnotiť
+            </Button>
+          </div>
         </Form.Group>
       </Form>
     </div>

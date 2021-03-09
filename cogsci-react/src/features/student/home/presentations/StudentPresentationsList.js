@@ -5,21 +5,21 @@ import StudentPresInfo from "./StudentPresInfo";
 import { URL_PRESENTATIONS } from "../../../../constants";
 import { Link } from "react-router-dom";
 
-function StudentPresentationsList({ studentPresentations, subjectId }) {
+function StudentPresentationsList({
+  studentPresentations,
+  subjectId,
+  textForStatus,
+  hideHodnotitBtn,
+}) {
   return (
     <div>
-      <h3>Študentské prezentácie</h3>
+      <h3>Študentské prezentácie {textForStatus}</h3>
       {studentPresentations.map((presentation, i) => (
         <article key={i}>
           <Row>
-            <Link
-              to={
-                "/subject/" +
-                subjectId +
-                URL_PRESENTATIONS +
-                "/" +
-                presentation?.pres_id
-              }
+            {/* prettier-ignore */}
+            <Link to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation?.pres_id +
+                "?is_opened=" + (hideHodnotitBtn ? "false" : "true")}
               className="nav-link"
             >
               {presentation.title} - {presentation.first_name}{" "}
@@ -29,7 +29,10 @@ function StudentPresentationsList({ studentPresentations, subjectId }) {
 
           <Row>
             <Col>
-              <StudentPresInfo presentation={presentation} />
+              <StudentPresInfo
+                presentation={presentation}
+                hideHodnotitBtn={hideHodnotitBtn}
+              />
             </Col>
           </Row>
         </article>

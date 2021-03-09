@@ -16,7 +16,7 @@ function BonusesList({ bonuses, subjectId }) {
           <Row>
             <Col>
               <Link
-                to={"/subject/" + subjectId + URL_BONUSES + "/" + bonus?.id}
+                to={"/subject/" + subjectId + URL_BONUSES + "/" + bonus.id}
                 className="pl-0 nav-link"
               >
                 {bonuses.length - i}. {bonus.title}
@@ -29,7 +29,7 @@ function BonusesList({ bonuses, subjectId }) {
                 data={bonus}
                 classAttribute="d-inline-block mr-3"
                 evaluation={bonus.evaluation}
-                redirectTo={`/subject/${subjectId}${URL_BONUSES}/${bonus?.id}`}
+                redirectTo={`/subject/${subjectId}${URL_BONUSES}/${bonus.id}`}
                 hash="#myNewComment"
               />
             </Col>

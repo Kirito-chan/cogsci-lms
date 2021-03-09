@@ -3,19 +3,27 @@ import Button from "react-bootstrap/Button";
 
 import Discussion from "../Discussion";
 
-function StudentPresInfo({ presentation }) {
-  return (
-    <div>
-      {presentation.has_evaluated ? (
-        <span className="text-success font-weight-bold font-italic">
-          hodnotili ste,{" "}
-        </span>
-      ) : (
+function StudentPresInfo({ presentation, hideHodnotitBtn }) {
+  let info = null;
+  if (presentation.has_evaluated) {
+    info = (
+      <span className="text-success font-weight-bold">hodnotili ste, </span>
+    );
+  } else {
+    if (hideHodnotitBtn) {
+      info = <span className="text-secondary">nehodnotili ste, </span>;
+    } else {
+      info = (
         <Button variant="danger" size="sm" className="mr-2">
           Hodnotiť
         </Button>
-      )}
+      );
+    }
+  }
 
+  return (
+    <div>
+      {info}
       <Discussion data={presentation} classAttribute="d-inline-block mr-3" />
     </div>
   );

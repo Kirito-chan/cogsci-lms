@@ -1,10 +1,15 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
-import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import formatTranslation from "../../../../components/StringUtils";
+import { Link } from "react-router-dom";
+import { URL_PRESENTATIONS } from "../../../../constants";
 
-function MyPresentationList({ myPresentations, presentationWeight }) {
+function MyPresentationList({
+  myPresentations,
+  presentationWeight,
+  subjectId,
+}) {
   return (
     <div className="mt-5">
       <h3>Moja prezentácia</h3>
@@ -16,9 +21,13 @@ function MyPresentationList({ myPresentations, presentationWeight }) {
         )}
         {myPresentations.map((presentation) => (
           <div key={presentation.id}>
-            <Nav.Link href="#subor.ppt" className="pl-0">
+            <Link
+              // prettier-ignore
+              to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation.id + "?is_opened=false"}
+              className="pl-0 nav-link"
+            >
               {presentation.title}
-            </Nav.Link>
+            </Link>
             <p>
               <b>Hodnotenie:</b> {presentation.points} z {presentationWeight}{" "}
               {formatTranslation(presentationWeight, "bod")}

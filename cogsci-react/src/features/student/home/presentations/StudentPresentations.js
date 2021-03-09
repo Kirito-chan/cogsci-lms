@@ -3,27 +3,35 @@ import StudentPresentationsList from "./StudentPresentationsList";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import {
-  loadStudentPresentations,
-  getStudentPresentations,
+  getStudentPresentationsOpened,
+  loadStudentPresentationsOpened,
 } from "../homeSlice";
 import { useParams } from "react-router";
+import Loader from "react-loader-spinner";
 
 function StudentPresentations() {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
-  const studentPresentations = useSelector(getStudentPresentations);
+  const studentPresentations = useSelector(getStudentPresentationsOpened);
   const { subjectId } = useParams();
 
   useEffect(() => {
-    if (currentUserId && subjectId)
-      dispatch(loadStudentPresentations(currentUserId, subjectId));
+    if (currentUserId && subjectId) {
+      dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
+    }
   }, [currentUserId, subjectId]);
 
   return (
-    <StudentPresentationsList
-      studentPresentations={studentPresentations}
-      subjectId={subjectId}
-    />
+    <div>
+      {studentPresentations ? (
+        <StudentPresentationsList
+          studentPresentations={studentPresentations}
+          subjectId={subjectId}
+        />
+      ) : (
+        <Loader type="Oval" color="#00BFFF" height={100} width={100} />
+      )}
+    </div>
   );
 }
 

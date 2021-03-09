@@ -165,7 +165,11 @@ export const getBonuses = async (userId, subjectId) => {
 // presentations
 
 // ODSTRANIT LIMIT a zmenit p.status = 1, nie 2
-export const getStudentPresentations = async (userId, subjectId) => {
+export const getStudentPresentations = async (
+  userId,
+  subjectId,
+  statusOpen
+) => {
   const [row] = await execute(
     `
   WITH
@@ -177,7 +181,7 @@ export const getStudentPresentations = async (userId, subjectId) => {
        JOIN user ON user.id = usl.user_id)
    LEFT JOIN user_presentation_comments AS u ON
        u.presentation_id = p.id
-   WHERE p.status = 2 AND usl.subject_id = ?
+   WHERE p.status = ? AND usl.subject_id = ?
    GROUP BY p.id),
 
    tab2 as (
@@ -196,9 +200,8 @@ export const getStudentPresentations = async (userId, subjectId) => {
                                WHERE usl.user_id = tab2.user_id
                                  AND usl.subject_id = ?) 
    GROUP BY tab2.pres_id 
-   ORDER BY has_evaluated ASC 
-   LIMIT 9`,
-    [subjectId, userId, userId, subjectId, subjectId]
+   ORDER BY has_evaluated ASC`,
+    [statusOpen, subjectId, userId, userId, subjectId, subjectId]
   );
   return row;
 };

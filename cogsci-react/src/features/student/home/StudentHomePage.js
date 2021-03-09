@@ -19,7 +19,7 @@ function StudentHomePage() {
     <div>
       <Navigation />
       <h1 className="text-center">{subjectName}</h1>
-      <section className="App-header">
+      <section>
         <Container fluid>
           <Row>
             <Col lg={6}>

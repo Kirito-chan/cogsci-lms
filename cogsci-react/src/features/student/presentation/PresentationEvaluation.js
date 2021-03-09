@@ -7,17 +7,14 @@ import Container from "react-bootstrap/Container";
 function PresentationEvaluation() {
   return (
     <div className="mt-3">
-      <h3>
-        <strong>Hodnotenie prezentácie</strong>
-      </h3>
-
       <Container>
         <Row>
-          <Col md={1}> </Col>
-          <Col md={10}>
+          <h4>Hodnotenie prezentácie</h4>
+        </Row>
+        <Row>
+          <Col md={10} className="ml-0 pl-0">
             <SlidersForm />
           </Col>
-          <Col md={1}></Col>
         </Row>
       </Container>
     </div>

@@ -139,8 +139,8 @@ app.get("/api/teacher-presentations/:userId/:subjectId", async (req, res) => {
 // get student's presentations
 app.get("/api/student-presentations/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
-  //const subjectId = 15;
-  const rows = await queries.getStudentPresentations(userId, subjectId);
+  const { status } = req.query;
+  const rows = await queries.getStudentPresentations(userId, subjectId, status);
   res.json(rows);
 });
 

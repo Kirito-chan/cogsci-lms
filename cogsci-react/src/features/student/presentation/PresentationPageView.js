@@ -3,53 +3,51 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Navigation from "../../../components/Navigation";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { URL_PRESENTATIONS } from "../../../constants";
+//import Form from "react-bootstrap/Form";
+//import Button from "react-bootstrap/Button";
 import CommentsList from "../bonus/CommentsList";
-import { Link } from "react-router-dom";
 import PresentationEvaluation from "./PresentationEvaluation";
 
 function PresentationPageView({
   presentation,
   comments,
   currentUserId,
-  subjectId,
+  presIsOpened,
 }) {
   return (
     <div>
       <Navigation />
       <Container>
-        <Row>
-          <Col>
-            <Link
-              // prettier-ignore
-              to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation?.id}
-              className="pl-0 font-weight-bold"
-            >
-              <h2>{presentation?.title}</h2>
-            </Link>
-            <h4>
-              {presentation?.first_name} {presentation?.last_name}
-            </h4>
-          </Col>
-        </Row>
+        <div className="mb-4">
+          <Row>
+            <Col>
+              <h2>{presentation.title}</h2>
 
-        <Row>
-          <Col>
-            <Form method="get" action={presentation?.path}>
-              <Button size="sm" variant="success">
-                Stiahnuť
-              </Button>
-            </Form>
-          </Col>
-        </Row>
+              <h5>
+                {presentation.first_name} {presentation.last_name}
+              </h5>
+            </Col>
+          </Row>
 
-        <Row>
-          <Col>
-            <PresentationEvaluation/>
-          </Col>
-        </Row>
+          <Row>
+            <Col>
+              <a href={presentation?.path}>{presentation?.title + ".pptx"}</a>
+              {/* <Form method="get" action={presentation?.path}>
+                <Button size="sm" variant="success">
+                  Stiahnuť
+                </Button>
+              </Form> */}
+            </Col>
+          </Row>
+        </div>
+
+        {presIsOpened && (
+          <Row>
+            <Col>
+              <PresentationEvaluation />
+            </Col>
+          </Row>
+        )}
 
         <CommentsList comments={comments} currentUserId={currentUserId} />
       </Container>

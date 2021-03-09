@@ -20,6 +20,7 @@ function MyPresentation() {
     <MyPresentationList
       myPresentations={myPresentations.presentations}
       presentationWeight={myPresentations.presentationWeight}
+      subjectId={subjectId}
     />
   );
 }

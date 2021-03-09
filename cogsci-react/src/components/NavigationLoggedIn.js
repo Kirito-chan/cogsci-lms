@@ -9,6 +9,7 @@ import {
   LOGOUT_EVENT,
   URL_BONUSES,
   URL_HOME_STUDENT,
+  URL_PRESENTATIONS,
   URL_SUBJECTS,
 } from "../constants";
 import { useParams } from "react-router";
@@ -73,7 +74,7 @@ function NavigationLoggedIn({ currentUserName }) {
             {subjectId && "Bonusy"}
           </NavLink>
           <NavLink
-            to={"dakde"}
+            to={"/subject/" + subjectId + URL_PRESENTATIONS}
             className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectId && "Prezentácie"}

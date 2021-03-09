@@ -14,10 +14,7 @@ export const URL_BONUSES = "/bonus";
 export const URL_PRESENTATIONS = "/presentation";
 
 // konstanty z databazy
-export const IS_STUDENT = 1;
-export const IS_ADMIN = 2;
-
-// ked sa klikne Diskutovat, tak to ma usera nascrollovat na dolnu cast stranky, avsak niekedy neurobime dostatocne
-// daleko, tak treba opatovne spustit scrollovanie - avsak oneskorenie spustenia tohto scrollovania musi byt
-// dobre nastavene, lebo ak je prirychle, tak to nenaskrolluje a ak zase pomale, tak to user uvidi
-export const SCROLL_DELAY = 500;
+export const IS_STUDENT = 1; // rola pouzivatela, ktora ja v tabulke user v stlpci role
+export const IS_ADMIN = 2; // rola pouzivatela, ktora ja v tabulke user v stlpci role
+export const STUD_PRES_OPENED = 1; // student presentation, ktora ma status OPENED, cize otvorena na hodnotenie
+export const STUD_PRES_CLOSED = 2; // student presentation, ktora ma status CLOSED, cize uz uzatvorena na hodnotenie

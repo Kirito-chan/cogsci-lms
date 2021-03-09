@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../../app/apiConstants";
 import { dataInReduxAreRecent } from "../../../components/DateUtils";
+import { STUD_PRES_CLOSED, STUD_PRES_OPENED } from "../../../constants";
 
 export const slice = createSlice({
   name: "home",
@@ -8,7 +9,8 @@ export const slice = createSlice({
     attendances: [],
     bonuses: [],
     teacherPresentations: [],
-    studentPresentations: [],
+    studentPresentationsOpened: [],
+    studentPresentationsClosed: [],
     myPresentation: { presentations: [], presentationWeight: null },
     subjectValuation: {},
     loading: false,
@@ -16,7 +18,8 @@ export const slice = createSlice({
       bonus: null,
       attendance: null,
       teacherPresentations: null,
-      studentPresentations: null,
+      studentPresentationsOpened: null,
+      studentPresentationsClosed: null,
       myPresentation: null,
       subjectValuation: null,
     },
@@ -40,10 +43,15 @@ export const slice = createSlice({
       state.loading = false;
       state.lastFetch.teacherPresentations = Date.now();
     },
-    studentPresentationsReceived: (state, action) => {
-      state.studentPresentations = action.payload;
+    studentPresentationsOpenedReceived: (state, action) => {
+      state.studentPresentationsOpened = action.payload;
       state.loading = false;
-      state.lastFetch.studentPresentations = Date.now();
+      state.lastFetch.studentPresentationsOpened = Date.now();
+    },
+    studentPresentationsClosedReceived: (state, action) => {
+      state.studentPresentationsClosed = action.payload;
+      state.loading = false;
+      state.lastFetch.studentPresentationsClosed = Date.now();
     },
     myPresentationReceived: (state, action) => {
       state.myPresentation.presentations = action.payload.presentations;
@@ -69,7 +77,8 @@ export const {
   allDataRequestFailed,
   bonusesReceived,
   teacherPresentationsReceived,
-  studentPresentationsReceived,
+  studentPresentationsOpenedReceived,
+  studentPresentationsClosedReceived,
   myPresentationReceived,
   subjectValuationReceived,
 } = slice.actions;
@@ -137,22 +146,57 @@ export const loadTeacherPresentations = (userId, subjectId) => (
 
 const urlStudentPresentations = "/student-presentations";
 
-export const loadStudentPresentations = (userId, subjectId) => (
+export const loadStudentPresentationsOpened = (userId, subjectId) => (
   dispatch,
   getState
 ) => {
   if (
     dataInReduxAreRecent(
-      getState().features.student.home.lastFetch.studentPresentations
+      getState().features.student.home.lastFetch.studentPresentationsOpened
     )
   )
     return;
 
   return dispatch(
     apiCallBegan({
-      url: urlStudentPresentations + "/" + userId + "/" + subjectId,
+      url:
+        urlStudentPresentations +
+        "/" +
+        userId +
+        "/" +
+        subjectId +
+        "/?status=" +
+        STUD_PRES_OPENED,
       onStart: allDataRequested.type,
-      onSuccess: studentPresentationsReceived.type,
+      onSuccess: studentPresentationsOpenedReceived.type,
+      onError: allDataRequestFailed.type,
+    })
+  );
+};
+
+export const loadStudentPresentationsClosed = (userId, subjectId) => (
+  dispatch,
+  getState
+) => {
+  if (
+    dataInReduxAreRecent(
+      getState().features.student.home.lastFetch.studentPresentationsClosed
+    )
+  )
+    return;
+
+  return dispatch(
+    apiCallBegan({
+      url:
+        urlStudentPresentations +
+        "/" +
+        userId +
+        "/" +
+        subjectId +
+        "/?status=" +
+        STUD_PRES_CLOSED,
+      onStart: allDataRequested.type,
+      onSuccess: studentPresentationsClosedReceived.type,
       onError: allDataRequestFailed.type,
     })
   );
@@ -207,8 +251,10 @@ export const getAttendance = (state) => state.features.student.home.attendances;
 export const getBonuses = (state) => state.features.student.home.bonuses;
 export const getTeacherPresentations = (state) =>
   state.features.student.home.teacherPresentations;
-export const getStudentPresentations = (state) =>
-  state.features.student.home.studentPresentations;
+export const getStudentPresentationsOpened = (state) =>
+  state.features.student.home.studentPresentationsOpened;
+export const getStudentPresentationsClosed = (state) =>
+  state.features.student.home.studentPresentationsClosed;
 export const getMyPresentation = (state) =>
   state.features.student.home.myPresentation;
 export const getSubjectValuation = (state) =>

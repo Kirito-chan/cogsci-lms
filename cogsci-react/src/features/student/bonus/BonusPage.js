@@ -6,7 +6,6 @@ import { getBonuses, loadBonuses } from "../home/homeSlice";
 import BonusPageView from "./BonusPageView";
 import { loadBonus, getBonus, getComments, loadComments } from "./bonusSlice";
 import { HashLink } from "react-router-hash-link";
-import { SCROLL_DELAY } from "../../../constants";
 
 function BonusPage() {
   const dispatch = useDispatch();
@@ -52,15 +51,11 @@ function BonusPage() {
     }
   }, [bonuses, bonus]);
 
-  // niekedy sa stava, ze ked sa klikne Diskutovat na home-student page, tak to usera nascrolluje len do polky
-  // obrazovky, a teda je potrebne esteraz spustit scrollovania ku dolnemu elementu - a o to sa stara tato funkcia
   useEffect(() => {
     if (location.hash.includes("myNewComment")) {
-      setTimeout(function () {
-        document.getElementById("scrollDown").click();
-      }, SCROLL_DELAY);
+      document.getElementById("scrollDown").click();
     }
-  }, [location.hash]);
+  }, [comments]);
 
   return (
     <div>

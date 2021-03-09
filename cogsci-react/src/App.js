@@ -17,6 +17,7 @@ import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
 import ScrollToTop from "./components/ScrollToTop";
 import PresentationPage from "./features/student/presentation/PresentationPage";
+import PresentationsPage from "./features/student/presentations/PresentationsPage";
 
 function App() {
   const isLoading = useSelector(getLoading);
@@ -52,15 +53,16 @@ function App() {
             type="bonusId"
           />
           <AuthRoute
-            path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"}
-            component={BonusPage}
-            type="bonusId"
+            exact
+            path={"/subject/:subjectId" + URL_PRESENTATIONS}
+            component={PresentationsPage}
+            type="presentation"
           />
           <AuthRoute
             // prettier-ignore
             path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"}
             component={PresentationPage}
-            type="presentation"
+            type="presentationId"
           />
           {/* defaultna route, ak nematchne nic: /login, ak je prihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />
