@@ -11,6 +11,7 @@ import {
   URL_HOME_STUDENT,
   URL_PRESENTATIONS,
   URL_SUBJECTS,
+  URL_TERMS,
 } from "../constants";
 import { useParams } from "react-router";
 import {
@@ -80,7 +81,7 @@ function NavigationLoggedIn({ currentUserName }) {
             {subjectId && "Prezentácie"}
           </NavLink>
           <NavLink
-            to="/something"
+            to={"/subject/" + subjectId + URL_TERMS}
             className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectId && "Podmienky"}

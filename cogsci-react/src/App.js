@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./App.css";
-import { useSelector } from "react-redux";
-import { getLoading } from "./features/student/home/homeSlice";
 import StudentHomePage from "./features/student/home/StudentHomePage";
 import { BrowserRouter, Switch } from "react-router-dom";
 import SubjectsPage from "./features/student/subjects/SubjectsPage";
@@ -12,20 +10,16 @@ import {
   URL_HOME_STUDENT,
   URL_PRESENTATIONS,
   URL_SUBJECTS,
+  URL_TERMS,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
 import ScrollToTop from "./components/ScrollToTop";
 import PresentationPage from "./features/student/presentation/PresentationPage";
 import PresentationsPage from "./features/student/presentations/PresentationsPage";
+import TermsPage from "./features/student/terms/TermsPage";
 
 function App() {
-  const isLoading = useSelector(getLoading);
-
-  useEffect(() => {
-    document.body.style.cursor = isLoading ? "progress" : "";
-  }, [isLoading]);
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -63,6 +57,12 @@ function App() {
             path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"}
             component={PresentationPage}
             type="presentationId"
+          />
+          <AuthRoute
+            // prettier-ignore
+            path={"/subject/:subjectId" + URL_TERMS}
+            component={TermsPage}
+            type="term"
           />
           {/* defaultna route, ak nematchne nic: /login, ak je prihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />

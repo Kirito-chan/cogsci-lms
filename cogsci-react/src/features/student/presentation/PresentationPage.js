@@ -32,6 +32,7 @@ function PresentationPage() {
 
   const presentation = useSelector(getPresentation);
   let presentations = null;
+
   if (presIsOpened) {
     presentations = useSelector(getStudentPresentationsOpened);
   } else {
@@ -39,17 +40,22 @@ function PresentationPage() {
       presentations = useSelector(getStudentPresentationsClosed);
     } else presentations = useSelector(getTeacherPresentations);
   }
+
   const currentUserId = useSelector(getCurrentUserId);
   const comments = useSelector(getComments);
   const valuationTypes = useSelector(getValuationTypes);
+  const [studPresentation, setStudPresentation] = useState(
+    presentations.filter((studPres) => studPres.id == presentationId)[0]
+  );
+
+  useEffect(() => {
+    document.title =
+      "Prezentácia · " + (presentation.title ? presentation.title : "");
+  }, [presentation]);
 
   useEffect(() => {
     if (presentationId) dispatch(loadComments(presentationId));
   }, [presentationId]);
-
-  const [studPresentation, setStudPresentation] = useState(
-    presentations.filter((studPres) => studPres.id == presentationId)[0]
-  );
 
   useEffect(() => {
     if (studPresentation) dispatch(loadPresentation(studPresentation));

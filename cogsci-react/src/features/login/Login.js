@@ -31,6 +31,7 @@ function Login() {
             placeholder="Username"
             onChange={(e) => setUsername(e.target.value)}
             isInvalid={Boolean(error.includes("meno"))}
+            autoComplete="username"
           />
           <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
         </Form.Group>
@@ -42,6 +43,7 @@ function Login() {
             placeholder="Heslo"
             onChange={(e) => setPassword(e.target.value)}
             isInvalid={Boolean(error.includes("heslo"))}
+            autoComplete="current-password"
           />
           <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
         </Form.Group>

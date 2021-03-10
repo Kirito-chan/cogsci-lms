@@ -11,7 +11,7 @@ function MyPresentationList({
   subjectId,
 }) {
   return (
-    <div className="mt-5">
+    <div className="mt-5 mb-5">
       <h3>Moja prezentácia</h3>
       <div>
         {myPresentations.length ? (

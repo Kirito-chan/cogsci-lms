@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -15,12 +15,22 @@ import { getCurrentSubjectName } from "../subjects/subjectsSlice";
 
 function StudentHomePage() {
   const subjectName = useSelector(getCurrentSubjectName);
+
+  useEffect(() => {
+    document.title = "Domov · " + (subjectName ? subjectName : "");
+  }, [subjectName]);
+
   return (
     <div>
       <Navigation />
-      <h1 className="text-center">{subjectName}</h1>
+
       <section>
         <Container fluid>
+          <Row>
+            <Col>
+              <h1 className="text-center mb-5">{subjectName}</h1>
+            </Col>
+          </Row>
           <Row>
             <Col lg={6}>
               <AllPresentations />

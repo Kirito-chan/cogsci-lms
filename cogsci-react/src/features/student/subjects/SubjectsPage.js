@@ -11,10 +11,13 @@ import {
 
 function SubjectsPage() {
   const dispatch = useDispatch();
-
   const subjects = useSelector(getSubjects);
   const currentUserId = useSelector(getCurrentUserId);
   const currentSubjectId = useSelector(getCurrentSubjectId);
+
+  useEffect(() => {
+    document.title = "Predmety · Kognitívne vedy";
+  }, []);
 
   useEffect(() => {
     if (currentUserId) dispatch(loadSubjects(currentUserId));

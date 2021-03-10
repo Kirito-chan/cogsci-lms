@@ -26,6 +26,10 @@ function PresentationsPage() {
   const currentUserId = useSelector(getCurrentUserId);
 
   useEffect(() => {
+    document.title = "Prezentácie";
+  }, []);
+
+  useEffect(() => {
     if (currentUserId && subjectId) {
       dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
       dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));

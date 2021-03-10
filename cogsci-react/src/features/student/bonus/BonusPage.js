@@ -16,17 +16,22 @@ function BonusPage() {
   const bonuses = useSelector(getBonuses);
   const currentUserId = useSelector(getCurrentUserId);
   const comments = useSelector(getComments);
-
-  useEffect(() => {
-    if (bonusId) dispatch(loadComments(bonusId));
-  }, [bonusId]);
-
   const [bonusOrderId, setBonusOrderId] = useState(
     bonuses.findIndex((x) => x.id === bonus.id)
   );
   const [bonusik, setBonusik] = useState(
     bonuses.filter((bonusik) => bonusik.id === bonus.id)[0]
   );
+
+  useEffect(() => {
+    document.title =
+      "Bonusová úloha " +
+      (bonusOrderId && bonusOrderId != -1 ? "č. " + bonusOrderId : "");
+  }, [bonusOrderId]);
+
+  useEffect(() => {
+    if (bonusId) dispatch(loadComments(bonusId));
+  }, [bonusId]);
 
   useEffect(() => {
     if (bonusId) dispatch(loadBonus(bonusId));

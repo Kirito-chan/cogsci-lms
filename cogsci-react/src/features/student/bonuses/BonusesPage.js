@@ -13,6 +13,10 @@ function BonusesPage() {
   const currentUserId = useSelector(getCurrentUserId);
 
   useEffect(() => {
+    document.title = "Bonusové úlohy";
+  }, []);
+
+  useEffect(() => {
     if (currentUserId && subjectId)
       dispatch(loadBonuses(currentUserId, subjectId));
   }, [currentUserId, subjectId]);
