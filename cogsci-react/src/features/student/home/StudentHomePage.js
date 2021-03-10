@@ -28,7 +28,7 @@ function StudentHomePage() {
         <Container fluid>
           <Row>
             <Col>
-              <h1 className="text-center mb-5">{subjectName}</h1>
+              <h2 className="text-center mb-5">{subjectName}</h2>
             </Col>
           </Row>
           <Row>

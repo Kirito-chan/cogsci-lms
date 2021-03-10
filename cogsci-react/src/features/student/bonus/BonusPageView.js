@@ -3,6 +3,9 @@ import Navigation from "../../../components/Navigation";
 import BonusInfo from "./BonusInfo";
 import CommentsList from "./CommentsList";
 import Container from "react-bootstrap/Container";
+import { Button, lightColors, darkColors } from "react-floating-action-button";
+import { FaArrowUp } from "react-icons/fa";
+import "./BonusPageView.css";
 
 function BonusPageView({
   bonus,
@@ -30,6 +33,24 @@ function BonusPageView({
         />
 
         <CommentsList comments={comments} currentUserId={currentUserId} />
+        <div className="fixed">
+          <Button
+            tooltip="Scroll up"
+            onClick={() =>
+              window.scroll({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+              })
+            }
+            styles={{
+              backgroundColor: darkColors.blue,
+              color: lightColors.white,
+            }}
+          >
+            <FaArrowUp />
+          </Button>
+        </div>
       </Container>
     </div>
   );

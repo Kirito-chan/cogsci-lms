@@ -11,7 +11,7 @@ function BonusesPageList({ bonuses, subjectId }) {
   return (
     <div>
       <Navigation />
-      <h1 className="text-center mb-4">Bonusové úlohy</h1>
+      <h2 className="text-center mb-4">Bonusové úlohy</h2>
 
       {bonuses.map((bonus, i) => (
         <Container key={i}>
