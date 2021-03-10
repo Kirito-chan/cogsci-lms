@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import { loadCurrentSubjectId } from "./subjectsSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { URL_HOME_STUDENT } from "../../../constants";
+import { URL_HOME_STUDENT, WINTER_SEASON } from "../../../constants";
 import Navigation from "../../../components/Navigation";
 
 function SubjectsPageList(props) {
@@ -34,7 +34,9 @@ function SubjectsPageList(props) {
               <Row>
                 <Col>
                   <h3>
-                    {subject.name} - {subject.year}
+                    {subject.name} –{" "}
+                    {subject.season == WINTER_SEASON ? "ZS" : "LS"}{" "}
+                    {subject.year}
                   </h3>
                 </Col>
               </Row>

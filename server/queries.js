@@ -164,7 +164,6 @@ export const getBonuses = async (userId, subjectId) => {
 
 // presentations
 
-// ODSTRANIT LIMIT a zmenit p.status = 1, nie 2
 export const getStudentPresentations = async (
   userId,
   subjectId,
@@ -174,7 +173,7 @@ export const getStudentPresentations = async (
     `
   WITH
    tab1 as 
-   (SELECT p.id as pres_id, p.title, p.owner_id as user_id, p.path, user.first_name, user.last_name,
+   (SELECT p.id, p.title, p.owner_id as user_id, p.path, user.first_name, user.last_name,
            count(u.user_id) as num_all_comments   
    FROM ((presentation p JOIN user_subject_lookup as usl
        ON p.id = usl.presentation_id)
@@ -187,8 +186,8 @@ export const getStudentPresentations = async (
    tab2 as (
    SELECT tab1.*, count(u.user_id) as num_of_comments 
    FROM tab1 LEFT JOIN user_presentation_comments AS u
-         ON tab1.pres_id = u.presentation_id AND u.user_id = ?
-   GROUP BY tab1.pres_id
+         ON tab1.id = u.presentation_id AND u.user_id = ?
+   GROUP BY tab1.id
    )
 
    SELECT tab2.*, CASE WHEN upv.id is NULL THEN FALSE ELSE TRUE END AS has_evaluated
@@ -199,7 +198,7 @@ export const getStudentPresentations = async (
          AND upv.whose_usl_id=(SELECT usl.id FROM user_subject_lookup as usl
                                WHERE usl.user_id = tab2.user_id
                                  AND usl.subject_id = ?) 
-   GROUP BY tab2.pres_id 
+   GROUP BY tab2.id 
    ORDER BY has_evaluated ASC`,
     [statusOpen, subjectId, userId, userId, subjectId, subjectId]
   );

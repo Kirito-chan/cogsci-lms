@@ -9,10 +9,10 @@ function PresentationEvaluation() {
     <div className="mt-3">
       <Container>
         <Row>
-          <h4>Hodnotenie prezentácie</h4>
+          <h4 id="sliderForm">Hodnotenie prezentácie</h4>
         </Row>
         <Row>
-          <Col md={10} className="ml-0 pl-0">
+          <Col md={10} className="pl-0">
             <SlidersForm />
           </Col>
         </Row>

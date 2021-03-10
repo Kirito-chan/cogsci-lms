@@ -18,7 +18,7 @@ function StudentPresentationsList({
         <article key={i}>
           <Row>
             {/* prettier-ignore */}
-            <Link to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation?.pres_id +
+            <Link to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation.id +
                 "?is_opened=" + (hideHodnotitBtn ? "false" : "true")}
               className="nav-link"
             >
@@ -32,6 +32,18 @@ function StudentPresentationsList({
               <StudentPresInfo
                 presentation={presentation}
                 hideHodnotitBtn={hideHodnotitBtn}
+                subjectId={subjectId}
+                redirectTo={
+                  "/subject/" +
+                  subjectId +
+                  URL_PRESENTATIONS +
+                  "/" +
+                  presentation.id
+                }
+                queryString={
+                  "?is_opened=" + (hideHodnotitBtn ? "false" : "true")
+                }
+                hash={"#sliderForm"}
               />
             </Col>
           </Row>

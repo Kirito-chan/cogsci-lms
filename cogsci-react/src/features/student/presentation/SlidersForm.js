@@ -51,7 +51,7 @@ export default function SlidersForm() {
         <Form.Group>
           {values.map((type, i) => (
             <div key={i} className="mb-4">
-              <Form.Label as="legend">{type.name}</Form.Label>
+              <Form.Label>{type.name}</Form.Label>
               <Slider
                 id={type.name}
                 value={type.value}
@@ -63,6 +63,7 @@ export default function SlidersForm() {
                 min={0}
                 max={10}
                 onChange={handleChange}
+                className="ml-1"
               />
             </div>
           ))}

@@ -31,7 +31,10 @@ function PresentationPageView({
 
           <Row>
             <Col>
-              <a href={presentation?.path}>{presentation?.title + ".pptx"}</a>
+              <b>Prevziať: </b>
+              <a href={presentation.path ? presentation.path : "#"}>
+                {presentation?.title + ".pptx"}
+              </a>
               {/* <Form method="get" action={presentation?.path}>
                 <Button size="sm" variant="success">
                   Stiahnuť

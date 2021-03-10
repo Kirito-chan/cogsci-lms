@@ -1,10 +1,11 @@
 import React from "react";
-import Nav from "react-bootstrap/Nav";
+import { Link } from "react-router-dom";
+import { URL_PRESENTATIONS } from "../../../../constants";
 // import Row from "react-bootstrap/Row";
 
 import Discussion from "../Discussion";
 
-function TeacherPresentationsList({ teacherPresentations }) {
+function TeacherPresentationsList({ teacherPresentations, subjectId }) {
   return (
     <div className="mb-5">
       <h3>Učiteľské prezentácie</h3>
@@ -15,13 +16,32 @@ function TeacherPresentationsList({ teacherPresentations }) {
 
       {teacherPresentations.map((presentation, i) => (
         <div key={presentation.id}>
-          <Nav.Link href={`pres${presentation.id}`} className="pl-0">
+          <Link
+            to={
+              "/subject/" +
+              subjectId +
+              URL_PRESENTATIONS +
+              "/" +
+              presentation.id +
+              "?is_opened=false&teacher=true"
+            }
+            className="pl-0 nav-link"
+          >
             {teacherPresentations.length - i}. {presentation.title}
-          </Nav.Link>
+          </Link>
 
           <Discussion
             data={presentation}
             classAttribute="d-inline-block mr-3"
+            redirectTo={
+              "/subject/" +
+              subjectId +
+              URL_PRESENTATIONS +
+              "/" +
+              presentation.id
+            }
+            queryString={"?is_opened=false&teacher=true"}
+            hash={"#myNewComment"}
           />
         </div>
       ))}

@@ -24,13 +24,13 @@ function PresentationsPageList({
       <Container fluid>
         <StudentPresentationsList
           studentPresentations={studentPresentationsOpened}
-          textForStatus="- otvorené na hodnotenie"
+          textForStatus="– otvorené na hodnotenie"
           subjectId={subjectId}
         />
         <div className="my-4">
           <StudentPresentationsList
             studentPresentations={studentPresentationsClosed}
-            textForStatus="- uzavreté hodnotenie"
+            textForStatus="– uzavreté hodnotenie"
             hideHodnotitBtn={true}
             subjectId={subjectId}
           />

@@ -3,7 +3,14 @@ import formatTranslation from "../../../components/StringUtils";
 import BonusEvaluation from "./bonuses/BonusEvaluation";
 import { HashLink } from "react-router-hash-link";
 
-function Discussion({ data, classAttribute, evaluation, redirectTo, hash }) {
+function Discussion({
+  data,
+  classAttribute,
+  evaluation,
+  redirectTo,
+  hash,
+  queryString,
+}) {
   const num_of_all_comments = data?.num_all_comments;
   const num_of_my_comments = data?.num_of_comments;
 
@@ -21,7 +28,7 @@ function Discussion({ data, classAttribute, evaluation, redirectTo, hash }) {
       </p>
       <HashLink
         smooth
-        to={`${redirectTo}${hash}`}
+        to={`${redirectTo}${queryString ? queryString : ""}${hash}`}
         className="btn btn-success btn-sm"
       >
         Diskutovať
