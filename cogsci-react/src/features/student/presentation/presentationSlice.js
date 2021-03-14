@@ -8,44 +8,29 @@ export const slice = createSlice({
     presentation: {},
     comments: [],
     valuationTypes: [],
-    loading: false,
     lastFetch: null,
   },
   reducers: {
-    presentationRequested: (state) => {
-      state.loading = true;
-    },
+    presentationRequested: () => {},
     presentationReceived: (state, action) => {
       state.presentation = action.payload;
       state.lastFetch = Date.now();
       state.loading = false;
     },
-    presentationRequestFailed: (state) => {
-      state.loading = false;
-    },
+    presentationRequestFailed: () => {},
 
-    commentsRequested: (state) => {
-      state.loading = true;
-    },
+    commentsRequested: () => {},
     commentsReceived: (state, action) => {
       state.comments = action.payload;
       state.lastFetch = Date.now();
-      state.loading = false;
     },
-    commentsRequestFailed: (state) => {
-      state.loading = false;
-    },
-    valuationTypesRequested: (state) => {
-      state.loading = true;
-    },
+    commentsRequestFailed: () => {},
+    valuationTypesRequested: () => {},
     valuationTypesReceived: (state, action) => {
       state.valuationTypes = action.payload;
       state.lastFetch = Date.now();
-      state.loading = false;
     },
-    valuationTypesRequestFailed: (state) => {
-      state.loading = false;
-    },
+    valuationTypesRequestFailed: () => {},
   },
 });
 

@@ -17,8 +17,6 @@ import {
 } from "./presentationSlice";
 import PresentationPageView from "./PresentationPageView";
 import { getCurrentUserId } from "../../../app/currentUserSlice";
-import Loader from "react-loader-spinner";
-import Navigation from "../../../components/Navigation";
 import { HashLink } from "react-router-hash-link";
 
 function PresentationPage() {
@@ -45,12 +43,15 @@ function PresentationPage() {
   const comments = useSelector(getComments);
   const valuationTypes = useSelector(getValuationTypes);
   const [studPresentation, setStudPresentation] = useState(
-    presentations.filter((studPres) => studPres.id == presentationId)[0]
+    presentations == null
+      ? null
+      : presentations.filter((studPres) => studPres.id == presentationId)[0]
   );
 
   useEffect(() => {
     document.title =
-      "Prezentácia · " + (presentation.title ? presentation.title : "");
+      "Prezentácia · " +
+      (presentation != null && presentation.title ? presentation.title : "");
   }, [presentation]);
 
   useEffect(() => {
@@ -70,7 +71,7 @@ function PresentationPage() {
   }, [currentUserId, subjectId]);
 
   useEffect(() => {
-    if (presentations.length > 0) {
+    if (presentations != null && presentations.length > 0) {
       // prettier-ignore
       setStudPresentation(presentations.filter((studPres) => studPres.id == presentationId)[0]);
     }
@@ -102,7 +103,6 @@ function PresentationPage() {
         id="scrollDownToLastComment"
         className="d-none"
       ></HashLink>
-
       <HashLink
         smooth
         to={location.pathname + location.search + location.hash}
@@ -111,22 +111,13 @@ function PresentationPage() {
         className="d-none"
       ></HashLink>
 
-      {Object.entries(presentation).length ? (
-        <PresentationPageView
-          presentation={presentation}
-          comments={comments}
-          currentUserId={currentUserId}
-          subjectId={subjectId}
-          presIsOpened={presIsOpened}
-        />
-      ) : (
-        <div>
-          <Navigation />
-          <div className="d-flex justify-content-center">
-            <Loader type="Oval" color="#00BFFF" height={100} width={100} />
-          </div>
-        </div>
-      )}
+      <PresentationPageView
+        presentation={presentation}
+        comments={comments}
+        currentUserId={currentUserId}
+        subjectId={subjectId}
+        presIsOpened={presIsOpened}
+      />
     </div>
   );
 }

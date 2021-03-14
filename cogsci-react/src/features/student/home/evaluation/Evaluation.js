@@ -13,6 +13,7 @@ import {
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
 import { useParams } from "react-router";
+import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
 
 export default function Evaluation() {
   const dispatch = useDispatch();
@@ -34,12 +35,19 @@ export default function Evaluation() {
   }, [currentUserId, subjectId]);
 
   return (
-    <EvaluationTable
-      presentation={myPresentation.presentations[0]}
-      presentationWeight={myPresentation.presentationWeight}
-      attendances={attendances}
-      bonuses={bonuses}
-      subjectValuation={subjectValuation}
-    />
+    showLoaderIfAnyNull(
+      attendances,
+      bonuses,
+      subjectValuation,
+      myPresentation
+    ) || (
+      <EvaluationTable
+        presentation={myPresentation.presentations[0]}
+        presentationWeight={myPresentation.presentationWeight}
+        attendances={attendances}
+        bonuses={bonuses}
+        subjectValuation={subjectValuation}
+      />
+    )
   );
 }

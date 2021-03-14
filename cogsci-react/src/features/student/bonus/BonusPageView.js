@@ -33,9 +33,10 @@ function BonusPageView({
         />
 
         <CommentsList comments={comments} currentUserId={currentUserId} />
+
         <div className="fixed">
           <Button
-            tooltip="Scroll up"
+            tooltip="Navrch"
             onClick={() =>
               window.scroll({
                 top: 0,

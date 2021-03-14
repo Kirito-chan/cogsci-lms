@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import { loadBonuses, getBonuses } from "../homeSlice";
 import { useParams } from "react-router";
+import { showLoaderIfNull } from "../../../../components/StringUtils";
 
 function Bonuses() {
   const dispatch = useDispatch();
@@ -17,7 +18,11 @@ function Bonuses() {
       dispatch(loadBonuses(currentUserId, subjectId));
   }, [currentUserId, subjectId]);
 
-  return <BonusesList bonuses={bonuses} subjectId={subjectId} />;
+  return (
+    showLoaderIfNull(bonuses) || (
+      <BonusesList bonuses={bonuses} subjectId={subjectId} />
+    )
+  );
 }
 
 export default Bonuses;

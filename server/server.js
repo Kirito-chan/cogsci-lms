@@ -153,6 +153,17 @@ app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
   res.json({ presentations, presentationWeight });
 });
 
+// download presentation
+app.get(
+  "/api/subject/:subjectId/presentation/:presentationId/download",
+  (req, res) => {
+    const { presentationId, subjectId } = req.params;
+    const { filename } = req.query;
+    const filePath = presentationId + "_" + filename;
+    res.download(filePath);
+  }
+);
+
 // get valuation of a certain subject - finds info about given subject e.g. weight of attendance, bonuses, presentation
 app.get("/api/subject-valuation/:subjectId", async (req, res) => {
   const { subjectId } = req.params;

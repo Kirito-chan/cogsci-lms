@@ -6,15 +6,14 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Discussion from "../home/Discussion";
 import "./BonusInfo.css";
-import Loader from "react-loader-spinner";
-import Navigation from "../../../components/Navigation";
+import { showLoaderIfNull } from "../../../components/StringUtils";
 
 function BonusInfo({ headerComponent, bonus, subjectId }) {
   const bonusCreated = bonus?.created && formatDate(bonus.created);
 
   return (
     <div>
-      {bonus && Object.entries(bonus).length ? (
+      {showLoaderIfNull(bonus) || (
         <article key={bonus?.id} className="mb-5">
           <Row>
             <Col>
@@ -57,13 +56,6 @@ function BonusInfo({ headerComponent, bonus, subjectId }) {
             </Col>
           </Row>
         </article>
-      ) : (
-        <div>
-          <Navigation />
-          <div className="d-flex justify-content-center">
-            <Loader type="Oval" color="#00BFFF" height={100} width={100} />
-          </div>
-        </div>
       )}
     </div>
   );

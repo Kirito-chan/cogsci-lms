@@ -7,22 +7,16 @@ export const slice = createSlice({
   initialState: {
     currentSubjectId: null,
     currentSubjectName: null,
-    subjects: [],
-    loading: false,
+    subjects: null,
     lastFetch: null,
   },
   reducers: {
-    subjectsRequested: (state) => {
-      state.loading = true;
-    },
+    subjectsRequested: () => {},
     subjectsReceived: (state, action) => {
       state.subjects = action.payload;
       state.lastFetch = Date.now();
-      state.loading = false;
     },
-    subjectsRequestFailed: (state) => {
-      state.loading = false;
-    },
+    subjectsRequestFailed: () => {},
     currentSubjectIdReceived: (state, action) => {
       state.currentSubjectId = action.payload;
     },

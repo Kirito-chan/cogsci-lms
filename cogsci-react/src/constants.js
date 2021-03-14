@@ -21,3 +21,14 @@ export const STUD_PRES_OPENED = 1; // student presentation, ktora ma status OPEN
 export const STUD_PRES_CLOSED = 2; // student presentation, ktora ma status CLOSED, cize uz uzatvorena na hodnotenie
 export const SUMMER_SEASON = 1; // letny semester - stlpec season v tabulke subject
 export const WINTER_SEASON = 2; // zimny semester - stlpec season v tabulke subject
+
+// URL na API
+export const createUrlToDownloadPresentation = (
+  subjectId,
+  presId,
+  fileName
+) => {
+  return `http://localhost:8080/api/subject/${subjectId}/presentation/${presId}/download?filename=${encodeURIComponent(
+    fileName
+  )}`;
+};

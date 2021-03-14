@@ -7,7 +7,7 @@ import {
   loadStudentPresentationsOpened,
 } from "../homeSlice";
 import { useParams } from "react-router";
-import Loader from "react-loader-spinner";
+import { showLoaderIfNull } from "../../../../components/StringUtils";
 
 function StudentPresentations() {
   const dispatch = useDispatch();
@@ -23,13 +23,11 @@ function StudentPresentations() {
 
   return (
     <div>
-      {studentPresentations ? (
+      {showLoaderIfNull(studentPresentations) || (
         <StudentPresentationsList
           studentPresentations={studentPresentations}
           subjectId={subjectId}
         />
-      ) : (
-        <Loader type="Oval" color="#00BFFF" height={100} width={100} />
       )}
     </div>
   );

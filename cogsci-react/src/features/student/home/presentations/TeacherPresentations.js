@@ -7,6 +7,7 @@ import {
   getTeacherPresentations,
 } from "../homeSlice";
 import { useParams } from "react-router";
+import { showLoaderIfNull } from "../../../../components/StringUtils";
 
 function TeacherPresentations() {
   const dispatch = useDispatch();
@@ -20,10 +21,12 @@ function TeacherPresentations() {
   }, [currentUserId, subjectId]);
 
   return (
-    <TeacherPresentationsList
-      teacherPresentations={teacherPresentations}
-      subjectId={subjectId}
-    />
+    showLoaderIfNull(teacherPresentations) || (
+      <TeacherPresentationsList
+        teacherPresentations={teacherPresentations}
+        subjectId={subjectId}
+      />
+    )
   );
 }
 

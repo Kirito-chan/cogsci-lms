@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import { loadMyPresentation, getMyPresentation } from "../homeSlice";
 import { useParams } from "react-router";
+import { showLoaderIfNull } from "../../../../components/StringUtils";
 
 function MyPresentation() {
   const dispatch = useDispatch();
@@ -17,11 +18,13 @@ function MyPresentation() {
   }, [currentUserId, subjectId]);
 
   return (
-    <MyPresentationList
-      myPresentations={myPresentations.presentations}
-      presentationWeight={myPresentations.presentationWeight}
-      subjectId={subjectId}
-    />
+    showLoaderIfNull(myPresentations) || (
+      <MyPresentationList
+        myPresentations={myPresentations.presentations}
+        presentationWeight={myPresentations.presentationWeight}
+        subjectId={subjectId}
+      />
+    )
   );
 }
 

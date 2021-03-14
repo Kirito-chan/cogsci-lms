@@ -1,3 +1,5 @@
+import Loader from "./Loader";
+
 export default function formatTranslation(number, type) {
   number = parseInt(number);
   if (type === "príspevok") {
@@ -26,4 +28,24 @@ export default function formatTranslation(number, type) {
     }
   }
   return type;
+}
+
+export function showLoaderIfNull(object) {
+  if (object == null || object == "null" || object == undefined) {
+    return (
+      <div className="text-center">
+        <Loader />
+      </div>
+    );
+  } else return false;
+}
+
+export function showLoaderIfAnyNull() {
+  for (var i = 0; i < arguments.length; i++) {
+    const object = arguments[i];
+    if (object == null || object == "null" || object == undefined) {
+      return <Loader />;
+    }
+  }
+  return false;
 }

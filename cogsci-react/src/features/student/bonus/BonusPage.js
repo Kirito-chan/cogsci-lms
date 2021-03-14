@@ -17,10 +17,12 @@ function BonusPage() {
   const currentUserId = useSelector(getCurrentUserId);
   const comments = useSelector(getComments);
   const [bonusOrderId, setBonusOrderId] = useState(
-    bonuses.findIndex((x) => x.id === bonus.id)
+    bonuses == null ? null : bonuses.findIndex((x) => x.id === bonus.id)
   );
   const [bonusik, setBonusik] = useState(
-    bonuses.filter((bonusik) => bonusik.id === bonus.id)[0]
+    bonuses == null
+      ? null
+      : bonuses.filter((bonusik) => bonusik.id === bonus.id)[0]
   );
 
   useEffect(() => {
@@ -38,7 +40,7 @@ function BonusPage() {
   }, [bonusId]);
 
   useEffect(() => {
-    if (bonuses.length > 0) {
+    if (bonuses != null && bonuses.length > 0) {
       setBonusOrderId(
         bonuses.length - bonuses.findIndex((x) => x.id === bonus.id)
       );
@@ -51,7 +53,7 @@ function BonusPage() {
   }, [currentUserId, subjectId]);
 
   useEffect(() => {
-    if (bonuses.length > 0) {
+    if (bonuses != null && bonuses.length > 0) {
       setBonusik(bonuses.filter((bonusik) => bonusik.id === bonus.id)[0]);
     }
   }, [bonuses, bonus]);
