@@ -220,7 +220,7 @@ export const getMyPresentation = async (userId, subjectId) => {
     `
   WITH
     tab1 as (
-      SELECT usl.id as usl_id, usl.presentation_id, p.title
+      SELECT usl.id as usl_id, usl.presentation_id, usl.user_id, p.title, p.path
       FROM user_subject_lookup as usl JOIN presentation p
             ON p.id = usl.presentation_id
       WHERE usl.user_id = ? AND usl.subject_id = ?
@@ -228,7 +228,7 @@ export const getMyPresentation = async (userId, subjectId) => {
 
     tab2 as (
       SELECT tab1.*, upv.pvp_id, upv.points, upv.target_usl_id, upv.whose_usl_id
-      FROM tab1 JOIN user_presentation_valuation upv
+      FROM tab1 LEFT JOIN user_presentation_valuation upv
       ON tab1.usl_id = upv.target_usl_id
     ),
 
@@ -238,21 +238,24 @@ export const getMyPresentation = async (userId, subjectId) => {
 
     tab3 as (
       SELECT tab2.*, ((SELECT weight FROM pres_weight)*(pvp.height/100))/10*tab2.points as points_per_category
-      FROM tab2 JOIN presentation_valuation_point as pvp
+      FROM tab2 LEFT JOIN presentation_valuation_point as pvp
       ON tab2.pvp_id = pvp.id
     ),
 
     tab4 as (SELECT presentation_id as id, 
            title, 
+           user_id,
+           path,
            ROUND(sum(points_per_category)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points
     FROM tab3)
 
-    SELECT * FROM tab4
+    SELECT tab4.*, user.first_name, user.last_name 
+    FROM tab4 JOIN user ON tab4.user_id = user.id 
     WHERE tab4.id is not null;
   `,
     [userId, subjectId, subjectId]
   );
-  return row;
+  return row[0];
 };
 
 export const getTeacherPresentations = async (userId, subjectId) => {
@@ -261,6 +264,7 @@ export const getTeacherPresentations = async (userId, subjectId) => {
   tab1 AS (
   SELECT t.id, 
          t.title,
+         t.path,
          c.user_id,
          count(c.user_id) as num_of_comments         
   FROM teacher_presentation AS t LEFT JOIN teacher_presentation_comments AS c
@@ -280,4 +284,20 @@ export const getTeacherPresentations = async (userId, subjectId) => {
     [userId, subjectId]
   );
   return row;
+};
+export const insertPresentation = async (title, path, status, ownerId) => {
+  const [row] = await execute(
+    `INSERT INTO presentation (title, path, status, owner_id) 
+    VALUES(?, ?, ?, ?)`,
+    [title, path, status, ownerId]
+  );
+  return row.insertId;
+};
+
+export const updatePresentation = async (presId, userId, subjectId) => {
+  await execute(
+    `UPDATE user_subject_lookup SET presentation_id = ?
+     WHERE user_id = ? AND subject_id = ?`,
+    [presId, userId, subjectId]
+  );
 };

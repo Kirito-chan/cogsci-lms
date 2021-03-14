@@ -26,9 +26,18 @@ export const WINTER_SEASON = 2; // zimny semester - stlpec season v tabulke subj
 export const createUrlToDownloadPresentation = (
   subjectId,
   presId,
-  fileName
+  fileName,
+  isTeacherPres
 ) => {
   return `http://localhost:8080/api/subject/${subjectId}/presentation/${presId}/download?filename=${encodeURIComponent(
     fileName
-  )}`;
+  )}&teacherPres=${isTeacherPres}`;
+};
+
+export const createUrlToUploadPresentation = (
+  subjectId,
+  isTeacherPres,
+  userId
+) => {
+  return `http://localhost:8080/api/subject/${subjectId}/presentation/upload?teacherPres=${isTeacherPres}&userId=${userId}`;
 };

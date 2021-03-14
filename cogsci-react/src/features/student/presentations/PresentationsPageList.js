@@ -43,7 +43,7 @@ function PresentationsPageList({
 
         {showLoaderIfNull(myPresentation) || (
           <MyPresentationList
-            myPresentations={myPresentation.presentations}
+            myPresentation={myPresentation.presentation}
             presentationWeight={myPresentation.presentationWeight}
             subjectId={subjectId}
           />

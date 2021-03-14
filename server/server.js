@@ -5,6 +5,10 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import withAuth from "./middleware/auth.js";
 import dotenv from "dotenv";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import * as constants from "./constants.js";
 
 dotenv.config();
 
@@ -131,7 +135,6 @@ app.get("/api/teacher-presentations/:userId/:subjectId", async (req, res) => {
   // /api/teacher-presentation/           // /api/teacher-presentation/?user_id=241&subject_id=18
   // /api/teacher-presentation/:id
   const { userId, subjectId } = req.params;
-  //subjectId = 14;
   const row = await queries.getTeacherPresentations(userId, subjectId);
   res.json(row);
 });
@@ -148,9 +151,9 @@ app.get("/api/student-presentations/:userId/:subjectId", async (req, res) => {
 app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
   //const subjectId = 15;
-  const presentations = await queries.getMyPresentation(userId, subjectId);
+  const presentation = await queries.getMyPresentation(userId, subjectId);
   const presentationWeight = await queries.getPresentationWeight(subjectId);
-  res.json({ presentations, presentationWeight });
+  res.json({ presentation, presentationWeight });
 });
 
 // download presentation
@@ -158,9 +161,58 @@ app.get(
   "/api/subject/:subjectId/presentation/:presentationId/download",
   (req, res) => {
     const { presentationId, subjectId } = req.params;
-    const { filename } = req.query;
-    const filePath = presentationId + "_" + filename;
+    const { filename, teacherPres } = req.query;
+    let filePath = "";
+    if (teacherPres == "true") {
+      filePath = `uploads/teacher/${subjectId}/${presentationId}_${filename}`;
+    } else filePath = `uploads/${subjectId}/${presentationId}_${filename}`;
+    console.log(filePath);
     res.download(filePath);
+  }
+);
+
+const storage = multer.diskStorage({
+  destination: (req, file, callBack) => {
+    const { subjectId } = req.params;
+    const { teacherPres } = req.query;
+    let destFolder = "uploads";
+    if (teacherPres == "true") {
+      destFolder += "/teacher";
+    }
+    destFolder += "/" + subjectId;
+    callBack(null, destFolder);
+  },
+  filename: (req, file, callBack) => {
+    callBack(null, `${file.originalname}`);
+  },
+});
+
+let upload = multer({ storage: storage });
+
+// co robi await? ked ho tam dam a ked ho tam nedam?
+// prettier-ignore
+app.post("/api/subject/:subjectId/presentation/upload", upload.single("file"),
+  async (req, res, next) => {
+    const { subjectId } = req.params;
+    const { teacherPres, userId } = req.query;
+    const file = req.file;
+    // prettier-ignore
+    const presId = await queries.insertPresentation(path.parse(file.filename).name, file.filename, constants.STUD_PRES_OPENED, parseInt(userId));
+    await queries.updatePresentation(presId, userId, subjectId)
+    if (!file) {
+      const error = new Error("No File");
+      error.httpStatusCode = 400;
+      return next(error);
+    }
+    let destFolder = "uploads";
+    if (teacherPres == "true") {
+      destFolder += "/teacher";
+    }
+    destFolder += "/" + subjectId + "/";
+    fs.rename(destFolder + file.filename, destFolder + presId + "_" + file.filename, function(err) {
+      if ( err ) console.log('ERROR: ' + err);
+  });
+    res.send(file);
   }
 );
 

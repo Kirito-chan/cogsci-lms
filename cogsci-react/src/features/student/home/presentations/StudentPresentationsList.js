@@ -10,6 +10,7 @@ function StudentPresentationsList({
   subjectId,
   textForStatus,
   hideHodnotitBtn,
+  myPresentationId,
 }) {
   return (
     <div>
@@ -18,8 +19,14 @@ function StudentPresentationsList({
         <article key={i}>
           <Row>
             {/* prettier-ignore */}
-            <Link to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation.id +
-                "?is_opened=" + (hideHodnotitBtn ? "false" : "true")}
+
+            <Link to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation.id + 
+            (hideHodnotitBtn
+            ? "?is_opened=false"
+            : myPresentationId == presentation.id
+            ? "?is_my=true"
+            : "?is_opened=true")  
+                }
               className="nav-link"
             >
               {presentation.title} - {presentation.first_name}{" "}
@@ -32,6 +39,7 @@ function StudentPresentationsList({
               <StudentPresInfo
                 presentation={presentation}
                 hideHodnotitBtn={hideHodnotitBtn}
+                isMyPres={myPresentationId == presentation.id ? true : false}
                 subjectId={subjectId}
                 redirectTo={
                   "/subject/" +

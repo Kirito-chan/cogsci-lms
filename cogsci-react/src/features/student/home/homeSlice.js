@@ -11,7 +11,7 @@ export const slice = createSlice({
     teacherPresentations: null, // []
     studentPresentationsOpened: null, // []
     studentPresentationsClosed: null, // []
-    myPresentation: null, // { presentations: null, presentationWeight: null }, // presentations is []
+    myPresentation: null, // { presentation: null, presentationWeight: null }, // presentation is {}
     subjectValuation: null, // object
     lastFetch: {
       bonus: null,
@@ -46,7 +46,7 @@ export const slice = createSlice({
     },
     myPresentationReceived: (state, action) => {
       state.myPresentation = {
-        presentations: action.payload.presentations,
+        presentation: action.payload.presentation,
         presentationWeight: action.payload.presentationWeight.weight,
       };
       state.lastFetch.myPresentation = Date.now();

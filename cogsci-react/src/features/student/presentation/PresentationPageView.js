@@ -16,6 +16,7 @@ function PresentationPageView({
   currentUserId,
   presIsOpened,
   subjectId,
+  isTeacherPres,
 }) {
   const handleDownload = (e) => {
     e.preventDefault();
@@ -24,7 +25,8 @@ function PresentationPageView({
         createUrlToDownloadPresentation(
           subjectId,
           presentation.id,
-          presentation.path
+          presentation.path,
+          isTeacherPres
         ),
         {
           responseType: "blob",
@@ -66,7 +68,7 @@ function PresentationPageView({
                   onClick={handleDownload}
                   href={presentation.path ? presentation.path : "#"}
                 >
-                  {presentation?.title + ".pptx"}
+                  {presentation.path}
                 </a>
 
                 {/* <a href={getFile.url} download={getFile.saveAsFileName}></a> */}

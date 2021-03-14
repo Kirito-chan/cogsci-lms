@@ -42,7 +42,7 @@ export default function Evaluation() {
       myPresentation
     ) || (
       <EvaluationTable
-        presentation={myPresentation.presentations[0]}
+        presentation={myPresentation.presentation}
         presentationWeight={myPresentation.presentationWeight}
         attendances={attendances}
         bonuses={bonuses}

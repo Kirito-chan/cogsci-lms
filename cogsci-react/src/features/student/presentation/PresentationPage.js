@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
 import {
+  getMyPresentation,
   getStudentPresentationsClosed,
   getStudentPresentationsOpened,
   getTeacherPresentations,
+  loadMyPresentation,
   loadStudentPresentationsClosed,
   loadStudentPresentationsOpened,
+  loadTeacherPresentations,
 } from "../home/homeSlice";
 import {
   loadPresentation,
@@ -27,16 +30,23 @@ function PresentationPage() {
     new URLSearchParams(location.search).get("is_opened") == "true";
   const isTeacherPres =
     new URLSearchParams(location.search).get("teacher") == "true";
+  const isMyPres = new URLSearchParams(location.search).get("is_my") == "true";
 
   const presentation = useSelector(getPresentation);
   let presentations = null;
 
   if (presIsOpened) {
     presentations = useSelector(getStudentPresentationsOpened);
-  } else {
-    if (!isTeacherPres) {
-      presentations = useSelector(getStudentPresentationsClosed);
-    } else presentations = useSelector(getTeacherPresentations);
+  } else presentations = useSelector(getStudentPresentationsClosed);
+  if (isTeacherPres) {
+    presentations = useSelector(getTeacherPresentations);
+  }
+  if (isMyPres) {
+    presentations = [];
+    console.log("tu soom");
+    presentations.push(useSelector(getMyPresentation).presentation);
+    //presentations.push({ ...pres });
+    console.log(presentations);
   }
 
   const currentUserId = useSelector(getCurrentUserId);
@@ -47,6 +57,7 @@ function PresentationPage() {
       ? null
       : presentations.filter((studPres) => studPres.id == presentationId)[0]
   );
+  console.log(studPresentation);
 
   useEffect(() => {
     document.title =
@@ -66,7 +77,15 @@ function PresentationPage() {
     if (currentUserId && subjectId) {
       if (presIsOpened) {
         dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
-      } else dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
+      } else {
+        if (!isTeacherPres) {
+          dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
+        } else {
+          if (isMyPres) {
+            dispatch(loadMyPresentation(currentUserId, subjectId));
+          } else dispatch(loadTeacherPresentations(currentUserId, subjectId));
+        }
+      }
     }
   }, [currentUserId, subjectId]);
 
@@ -117,6 +136,7 @@ function PresentationPage() {
         currentUserId={currentUserId}
         subjectId={subjectId}
         presIsOpened={presIsOpened}
+        isTeacherPres={isTeacherPres}
       />
     </div>
   );

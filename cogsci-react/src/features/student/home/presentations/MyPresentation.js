@@ -9,7 +9,7 @@ import { showLoaderIfNull } from "../../../../components/StringUtils";
 function MyPresentation() {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
-  const myPresentations = useSelector(getMyPresentation);
+  const myPresentation = useSelector(getMyPresentation);
   const { subjectId } = useParams();
 
   useEffect(() => {
@@ -18,11 +18,12 @@ function MyPresentation() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfNull(myPresentations) || (
+    showLoaderIfNull(myPresentation) || (
       <MyPresentationList
-        myPresentations={myPresentations.presentations}
-        presentationWeight={myPresentations.presentationWeight}
+        myPresentation={myPresentation.presentation}
+        presentationWeight={myPresentation.presentationWeight}
         subjectId={subjectId}
+        currentUserId={currentUserId}
       />
     )
   );

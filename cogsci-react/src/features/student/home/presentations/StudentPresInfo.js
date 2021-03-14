@@ -11,6 +11,7 @@ function StudentPresInfo({
   redirectTo,
   queryString,
   hash,
+  isMyPres,
 }) {
   let info = null;
   if (presentation.has_evaluated) {
@@ -18,7 +19,9 @@ function StudentPresInfo({
       <span className="text-success font-weight-bold">hodnotili ste, </span>
     );
   } else {
-    if (hideHodnotitBtn) {
+    if (isMyPres) {
+      info = <span className="text-secondary">nemôžete hodnotiť, </span>;
+    } else if (hideHodnotitBtn) {
       info = <span className="text-secondary">nehodnotili ste, </span>;
     } else {
       info = (
@@ -40,7 +43,13 @@ function StudentPresInfo({
         data={presentation}
         classAttribute="d-inline-block mr-3"
         redirectTo={`/subject/${subjectId}${URL_PRESENTATIONS}/${presentation.id}`}
-        queryString={hideHodnotitBtn ? "?is_opened=false" : "?is_opened=true"}
+        queryString={
+          hideHodnotitBtn
+            ? "?is_opened=false"
+            : isMyPres
+            ? "?is_my=true"
+            : "?is_opened=true"
+        }
         hash="#myNewComment"
       />
     </div>
