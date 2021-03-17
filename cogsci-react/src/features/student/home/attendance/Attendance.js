@@ -14,9 +14,6 @@ export default function Attendance() {
   const currentUserId = useSelector(getCurrentUserId);
   const attendances = useSelector(getAttendance);
 
-  // vsade v Reduxe budem musiet vytvarat lastFetch premennu pre vsetko - atttendances, bonuses, presentations,...
-  // radsej by som to furt tahal z databazy
-
   useEffect(() => {
     if (currentUserId && subjectId) {
       dispatch(loadAttendance(currentUserId, subjectId));

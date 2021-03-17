@@ -41,12 +41,12 @@ export default slice.reducer;
 
 // Action Creators
 
-const urlSubjects = "/subjects";
+const urlSubjects = "/admin/subjects";
 
-export const loadSubjects = (userId) => (dispatch) => {
+export const loadSubjects = () => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlSubjects + "/?userId=" + userId,
+      url: urlSubjects,
       onStart: subjectsRequested.type,
       onSuccess: subjectsReceived.type,
       onError: subjectsRequestFailed.type,

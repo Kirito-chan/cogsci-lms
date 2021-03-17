@@ -7,11 +7,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearToken } from "../app/currentUserSlice";
 import {
   LOGOUT_EVENT,
+  URL_ADMIN_SUBJECTS,
+  URL_ADMIN_BONUSES,
   URL_BONUSES,
   URL_HOME_STUDENT,
   URL_PRESENTATIONS,
   URL_SUBJECTS,
   URL_TERMS,
+  URL_HOME_ADMIN,
 } from "../constants";
 import { useParams } from "react-router";
 import {
@@ -23,7 +26,7 @@ import {
 import { NavLink } from "react-router-dom";
 import NavDivider from "./NavDivider";
 
-function NavigationLoggedIn({ currentUserName }) {
+function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const dispatch = useDispatch();
   const subjectIdParams = useParams().subjectId;
   const subjectName = useSelector(getCurrentSubjectName);
@@ -47,7 +50,7 @@ function NavigationLoggedIn({ currentUserName }) {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <NavLink
-            to={URL_SUBJECTS}
+            to={isAdmin ? URL_ADMIN_SUBJECTS : URL_SUBJECTS}
             onClick={() => dispatch(clearCurrentSubject())}
             className="nav-link"
           >
@@ -55,7 +58,7 @@ function NavigationLoggedIn({ currentUserName }) {
           </NavLink>
 
           <NavLink
-            to={URL_SUBJECTS}
+            to={isAdmin ? URL_ADMIN_SUBJECTS : URL_SUBJECTS}
             onClick={() => dispatch(clearCurrentSubject())}
             className="nav-link"
           >
@@ -63,13 +66,15 @@ function NavigationLoggedIn({ currentUserName }) {
           </NavLink>
           <NavDivider />
           <NavLink
-            to={"/subject/" + subjectId + URL_HOME_STUDENT}
+            // prettier-ignore
+            to={"/subject/" + subjectId + (isAdmin ? URL_HOME_ADMIN : URL_HOME_STUDENT) }
             className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectName || ""}
           </NavLink>
           <NavLink
-            to={"/subject/" + subjectId + URL_BONUSES}
+            // prettier-ignore
+            to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_BONUSES : URL_BONUSES) }
             className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
             {subjectId && "Bonusy"}
@@ -78,13 +83,13 @@ function NavigationLoggedIn({ currentUserName }) {
             to={"/subject/" + subjectId + URL_PRESENTATIONS}
             className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
-            {subjectId && "Prezentácie"}
+            {!isAdmin && subjectId && "Prezentácie"}
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_TERMS}
             className={"nav-link " + (!subjectId ? "d-none" : "")}
           >
-            {subjectId && "Podmienky"}
+            {!isAdmin && subjectId && "Podmienky"}
           </NavLink>
         </Nav>
         <Nav>

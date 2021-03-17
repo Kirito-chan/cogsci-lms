@@ -26,6 +26,7 @@ function Discussion({
           </span>
         )}
       </p>
+
       <HashLink
         smooth
         to={`${redirectTo}${queryString ? queryString : ""}${hash}`}

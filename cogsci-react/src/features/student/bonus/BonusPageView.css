@@ -3,3 +3,10 @@ div.fixed {
   bottom: 2em;
   right: 2em;
 }
+
+.btn-circle.btn-md { 
+  width: 50px; 
+  height: 50px; 
+  border-radius: 25px;  
+  text-align: center; 
+} 

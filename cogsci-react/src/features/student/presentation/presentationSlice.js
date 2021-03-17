@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../../app/apiConstants";
-//import { dataInReduxAreRecent } from "../../../components/DateUtils";
 
 export const slice = createSlice({
   name: "presentation",
@@ -8,13 +7,11 @@ export const slice = createSlice({
     presentation: {},
     comments: [],
     valuationTypes: [],
-    lastFetch: null,
   },
   reducers: {
     presentationRequested: () => {},
     presentationReceived: (state, action) => {
       state.presentation = action.payload;
-      state.lastFetch = Date.now();
       state.loading = false;
     },
     presentationRequestFailed: () => {},
@@ -22,13 +19,11 @@ export const slice = createSlice({
     commentsRequested: () => {},
     commentsReceived: (state, action) => {
       state.comments = action.payload;
-      state.lastFetch = Date.now();
     },
     commentsRequestFailed: () => {},
     valuationTypesRequested: () => {},
     valuationTypesReceived: (state, action) => {
       state.valuationTypes = action.payload;
-      state.lastFetch = Date.now();
     },
     valuationTypesRequestFailed: () => {},
   },
@@ -51,15 +46,12 @@ export default slice.reducer;
 // Action Creators
 
 export const loadPresentation = (presentation) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState().features.student.presentation.lastFetch)) return;
   dispatch({ type: presentationReceived.type, payload: presentation });
 };
 
 const urlComment = "/presentation/comment";
 
 export const loadComments = (presentationId) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState().features.student.presentation.lastFetch)) return;
-
   return dispatch(
     apiCallBegan({
       url: urlComment + "/?presentationId=" + presentationId,
@@ -73,8 +65,6 @@ export const loadComments = (presentationId) => (dispatch) => {
 const urlValuationTypes = "/presentation/valuation-types";
 
 export const loadValuationTypes = (subjectId) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState().features.student.presentation.lastFetch)) return;
-
   return dispatch(
     apiCallBegan({
       url: urlValuationTypes + "/?subjectId=" + subjectId,
@@ -84,9 +74,23 @@ export const loadValuationTypes = (subjectId) => (dispatch) => {
     })
   );
 };
+// prettier-ignore
+export const getPresentation = (state, presentationId, presIsOpened, isTeacherPres, isMyPres) => {
+  let presentations = null;
+  // prettier-ignore
+  if (isTeacherPres) { presentations = state.features.student.home.teacherPresentations;}
+  // prettier-ignore
+  else if (isMyPres) { presentations = [state.features.student.home.myPresentation.presentation]}
+  else if (presIsOpened) {
+    presentations = state.features.student.home.studentPresentationsOpened;
+  } else {
+    presentations = state.features.student.home.studentPresentationsClosed;
+  }
+  //prettier-ignore
+  const presentation = presentations?.filter((studPres) => studPres.id == presentationId)[0];
+  return presentation;
+};
 
-export const getPresentation = (state) =>
-  state.features.student.presentation.presentation;
 export const getPresentationId = (state) =>
   state.features.student.presentation.presentation.id;
 export const getComments = (state) =>

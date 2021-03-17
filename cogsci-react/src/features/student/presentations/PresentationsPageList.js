@@ -21,6 +21,7 @@ function PresentationsPageList({
             studentPresentations={studentPresentationsOpened}
             textForStatus="– otvorené na hodnotenie"
             subjectId={subjectId}
+            myPresentationId={myPresentation.presentation.id}
           />
         )}
 
@@ -31,6 +32,7 @@ function PresentationsPageList({
               textForStatus="– uzavreté hodnotenie"
               hideHodnotitBtn={true}
               subjectId={subjectId}
+              myPresentationId={myPresentation.presentation.id}
             />
           )}
         </div>

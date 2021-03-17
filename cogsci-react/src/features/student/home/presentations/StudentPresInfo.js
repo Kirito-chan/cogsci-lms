@@ -1,7 +1,6 @@
 import React from "react";
 import { HashLink } from "react-router-hash-link";
 import { URL_PRESENTATIONS } from "../../../../constants";
-
 import Discussion from "../Discussion";
 
 function StudentPresInfo({

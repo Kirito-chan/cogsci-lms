@@ -7,7 +7,7 @@ import BonusInfo from "../bonus/BonusInfo";
 import { Link } from "react-router-dom";
 import { URL_BONUSES } from "../../../constants";
 
-function BonusesPageList({ bonuses, subjectId }) {
+function BonusesPageList({ bonuses, subjectId, isAdmin }) {
   return (
     <div>
       <Navigation />
@@ -23,13 +23,14 @@ function BonusesPageList({ bonuses, subjectId }) {
                     to={"/subject/" + subjectId + URL_BONUSES + "/" + bonus?.id}
                     className="pl-0 font-weight-bold"
                   >
-                    <h4>
+                    <h4 className="d-inline">
                       {bonuses.length - i}. {bonus.title}
                     </h4>
                   </Link>
                 }
                 subjectId={subjectId}
-                bonus={bonus}
+                bonus={{ ...bonus, orderNumber: bonuses.length - i }}
+                isAdmin={isAdmin}
               />
             </Col>
           </Row>

@@ -1,39 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../../app/apiConstants";
-//import { dataInReduxAreRecent } from "../../../components/DateUtils";
+import { loadBonuses } from "../home/homeSlice";
 
 export const slice = createSlice({
   name: "bonus",
   initialState: {
     bonus: {},
     comments: [],
-    loading: false,
-    lastFetch: null,
   },
   reducers: {
-    bonusRequested: (state) => {
-      state.loading = true;
-    },
+    bonusRequested: () => {},
     bonusReceived: (state, action) => {
       state.bonus = action.payload;
-      state.lastFetch = Date.now();
-      state.loading = false;
     },
-    bonusRequestFailed: (state) => {
-      state.loading = false;
-    },
-
-    commentsRequested: (state) => {
-      state.loading = true;
-    },
+    bonusRequestFailed: () => {},
+    bonusInfoUpdated: () => {},
+    bonusDeleted: () => {},
+    commentsRequested: () => {},
     commentsReceived: (state, action) => {
       state.comments = action.payload;
-      state.lastFetch = Date.now();
-      state.loading = false;
     },
-    commentsRequestFailed: (state) => {
-      state.loading = false;
-    },
+    commentsRequestFailed: () => {},
   },
 });
 
@@ -41,6 +28,8 @@ export const {
   bonusRequested,
   bonusReceived,
   bonusRequestFailed,
+  bonusInfoUpdated,
+  bonusDeleted,
   commentsRequested,
   commentsReceived,
   commentsRequestFailed,
@@ -50,17 +39,33 @@ export default slice.reducer;
 
 // Action Creators
 
-const urlBonus = "/bonus";
+export const loadBonus = (userId, subjectId) => (dispatch) => {
+  return dispatch(loadBonuses(userId, subjectId));
+};
 
-export const loadBonus = (bonusId) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState().features.student.bonus.lastFetch)) return;
+const urlBonusAdmin = "/admin/bonus";
+
+export const updateBonusInfo = (bonusId, title, content, videoURL) => (
+  dispatch
+) => {
+  const data = { title, content, videoURL };
 
   return dispatch(
     apiCallBegan({
-      url: urlBonus + "/" + bonusId,
-      onStart: bonusRequested.type,
-      onSuccess: bonusReceived.type,
-      onError: bonusRequestFailed.type,
+      data,
+      method: "post",
+      url: urlBonusAdmin + "/" + bonusId,
+      onSuccess: bonusInfoUpdated.type,
+    })
+  );
+};
+
+export const deleteBonus = (bonusId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      method: "delete",
+      url: urlBonusAdmin + "/" + bonusId,
+      onSuccess: bonusDeleted.type,
     })
   );
 };
@@ -68,8 +73,6 @@ export const loadBonus = (bonusId) => (dispatch) => {
 const urlComment = "/comment";
 
 export const loadComments = (bonusId) => (dispatch) => {
-  //if (dataInReduxAreRecent(getState().features.student.bonus.lastFetch)) return;
-
   return dispatch(
     apiCallBegan({
       url: urlComment + "/?bonusId=" + bonusId,
@@ -80,6 +83,13 @@ export const loadComments = (bonusId) => (dispatch) => {
   );
 };
 
-export const getBonus = (state) => state.features.student.bonus.bonus;
+export const getBonus = (state, bonusId) => {
+  const bonuses = state.features.student.home.bonuses;
+  const bonusOrderNumber =
+    bonuses?.length - bonuses?.findIndex((bonusik) => bonusik.id == bonusId);
+  const bonus = bonuses?.filter((bonusik) => bonusik.id == bonusId)[0];
+  return { ...bonus, orderNumber: bonusOrderNumber };
+};
+
 export const getBonusId = (state) => state.features.student.bonus.bonus.id;
 export const getComments = (state) => state.features.student.bonus.comments;

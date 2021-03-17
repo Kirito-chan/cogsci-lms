@@ -7,17 +7,19 @@ import {
   getTokenError,
   getCurrentUserId,
   loadUserAndToken,
+  getIsAdmin,
 } from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import jwt from "jwt-decode";
-import { URL_SUBJECTS } from "../../constants";
+import { URL_ADMIN_SUBJECTS, URL_SUBJECTS } from "../../constants";
 
 const AuthRoute = (props) => {
   const [component, setComponent] = useState(<div></div>);
   const history = useHistory();
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
+  const isAdmin = useSelector(getIsAdmin);
   let token = useSelector(getToken);
   const tokenError = useSelector(getTokenError);
   const log = false;
@@ -49,11 +51,19 @@ const AuthRoute = (props) => {
         if (log) console.log("tu som0");
 
         if (props.type === "login") {
-          setComponent(<Redirect to={URL_SUBJECTS} />);
-          if (log) console.log("tu som1");
+          if (isAdmin === true) {
+            setComponent(<Redirect to={URL_ADMIN_SUBJECTS} />);
+          } else {
+            setComponent(<Redirect to={URL_SUBJECTS} />);
+            if (log) console.log("tu som1");
+          }
         } else {
-          setComponent(<Route {...props} />);
-          if (log) console.log("tu som2");
+          if (props.type == "admin" && isAdmin === false) {
+            setComponent(<Redirect to="/not-authorized" />);
+          } else {
+            setComponent(<Route {...props} />);
+            if (log) console.log("tu som2");
+          }
         }
       } else {
         clearTokens();

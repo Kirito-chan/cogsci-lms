@@ -28,9 +28,16 @@ const isCorrectPassword = (typedPassword, salt, DBpassword) => {
   return hashedPassword === DBpassword;
 };
 
-app.get("/api/subjects/:userId", async function (req, res) {
-  const { userId } = req.params;
+// subjects student
+app.get("/api/subjects", async function (req, res) {
+  const { userId } = req.query;
   const rows = await queries.getStudentSubjects(userId);
+  res.json(rows);
+});
+
+// subjects student
+app.get("/api/admin/subjects", async function (req, res) {
+  const rows = await queries.getAllSubjects();
   res.json(rows);
 });
 
@@ -65,7 +72,7 @@ app.post("/api/login", async function (req, res) {
 
     // vygenerujem salt - vygenerujem nanoId
     // spojim password z registracneho formu a spojim so saltom (ako v pass o 2 riadky nizsie)
-    // a zahshujem ako hashedPassword
+    // a zahashujem ako hashedPassword
 
     res.json({ token, user });
   } else {
@@ -102,10 +109,25 @@ app.get("/api/bonus/", async (req, res) => {
   res.json(rows);
 });
 
-app.get("/api/bonus/:bonusId", async (req, res) => {
+// app.get("/api/bonus/:bonusId", async (req, res) => {
+//   const { bonusId } = req.params;
+//   const rows = await queries.getBonus(bonusId);
+//   res.json(rows);
+// });
+
+app.post("/api/admin/bonus/:bonusId", async (req, res) => {
   const { bonusId } = req.params;
-  const rows = await queries.getBonus(bonusId);
-  res.json(rows);
+  const { title, content, videoURL } = req.body;
+  // prettier-ignore
+  const date = new Date().toISOString().slice(0, 10) + " " + new Date().toLocaleTimeString("en-GB");
+  await queries.updateBonusInfo(bonusId, title, content, videoURL, date);
+  res.json({ bonusId });
+});
+
+app.delete("/api/admin/bonus/:bonusId", async (req, res) => {
+  const { bonusId } = req.params;
+  await queries.deleteBonus(bonusId);
+  res.json(bonusId);
 });
 
 // bonus comments
@@ -212,7 +234,7 @@ app.post("/api/subject/:subjectId/presentation/upload", upload.single("file"),
     fs.rename(destFolder + file.filename, destFolder + presId + "_" + file.filename, function(err) {
       if ( err ) console.log('ERROR: ' + err);
   });
-    res.send(file);
+    res.json({subjectId, userId});
   }
 );
 

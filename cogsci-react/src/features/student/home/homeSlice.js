@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../../app/apiConstants";
-import { dataInReduxAreRecent } from "../../../components/DateUtils";
-import { STUD_PRES_CLOSED, STUD_PRES_OPENED } from "../../../constants";
+import {
+  createUrlToUploadPresentation,
+  STUD_PRES_CLOSED,
+  STUD_PRES_OPENED,
+} from "../../../constants";
 
 export const slice = createSlice({
   name: "home",
@@ -13,47 +16,38 @@ export const slice = createSlice({
     studentPresentationsClosed: null, // []
     myPresentation: null, // { presentation: null, presentationWeight: null }, // presentation is {}
     subjectValuation: null, // object
-    lastFetch: {
-      bonus: null,
-      attendance: null,
-      teacherPresentations: null,
-      studentPresentationsOpened: null,
-      studentPresentationsClosed: null,
-      myPresentation: null,
-      subjectValuation: null,
-    },
+    uploadedPresentation: null,
   },
   reducers: {
     attendancesReceived: (state, action) => {
       state.attendances = action.payload;
-      state.lastFetch.attendance = Date.now();
     },
     bonusesReceived: (state, action) => {
       state.bonuses = action.payload;
-      state.lastFetch.bonus = Date.now();
     },
     teacherPresentationsReceived: (state, action) => {
       state.teacherPresentations = action.payload;
-      state.lastFetch.teacherPresentations = Date.now();
     },
     studentPresentationsOpenedReceived: (state, action) => {
       state.studentPresentationsOpened = action.payload;
-      state.lastFetch.studentPresentationsOpened = Date.now();
     },
     studentPresentationsClosedReceived: (state, action) => {
       state.studentPresentationsClosed = action.payload;
-      state.lastFetch.studentPresentationsClosed = Date.now();
     },
     myPresentationReceived: (state, action) => {
+      const presentation = action.payload.presentation
+        ? action.payload.presentation
+        : {};
       state.myPresentation = {
-        presentation: action.payload.presentation,
+        presentation,
         presentationWeight: action.payload.presentationWeight.weight,
       };
-      state.lastFetch.myPresentation = Date.now();
     },
     subjectValuationReceived: (state, action) => {
       state.subjectValuation = action.payload;
-      state.lastFetch.subjectValuation = Date.now();
+    },
+    uploadedPresentationReceived: (state) => {
+      state.uploadedPresentation = true;
     },
   },
 });
@@ -66,20 +60,36 @@ export const {
   studentPresentationsClosedReceived,
   myPresentationReceived,
   subjectValuationReceived,
+  uploadedPresentationReceived,
 } = slice.actions;
 
 export default slice.reducer;
 
 // Action Creators
 
+export const uploadPresentation = (file, subjectId, currentUserId) => (
+  dispatch
+) => {
+  const data = new FormData();
+  data.append("file", file);
+  const url = createUrlToUploadPresentation(subjectId, false, currentUserId);
+
+  return dispatch(
+    apiCallBegan({
+      method: "post",
+      data,
+      url,
+      onSuccess: uploadedPresentationReceived.type,
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    })
+  );
+};
+
 const urlAttendance = "/attendance";
 
-export const loadAttendance = (userId, subjectId) => (dispatch, getState) => {
-  if (
-    dataInReduxAreRecent(getState().features.student.home.lastFetch.attendance)
-  )
-    return;
-
+export const loadAttendance = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
       url: urlAttendance + "/" + userId + "/" + subjectId,
@@ -90,10 +100,7 @@ export const loadAttendance = (userId, subjectId) => (dispatch, getState) => {
 
 const urlBonuses = "/bonus";
 
-export const loadBonuses = (userId, subjectId) => (dispatch, getState) => {
-  if (dataInReduxAreRecent(getState().features.student.home.lastFetch.bonus))
-    return;
-
+export const loadBonuses = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
       url: urlBonuses + "/?userId=" + userId + "&subjectId=" + subjectId,
@@ -104,17 +111,7 @@ export const loadBonuses = (userId, subjectId) => (dispatch, getState) => {
 
 const urlTeacherPresentations = "/teacher-presentations";
 
-export const loadTeacherPresentations = (userId, subjectId) => (
-  dispatch,
-  getState
-) => {
-  if (
-    dataInReduxAreRecent(
-      getState().features.student.home.lastFetch.teacherPresentations
-    )
-  )
-    return;
-
+export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
       url: urlTeacherPresentations + "/" + userId + "/" + subjectId,
@@ -126,16 +123,8 @@ export const loadTeacherPresentations = (userId, subjectId) => (
 const urlStudentPresentations = "/student-presentations";
 
 export const loadStudentPresentationsOpened = (userId, subjectId) => (
-  dispatch,
-  getState
+  dispatch
 ) => {
-  if (
-    dataInReduxAreRecent(
-      getState().features.student.home.lastFetch.studentPresentationsOpened
-    )
-  )
-    return;
-
   return dispatch(
     apiCallBegan({
       // prettier-ignore
@@ -146,16 +135,8 @@ export const loadStudentPresentationsOpened = (userId, subjectId) => (
 };
 
 export const loadStudentPresentationsClosed = (userId, subjectId) => (
-  dispatch,
-  getState
+  dispatch
 ) => {
-  if (
-    dataInReduxAreRecent(
-      getState().features.student.home.lastFetch.studentPresentationsClosed
-    )
-  )
-    return;
-
   return dispatch(
     apiCallBegan({
       // prettier-ignore
@@ -168,17 +149,7 @@ export const loadStudentPresentationsClosed = (userId, subjectId) => (
 
 const urlMyPresentation = "/my-presentation";
 
-export const loadMyPresentation = (userId, subjectId) => (
-  dispatch,
-  getState
-) => {
-  if (
-    dataInReduxAreRecent(
-      getState().features.student.home.lastFetch.myPresentation
-    )
-  )
-    return;
-
+export const loadMyPresentation = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
       url: urlMyPresentation + "/" + userId + "/" + subjectId,
@@ -189,14 +160,7 @@ export const loadMyPresentation = (userId, subjectId) => (
 
 const urlSubjectValuation = "/subject-valuation";
 
-export const loadSubjectValuation = (subjectId) => (dispatch, getState) => {
-  if (
-    dataInReduxAreRecent(
-      getState().features.student.home.lastFetch.subjectValuation
-    )
-  )
-    return;
-
+export const loadSubjectValuation = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
       url: urlSubjectValuation + "/" + subjectId,

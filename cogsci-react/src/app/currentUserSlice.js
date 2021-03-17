@@ -91,3 +91,4 @@ export const getToken = (state) => state.currentUser.token;
 export const getError = (state) => state.currentUser.error;
 export const getTokenError = (state) => state.currentUser.tokenError;
 export const getCustomError = (state) => state.currentUser.errorCustomMessage;
+export const getIsAdmin = (state) => state.currentUser.isAdmin;

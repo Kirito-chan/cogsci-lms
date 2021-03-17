@@ -1,57 +1,58 @@
 import React from "react";
-import Navigation from "../../../components/Navigation";
 import BonusInfo from "./BonusInfo";
 import CommentsList from "./CommentsList";
 import Container from "react-bootstrap/Container";
-import { Button, lightColors, darkColors } from "react-floating-action-button";
+import Button from "react-bootstrap/Button";
 import { FaArrowUp } from "react-icons/fa";
 import "./BonusPageView.css";
+import Navigation from "./../../../components/Navigation";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
-function BonusPageView({
-  bonus,
-  bonusOrderId,
-  subjectId,
-  comments,
-  currentUserId,
-}) {
+function BonusPageView({ bonus, subjectId, comments, currentUserId, isAdmin }) {
   return (
-    <div>
+    <div className="pb-5">
       <Navigation />
-      <Container>
+      <Container className="pb-5">
         <BonusInfo
           headerComponent={
-            <h2>
-              {bonusOrderId > 0 && (
+            <h2 className="d-inline">
+              {bonus?.orderNumber > 0 && (
                 <span>
-                  Bonusová úloha č. {bonusOrderId}: {bonus?.title}
+                  Bonusová úloha č. {bonus?.orderNumber}: {bonus?.title}
                 </span>
               )}
             </h2>
           }
           subjectId={subjectId}
           bonus={bonus}
+          isAdmin={isAdmin}
+          currentUserId={currentUserId}
         />
 
         <CommentsList comments={comments} currentUserId={currentUserId} />
 
-        <div className="fixed">
-          <Button
-            tooltip="Navrch"
-            onClick={() =>
-              window.scroll({
-                top: 0,
-                left: 0,
-                behavior: "smooth",
-              })
-            }
-            styles={{
-              backgroundColor: darkColors.blue,
-              color: lightColors.white,
-            }}
-          >
-            <FaArrowUp />
-          </Button>
-        </div>
+        <OverlayTrigger
+          placement="left"
+          overlay={<Tooltip id="button-tooltip">Navrch</Tooltip>}
+        >
+          <div className="fixed">
+            <Button
+              tooltip="Navrch"
+              variant="primary"
+              className="btn-circle btn-md pt-1"
+              onClick={() =>
+                window.scroll({
+                  top: 0,
+                  left: 0,
+                  behavior: "smooth",
+                })
+              }
+            >
+              <FaArrowUp />
+            </Button>{" "}
+          </div>
+        </OverlayTrigger>
       </Container>
     </div>
   );

@@ -3,41 +3,15 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import formatTranslation from "../../../../components/StringUtils";
 import { Link } from "react-router-dom";
-import {
-  createUrlToUploadPresentation,
-  URL_PRESENTATIONS,
-} from "../../../../constants";
-import axios from "axios";
+import { URL_PRESENTATIONS } from "../../../../constants";
 
 function MyPresentationList({
   myPresentation,
   presentationWeight,
   subjectId,
-  currentUserId,
+  handleUpload,
+  fileInputRef,
 }) {
-  const handleUpload = (e) => {
-    e.preventDefault();
-    const file = document.getElementById(
-      `presentationUpload${myPresentation.id}`
-    ).files[0];
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
-    const data = new FormData();
-    data.append("file", file);
-    axios
-      .post(
-        createUrlToUploadPresentation(subjectId, false, currentUserId),
-        data,
-        config
-      )
-      .then(() => {
-        //console.log(res.statusText);
-      });
-  };
-
   return (
     <div className="mt-5 mb-5">
       <h3>Moja prezentácia</h3>
@@ -65,7 +39,10 @@ function MyPresentationList({
 
         <Form className="mt-4" onSubmit={handleUpload}>
           <Form.Group>
-            <Form.File id={"presentationUpload" + myPresentation.id} />
+            <Form.File
+              id={"presentationUpload" + myPresentation.id}
+              ref={fileInputRef}
+            />
           </Form.Group>
           <Button size="sm" type="submit" variant="success">
             Pridať prezentáciu

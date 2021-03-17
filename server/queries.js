@@ -25,6 +25,17 @@ export const getStudentSubjects = async (userId) => {
   return rows;
 };
 
+export const getAllSubjects = async () => {
+  const [rows] = await execute(
+    `SELECT s.*, count(DISTINCT usl.user_id) as count_students
+     FROM subject s LEFT JOIN user_subject_lookup usl ON usl.subject_id = s.id AND usl.user_id is not NULL AND usl.status = 2
+     GROUP BY s.id
+     ORDER BY s.status, s.year DESC`,
+    []
+  );
+  return rows;
+};
+
 export const getSubject = async (subjectId) => {
   const [row] = await execute("SELECT * FROM subject WHERE id = ?", [
     subjectId,
@@ -126,11 +137,7 @@ export const getBonuses = async (userId, subjectId) => {
     `
   WITH
   tab1 AS (
-  SELECT a.id, 
-         a.title,
-         a.content,
-         a.video_URL,
-         a.created,
+  SELECT a.*,
          c.user_id,
          CASE
           WHEN sum(c.valuated) is NULL THEN 'nehodnotené'
@@ -160,6 +167,19 @@ export const getBonuses = async (userId, subjectId) => {
     [userId, subjectId, subjectId]
   );
   return row;
+};
+
+export const updateBonusInfo = async (id, title, content, videoURL, date) => {
+  await execute(
+    `UPDATE announcement a SET a.title = ?, a.content = ?, a.video_URL = ?, 
+                               a.updated = ?, a.updated_count = updated_count + 1
+     WHERE id = ?`,
+    [title, content, videoURL, date, id]
+  );
+};
+
+export const deleteBonus = async (id) => {
+  await execute(`DELETE FROM announcement a WHERE a.id = ?`, [id]);
 };
 
 // presentations

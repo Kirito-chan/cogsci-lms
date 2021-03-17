@@ -8,15 +8,14 @@ import { useHistory } from "react-router-dom";
 import { URL_HOME_STUDENT, WINTER_SEASON } from "../../../constants";
 import Navigation from "../../../components/Navigation";
 
-function SubjectsPageList(props) {
+function SubjectsPageList({ subjects }) {
   const dispatch = useDispatch();
-  const { subjects } = props;
   const history = useHistory();
 
   const handleEnterClick = (event) => {
     const subjectId = parseInt(event.target.id);
     dispatch(loadCurrentSubjectId(subjectId));
-    history.replace({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
+    history.push({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
   };
 
   return (
