@@ -101,6 +101,15 @@ export const getBonusComments = async (bonusId) => {
   );
   return rows;
 };
+// prettier-ignore
+export const insertBonusComment = async (bonusId, userId, content, date, refCommentId) => {
+  const [row] = await execute(
+    `INSERT INTO announcement_comments (user_id, announcement_id, content, date, announcement_comment_id)
+     VALUES (?, ?, ?, ?, ?)`,
+    [userId, bonusId, content, date, refCommentId]
+  );
+  return row.insertId;
+};
 
 // bonus comments
 export const getPresentationComments = async (presentationId) => {
@@ -305,6 +314,7 @@ export const getTeacherPresentations = async (userId, subjectId) => {
   );
   return row;
 };
+
 export const insertPresentation = async (title, path, status, ownerId) => {
   const [row] = await execute(
     `INSERT INTO presentation (title, path, status, owner_id) 

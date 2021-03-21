@@ -14,6 +14,14 @@ dotenv.config();
 
 const app = express();
 
+const getCurrentDate = () => {
+  return (
+    new Date().toISOString().slice(0, 10) +
+    " " +
+    new Date().toLocaleTimeString("en-GB")
+  );
+};
+
 app.use(cors());
 
 // parse requests of content-type - application/json
@@ -56,8 +64,6 @@ const secret = process.env.JWT_PRIVATE_KEY;
 
 app.post("/api/login", async function (req, res) {
   const { username, password } = req.body;
-  const query = `SELECT * FROM user WHERE username = ${username}`;
-
   const user = await queries.getUser(username);
 
   if (user === undefined) {
@@ -73,7 +79,6 @@ app.post("/api/login", async function (req, res) {
     // vygenerujem salt - vygenerujem nanoId
     // spojim password z registracneho formu a spojim so saltom (ako v pass o 2 riadky nizsie)
     // a zahashujem ako hashedPassword
-
     res.json({ token, user });
   } else {
     res.status(401).send("Nesprávne heslo");
@@ -90,7 +95,7 @@ app.post("/api/register", function (req, res) {
   const hashedPassword = "hash(password)";
   const salt = "generateSalt()";
   // prettier-ignore
-  const date = new Date().toISOString().slice(0, 10) + " " + new Date().toLocaleTimeString("en-GB");
+  const date = getCurrentDate();
   // prettier-ignore
   const array = [firstName, lastName, username, hashedPassword, email, studentRole, salt, date];
 });
@@ -109,17 +114,11 @@ app.get("/api/bonus/", async (req, res) => {
   res.json(rows);
 });
 
-// app.get("/api/bonus/:bonusId", async (req, res) => {
-//   const { bonusId } = req.params;
-//   const rows = await queries.getBonus(bonusId);
-//   res.json(rows);
-// });
-
-app.post("/api/admin/bonus/:bonusId", async (req, res) => {
+app.put("/api/admin/bonus/:bonusId", async (req, res) => {
   const { bonusId } = req.params;
   const { title, content, videoURL } = req.body;
   // prettier-ignore
-  const date = new Date().toISOString().slice(0, 10) + " " + new Date().toLocaleTimeString("en-GB");
+  const date = getCurrentDate();
   await queries.updateBonusInfo(bonusId, title, content, videoURL, date);
   res.json({ bonusId });
 });
@@ -135,6 +134,14 @@ app.get("/api/comment", async (req, res) => {
   const { bonusId } = req.query;
   const rows = await queries.getBonusComments(bonusId);
   res.json(rows);
+});
+
+app.post("/api/comment", async (req, res) => {
+  const { bonusId, userId, content, refCommentId } = req.body;
+  const date = getCurrentDate();
+  // prettier-ignore
+  const id = await queries.insertBonusComment(bonusId, userId, content, date, refCommentId);
+  res.json(id);
 });
 
 // presentation comments

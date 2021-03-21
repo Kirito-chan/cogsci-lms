@@ -1,8 +1,7 @@
 import React from "react";
 import formatDate from "../../../components/DateUtils";
 import Button from "react-bootstrap/Button";
-
-import "./CommentsList.css";
+import "./Bonus.css";
 
 function Comment({ comment, handleOdpovedat, isMyComment, isAdminComment }) {
   return (
@@ -24,7 +23,10 @@ function Comment({ comment, handleOdpovedat, isMyComment, isAdminComment }) {
           {formatDate(comment.date)}
         </span>
       </p>
-      <p>{comment.content}</p>
+      <div className="with-spaces">
+        <p>{comment.content}</p>
+      </div>
+
       <div className="d-flex justify-content-end">
         <Button
           variant="outline-primary"

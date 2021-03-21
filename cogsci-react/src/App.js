@@ -25,6 +25,7 @@ import TermsPage from "./features/student/terms/TermsPage";
 import NotAuthorizedPage from "./components/NotAuthorizedPage";
 import AdminHomePage from "./features/admin/home/AdminHomePage";
 
+// prettier-ignore
 function App() {
   return (
     <div className="App">
@@ -33,35 +34,23 @@ function App() {
         <Switch>
           <AuthRoute path="/" exact component={SubjectsPage} type="student" />
           <AuthRoute path="/login" component={Login} type="login" />
-          {/* prettier-ignore */}
           <AuthRoute path="/not-authorized" component={NotAuthorizedPage} type="not-auth" />
 
-          {/* admin router */}
-          {/* prettier-ignore */}
+          {/* admin routes */}
           <AuthRoute path={"/subject/:subjectId" + URL_HOME_ADMIN} component={AdminHomePage} type="home-student" />
-          {/* prettier-ignore */}
           <AuthRoute path={URL_ADMIN_SUBJECTS} component={SubjectsPageAdmin} type="admin" />
-          {/* prettier-ignore */}
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_BONUSES} component={BonusesPage} type="bonus" />
-          {/* prettier-ignore */}
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_BONUSES + "/:bonusId"} component={BonusPage} type="bonusId" />
           {/* student routes */}
-          {/* prettier-ignore */}
           <AuthRoute path={"/subject/:subjectId" + URL_HOME_STUDENT} component={StudentHomePage} type="home-student"/>
-          {/* prettier-ignore */}
           <AuthRoute path={URL_SUBJECTS} component={SubjectsPage} type="subjects" />
-          {/* prettier-ignore */}
           <AuthRoute exact path={"/subject/:subjectId" + URL_BONUSES} component={BonusesPage} type="bonus" />
-          {/* prettier-ignore */}
           <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="bonusId" />
-          {/* prettier-ignore */}
           <AuthRoute exact path={"/subject/:subjectId" + URL_PRESENTATIONS} component={PresentationsPage} type="presentation" />
-          {/* prettier-ignore */}
           <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} 
                      component={PresentationPage} type="presentationId" />
-          {/* prettier-ignore */}
           <AuthRoute path={"/subject/:subjectId" + URL_TERMS} component={TermsPage} type="term" />
-          {/* defaultna route, ak nematchne nic: /login, ak je prihlaseny, /subjects ak je prihlaseny */}
+          {/* defaultna route, ak nematchne nic: /login, ak je neprihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />
         </Switch>
       </BrowserRouter>

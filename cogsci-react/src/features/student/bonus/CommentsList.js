@@ -6,15 +6,31 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { showLoaderIfNull } from "../../../components/StringUtils";
+import { useDispatch } from "react-redux";
+import { insertComment, loadComments } from "./bonusSlice";
+//import createOrderedCommentsMap from "./../../../components/ArrayUtils";
 
-function CommentsList({ comments, currentUserId }) {
+function CommentsList({ comments, currentUserId, bonusId }) {
+  //const commentsMap = createOrderedCommentsMap(comments);
+  const dispatch = useDispatch();
   const [myCommentClass, setMyCommentClass] = useState(-1);
 
   const handleOdpovedat = (event) => {
     setMyCommentClass(event.target.id);
   };
 
-  const handleZrusit = () => {
+  const handleAddComment = (event) => {
+    const refCommentId = event.target.getAttribute("refcomment");
+    const content = event.target.getAttribute("content");
+    dispatch(insertComment(currentUserId, bonusId, content, refCommentId)).then(
+      () => {
+        dispatch(loadComments(bonusId));
+        setMyCommentClass(-1);
+      }
+    );
+  };
+
+  const handleCancel = () => {
     setMyCommentClass(-1);
   };
 
@@ -35,21 +51,27 @@ function CommentsList({ comments, currentUserId }) {
                     isAdminComment={comment.user_role == IS_ADMIN}
                   />
                   <MyComment
-                    id={i}
+                    id={comment.id}
                     classname={myCommentClass == comment.id ? "ml-5" : "d-none"}
-                    handleZrusit={handleZrusit}
+                    handleCancel={handleCancel}
+                    handleAddComment={handleAddComment}
                     header="Odpoveď"
                     rows={3}
                     flexIndent="justify-content-between"
                     placeholder="Text vašej odpovede..."
                     buttonText="Pridať odpoveď"
+                    refcomment={
+                      comment.announcement_comment_id == null
+                        ? comment.id
+                        : comment.announcement_comment_id
+                    }
                   />
                 </div>
               ))}
 
               <MyComment
                 id="new"
-                handleZrusit={handleZrusit}
+                handleCancel={handleCancel}
                 header="Nový komentár"
                 rows={5}
                 zrusitBtnClassname="d-none"

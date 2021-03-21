@@ -1,3 +1,15 @@
+/* v Comment.js a MyComment.js */
+.bg-light-grey {
+  background-color: #f2f3f5;
+  border-radius: 4%;
+}
+
+/* v Comment.js */
+.with-spaces {
+  white-space: pre-wrap;
+}
+
+/* v BonusInfo.js */
 .break-long-word {
   /* These are technically the same, but use both */
   overflow-wrap: break-word;
@@ -14,4 +26,18 @@
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+}
+
+/* v BonusPageView.js */
+div.fixed {
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+}
+
+.btn-circle.btn-md {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  text-align: center;
 }

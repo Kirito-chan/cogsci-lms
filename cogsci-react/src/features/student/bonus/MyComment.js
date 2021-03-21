@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import "./CommentsList.css";
+import "./Bonus.css";
 
 function MyComment({
   classname,
-  handleZrusit,
+  handleCancel,
+  handleAddComment,
   header,
   rows,
   zrusitBtnClassname,
@@ -13,7 +14,10 @@ function MyComment({
   placeholder,
   buttonText,
   id,
+  refcomment,
 }) {
+  const [content, setContent] = useState("");
+
   return (
     <article
       className={"p-3 mb-2 bg-light-grey ml-0 " + classname}
@@ -24,18 +28,35 @@ function MyComment({
           <Form.Label>
             <strong>{header}</strong>
           </Form.Label>
-          <Form.Control as="textarea" rows={rows} placeholder={placeholder} />
+          <Form.Control
+            as="textarea"
+            rows={rows}
+            placeholder={placeholder}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+          />
         </Form.Group>
         <div className={"d-flex " + flexIndent}>
           <Button
             variant="outline-secondary"
             size="sm"
-            onClick={handleZrusit}
+            onClick={() => {
+              handleCancel();
+              setContent("");
+            }}
             className={zrusitBtnClassname}
           >
             Zrušiť
           </Button>
-          <Button variant="success" className="mr-2" size="sm">
+          <Button
+            id={id}
+            refcomment={refcomment}
+            content={content}
+            variant="success"
+            className="mr-2"
+            size="sm"
+            onClick={handleAddComment}
+          >
             {buttonText}
           </Button>
         </div>

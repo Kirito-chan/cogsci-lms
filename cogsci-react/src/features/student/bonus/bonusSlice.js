@@ -20,6 +20,7 @@ export const slice = createSlice({
     commentsReceived: (state, action) => {
       state.comments = action.payload;
     },
+    commentInserted: () => {},
     commentsRequestFailed: () => {},
   },
 });
@@ -33,6 +34,7 @@ export const {
   commentsRequested,
   commentsReceived,
   commentsRequestFailed,
+  commentInserted,
 } = slice.actions;
 
 export default slice.reducer;
@@ -53,7 +55,7 @@ export const updateBonusInfo = (bonusId, title, content, videoURL) => (
   return dispatch(
     apiCallBegan({
       data,
-      method: "post",
+      method: "put",
       url: urlBonusAdmin + "/" + bonusId,
       onSuccess: bonusInfoUpdated.type,
     })
@@ -79,6 +81,21 @@ export const loadComments = (bonusId) => (dispatch) => {
       onStart: commentsRequested.type,
       onSuccess: commentsReceived.type,
       onError: commentsRequestFailed.type,
+    })
+  );
+};
+
+export const insertComment = (userId, bonusId, content, refCommentId) => (
+  dispatch
+) => {
+  const data = { userId, bonusId, content, refCommentId };
+
+  return dispatch(
+    apiCallBegan({
+      data,
+      method: "post",
+      url: urlComment,
+      onSuccess: commentInserted.type,
     })
   );
 };

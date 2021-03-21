@@ -41,26 +41,10 @@ function PresentationPage() {
       isMyPres
     )
   );
-  // let presentations = null;
-
-  // if (presIsOpened) {
-  //   presentations = useSelector(getStudentPresentationsOpened);
-  // } else presentations = useSelector(getStudentPresentationsClosed);
-  // if (isTeacherPres) {
-  //   presentations = useSelector(getTeacherPresentations);
-  // }
-  // if (isMyPres) {
-  //   presentations = [];
-  //   presentations.push(useSelector(getMyPresentation).presentation);
-  // }
 
   const currentUserId = useSelector(getCurrentUserId);
   const comments = useSelector(getComments);
   const valuationTypes = useSelector(getValuationTypes);
-  // const [studPresentation, setStudPresentation] = useState(
-  //   presentations?.filter((studPres) => studPres.id == presentationId)[0]
-  // );
-  // console.log(studPresentation);
 
   useEffect(() => {
     document.title =
@@ -75,22 +59,11 @@ function PresentationPage() {
     }
   }, [presentationId]);
 
-  // useEffect(() => {
-  //   if (studPresentation) dispatch(loadPresentation(studPresentation));
-  // }, [studPresentation]);
-
   useEffect(() => {
     dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
     dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
     dispatch(loadMyPresentation(currentUserId, subjectId));
   }, [currentUserId, subjectId]);
-
-  // useEffect(() => {
-  //   if (presentations != null && presentations.length > 0) {
-  //     // prettier-ignore
-  //     setStudPresentation(presentations.filter((studPres) => studPres.id == presentationId)[0]);
-  //   }
-  // }, [presentations]);
 
   useEffect(() => {
     if (location.hash.includes("myNewComment")) {

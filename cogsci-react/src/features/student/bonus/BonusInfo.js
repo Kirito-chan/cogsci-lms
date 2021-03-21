@@ -4,16 +4,22 @@ import { URL_BONUSES } from "../../../constants";
 import BonusVideo from "../bonuses/BonusVideo";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Discussion from "../home/Discussion";
-import "./BonusInfo.css";
+import "./Bonus.css";
 import { showLoaderIfNull } from "../../../components/StringUtils";
 import { useDispatch } from "react-redux";
 import { deleteBonus, loadBonus, updateBonusInfo } from "./bonusSlice";
-// prettier-ignore
-function BonusInfo({ headerComponent, bonus, subjectId, isAdmin, currentUserId }) {
+import ModalEdit from "./ModalEdit";
+import ModalDelete from "./ModalDelete";
+
+function BonusInfo({
+  headerComponent,
+  bonus,
+  subjectId,
+  isAdmin,
+  currentUserId,
+}) {
   const dispatch = useDispatch();
   const bonusCreated = bonus?.created && formatDate(bonus.created);
   const bonusUpdated = bonus?.updated && formatDate(bonus.updated);
@@ -51,7 +57,7 @@ function BonusInfo({ headerComponent, bonus, subjectId, isAdmin, currentUserId }
     closeModalOdstranit();
     dispatch(deleteBonus(bonus.id)).then(() => {
       dispatch(loadBonus(currentUserId, subjectId));
-    })
+    });
   };
 
   return (
@@ -126,83 +132,25 @@ function BonusInfo({ headerComponent, bonus, subjectId, isAdmin, currentUserId }
             </Col>
           </Row>
 
-          <Modal show={showOdstranit} onHide={closeModalOdstranit} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>
-                Naozaj chcete odstrániť bonus č. {bonus.orderNumber} ?
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{bonus.title}</Modal.Body>
-            <Modal.Footer className="d-flex justify-content-between">
-              <Button variant="secondary" onClick={closeModalOdstranit}>
-                Nie
-              </Button>
-              <Button variant="danger" onClick={handleOdstranit}>
-                Áno, odstrániť
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <ModalDelete
+            showOdstranit={showOdstranit}
+            closeModalOdstranit={closeModalOdstranit}
+            bonus={bonus}
+            handleOdstranit={handleOdstranit}
+          />
 
-          <Modal
-            show={showUpravit}
-            onHide={closeModalUpravit}
-            centered
-            size="lg"
-            backdrop="static"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Upraviť bonus č. {bonus.orderNumber}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form.Group as={Row}>
-                <Form.Label column sm="2">
-                  <b> Nadpis:</b>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control
-                    type="text"
-                    onChange={handleNadpis}
-                    value={nadpis}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row}>
-                <Form.Label column sm="2">
-                  <b> Obsah:</b>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    onChange={handleObsah}
-                    value={obsah}
-                  />
-                </Col>
-              </Form.Group>
-
-              <Form.Group as={Row}>
-                <Form.Label column sm="2">
-                  <b> URL odkaz:</b>
-                </Form.Label>
-                <Col sm="10">
-                  <Form.Control
-                    type="text"
-                    onChange={handleVideoURL}
-                    value={videoURL}
-                  />
-                </Col>
-              </Form.Group>
-            </Modal.Body>
-            <Modal.Footer className="d-flex justify-content-between">
-              <Button variant="secondary" onClick={closeModalUpravit}>
-                Zrušiť
-              </Button>
-              <Button variant="success" type="submit" onClick={handleUpravit}>
-                Uložiť zmeny
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <ModalEdit
+            showUpravit={showUpravit}
+            closeModalUpravit={closeModalUpravit}
+            bonus={bonus}
+            handleNadpis={handleNadpis}
+            nadpis={nadpis}
+            handleObsah={handleObsah}
+            obsah={obsah}
+            handleVideoURL={handleVideoURL}
+            videoURL={videoURL}
+            handleUpravit={handleUpravit}
+          />
         </article>
       )}
     </div>

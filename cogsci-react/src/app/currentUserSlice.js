@@ -9,7 +9,7 @@ export const slice = createSlice({
     name: "",
     isAdmin: null,
     token: "",
-    tokenError: "",
+    tokenError: null,
     error: "",
     errorCustomMessage: "",
   },
@@ -20,6 +20,7 @@ export const slice = createSlice({
       state.name =
         action.payload.user.first_name + " " + action.payload.user.last_name;
       state.isAdmin = action.payload.user.role == IS_ADMIN;
+      state.tokenError = null;
     },
     tokenCleared: (state) => {
       state.token = "";

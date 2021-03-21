@@ -4,7 +4,7 @@ import CommentsList from "./CommentsList";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { FaArrowUp } from "react-icons/fa";
-import "./BonusPageView.css";
+import "./Bonus.css";
 import Navigation from "./../../../components/Navigation";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -30,7 +30,11 @@ function BonusPageView({ bonus, subjectId, comments, currentUserId, isAdmin }) {
           currentUserId={currentUserId}
         />
 
-        <CommentsList comments={comments} currentUserId={currentUserId} />
+        <CommentsList
+          comments={comments}
+          currentUserId={currentUserId}
+          bonusId={bonus?.id}
+        />
 
         <OverlayTrigger
           placement="left"

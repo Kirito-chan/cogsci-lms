@@ -45,7 +45,7 @@ const AuthRoute = (props) => {
 
   useEffect(() => {
     if (token) {
-      if (!tokenError) {
+      if (tokenError === null) {
         dispatch(checkToken(token));
         localStorage.setItem("token", token);
         if (log) console.log("tu som0");
