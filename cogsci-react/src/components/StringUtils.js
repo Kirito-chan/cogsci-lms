@@ -43,7 +43,12 @@ export function showLoaderIfNull(object) {
 export function showLoaderIfAnyNull() {
   for (var i = 0; i < arguments.length; i++) {
     const object = arguments[i];
-    if (object == null || object == "null" || object == undefined) {
+    if (
+      object == null ||
+      object == "null" ||
+      object == undefined ||
+      (object instanceof Map && object.size === 0)
+    ) {
       return <Loader />;
     }
   }

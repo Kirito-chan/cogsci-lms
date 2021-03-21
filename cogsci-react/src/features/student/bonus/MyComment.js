@@ -15,6 +15,8 @@ function MyComment({
   buttonText,
   id,
   refcomment,
+  myRef,
+  index,
 }) {
   const [content, setContent] = useState("");
 
@@ -22,6 +24,7 @@ function MyComment({
     <article
       className={"p-3 mb-2 bg-light-grey ml-0 " + classname}
       id={id == "new" ? "myNewComment" : id}
+      ref={myRef.current[index]}
     >
       <Form>
         <Form.Group controlId="Form.ControlTextarea">

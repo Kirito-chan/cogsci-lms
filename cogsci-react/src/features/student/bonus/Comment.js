@@ -3,16 +3,27 @@ import formatDate from "../../../components/DateUtils";
 import Button from "react-bootstrap/Button";
 import "./Bonus.css";
 
-function Comment({ comment, handleOdpovedat, isMyComment, isAdminComment }) {
+function Comment({
+  comment,
+  handleOdpovedat,
+  isMyComment,
+  isAdminComment,
+  indentLeft,
+  parentId,
+  index,
+}) {
+  const indentLeftCSS = indentLeft ? indentLeft : "ml-0";
   return (
     <article
       className={
-        "p-3 mb-2 bg-light-grey ml-0 " +
+        "p-3 mb-2 bg-light-grey " +
         (isMyComment
           ? "border border-primary"
           : isAdminComment
           ? "border border-success"
-          : "")
+          : "") +
+        " " +
+        indentLeftCSS
       }
     >
       <p className="small mb-1">
@@ -31,8 +42,9 @@ function Comment({ comment, handleOdpovedat, isMyComment, isAdminComment }) {
         <Button
           variant="outline-primary"
           size="sm"
-          id={comment.id}
+          parentid={parentId}
           onClick={handleOdpovedat}
+          index={index}
         >
           Odpovedať
         </Button>
