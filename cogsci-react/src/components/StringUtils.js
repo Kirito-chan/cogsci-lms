@@ -30,27 +30,23 @@ export default function formatTranslation(number, type) {
   return type;
 }
 
-export function showLoaderIfNull(object) {
-  if (object == null || object == "null" || object == undefined) {
-    return (
-      <div className="text-center">
-        <Loader />
-      </div>
-    );
-  } else return false;
-}
-
 export function showLoaderIfAnyNull() {
   for (var i = 0; i < arguments.length; i++) {
     const object = arguments[i];
-    if (
-      object == null ||
-      object == "null" ||
-      object == undefined ||
-      (object instanceof Map && object.size === 0)
-    ) {
-      return <Loader />;
+    if (object == null || object == "null" || object == undefined) {
+      return (
+        <div className="text-center">
+          <Loader />
+        </div>
+      );
     }
+  }
+  return false;
+}
+
+export function showLoaderIfEmptyArray(array) {
+  if (array?.length == 0) {
+    return <Loader />;
   }
   return false;
 }

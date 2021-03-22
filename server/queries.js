@@ -1,4 +1,5 @@
 import pool from "./db.js";
+import { TEACHER } from "./constants.js";
 
 // subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
 // subject_id = 18 je KV mozog a mysel co som chodil naposledy, minuly semester
@@ -95,7 +96,7 @@ export const getAttedance = async (userId, subjectId) => {
 // bonus comments
 export const getBonusComments = async (bonusId) => {
   const [rows] = await execute(
-    `SELECT ac.*, user.first_name, user.last_name, user.role as user_role
+    `SELECT ac.*, ac.announcement_comment_id as ref_comment_id, user.first_name, user.last_name, user.role as user_role
      FROM announcement_comments ac JOIN user ON user.id = ac.user_id WHERE ac.announcement_id = ?`,
     [bonusId]
   );
@@ -103,22 +104,51 @@ export const getBonusComments = async (bonusId) => {
 };
 // prettier-ignore
 export const insertBonusComment = async (bonusId, userId, content, date, refCommentId) => {
-  const [row] = await execute(
-    `INSERT INTO announcement_comments (user_id, announcement_id, content, date, announcement_comment_id)
-     VALUES (?, ?, ?, ?, ?)`,
-    [userId, bonusId, content, date, refCommentId]
-  );
-  return row.insertId;
+    const [row] = await execute(
+      `INSERT INTO announcement_comments (user_id, announcement_id, content, date, announcement_comment_id)
+       VALUES (?, ?, ?, ?, ?)`,
+      [userId, bonusId, content, date, refCommentId]
+    );
+    return row.insertId;
 };
 
-// bonus comments
-export const getPresentationComments = async (presentationId) => {
+// presentation comments
+export const getPresentationComments = async (
+  presentationId,
+  whoseComments
+) => {
+  let whoseTable = "user_presentation_comments";
+  if (whoseComments === TEACHER) {
+    whoseTable = "teacher_presentation_comments";
+  }
+
   const [rows] = await execute(
-    `SELECT upc.*, user.first_name, user.last_name, user.role as user_role
-     FROM user_presentation_comments upc JOIN user ON user.id = upc.user_id WHERE upc.presentation_id = ?`,
+    `SELECT upc.*, upc.presentation_comment_id as ref_comment_id, user.first_name, user.last_name, user.role as user_role 
+     FROM ${whoseTable} upc JOIN user ON user.id = upc.user_id WHERE upc.presentation_id = ?`,
     [presentationId]
   );
   return rows;
+};
+
+export const insertPresentationComment = async (
+  presentationId,
+  userId,
+  content,
+  date,
+  refCommentId,
+  whose
+) => {
+  let whoseTable = "user_presentation_comments";
+  if (whose === TEACHER) {
+    whoseTable = "teacher_presentation_comments";
+  }
+
+  const [row] = await execute(
+    `INSERT INTO ${whoseTable} (user_id, presentation_id, content, date, presentation_comment_id)
+     VALUES (?, ?, ?, ?, ?)`,
+    [userId, presentationId, content, date, refCommentId]
+  );
+  return row.insertId;
 };
 
 // presentation valuation types

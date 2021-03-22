@@ -22,7 +22,6 @@ const AuthRoute = (props) => {
   const isAdmin = useSelector(getIsAdmin);
   let token = useSelector(getToken);
   const tokenError = useSelector(getTokenError);
-  const log = false;
 
   if (!token) {
     token = localStorage.getItem("token");
@@ -48,36 +47,31 @@ const AuthRoute = (props) => {
       if (tokenError === null) {
         dispatch(checkToken(token));
         localStorage.setItem("token", token);
-        if (log) console.log("tu som0");
 
         if (props.type === "login") {
           if (isAdmin === true) {
             setComponent(<Redirect to={URL_ADMIN_SUBJECTS} />);
           } else {
             setComponent(<Redirect to={URL_SUBJECTS} />);
-            if (log) console.log("tu som1");
           }
         } else {
           if (props.type == "admin" && isAdmin === false) {
             setComponent(<Redirect to="/not-authorized" />);
           } else {
             setComponent(<Route {...props} />);
-            if (log) console.log("tu som2");
           }
         }
       } else {
         clearTokens();
-        if (log) console.log("tu som3");
         setComponent(<Redirect to="/login" />);
+        window.location.reload();
       }
     } else {
       if (props.type === "login") {
-        if (log) console.log("tu som4");
         setComponent(<Route {...props} />);
         history.push("/login");
       } else {
         setComponent(<Redirect to="/login" />);
-        if (log) console.log("tu som5");
       }
     }
   }, [props.component, token, tokenError]);

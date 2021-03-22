@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Navigation from "../../../components/Navigation";
 import CommentsList from "../bonus/CommentsList";
 import PresentationEvaluation from "./PresentationEvaluation";
-import { showLoaderIfNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import download from "js-file-download";
 import axios from "axios";
 import { createUrlToDownloadPresentation } from "../../../constants";
@@ -17,6 +17,11 @@ function PresentationPageView({
   presIsOpened,
   subjectId,
   isTeacherPres,
+  commentsMap,
+  refToScrolledElement,
+  setScrollElementIndex,
+  insertComment,
+  loadComments,
 }) {
   const handleDownload = (e) => {
     e.preventDefault();
@@ -34,20 +39,13 @@ function PresentationPageView({
       )
       .then((res) => {
         download(res.data, presentation.path);
-        // const url = window.URL.createObjectURL(new Blob([res.data]));
-        // const link = document.createElement("a");
-        // link.href = url;
-        // link.setAttribute("download", presentation.path);
-        // document.body.appendChild(link);
-        // link.click();
-        // link.parentNode.removeChild(link);
       });
   };
   return (
     <div>
       <Navigation />
       <Container>
-        {showLoaderIfNull(presentation) || (
+        {showLoaderIfAnyNull(presentation) || (
           <div className="mb-4">
             <Row>
               <Col>
@@ -70,8 +68,6 @@ function PresentationPageView({
                 >
                   {presentation.path}
                 </a>
-
-                {/* <a href={getFile.url} download={getFile.saveAsFileName}></a> */}
               </Col>
             </Row>
           </div>
@@ -85,7 +81,16 @@ function PresentationPageView({
           </Row>
         )}
 
-        <CommentsList comments={comments} currentUserId={currentUserId} />
+        <CommentsList
+          comments={comments}
+          currentUserId={currentUserId}
+          commentsMap={commentsMap}
+          id={presentation?.id}
+          refToScrolledElement={refToScrolledElement}
+          setScrollElementIndex={setScrollElementIndex}
+          insertComment={insertComment}
+          loadComments={loadComments}
+        />
       </Container>
     </div>
   );

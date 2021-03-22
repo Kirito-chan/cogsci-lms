@@ -24,7 +24,6 @@ function MyComment({
     <article
       className={"p-3 mb-2 bg-light-grey ml-0 " + classname}
       id={id == "new" ? "myNewComment" : id}
-      ref={myRef.current[index]}
     >
       <Form>
         <Form.Group controlId="Form.ControlTextarea">
@@ -37,6 +36,7 @@ function MyComment({
             placeholder={placeholder}
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            ref={myRef && myRef.length > 0 ? myRef[index] : null}
           />
         </Form.Group>
         <div className={"d-flex " + flexIndent}>
@@ -58,7 +58,10 @@ function MyComment({
             variant="success"
             className="mr-2"
             size="sm"
-            onClick={handleAddComment}
+            onClick={(e) => {
+              handleAddComment(e);
+              setContent("");
+            }}
           >
             {buttonText}
           </Button>

@@ -7,7 +7,7 @@ import {
   getTeacherPresentations,
 } from "../homeSlice";
 import { useParams } from "react-router";
-import { showLoaderIfNull } from "../../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
 
 function TeacherPresentations() {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ function TeacherPresentations() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfNull(teacherPresentations) || (
+    showLoaderIfAnyNull(teacherPresentations) || (
       <TeacherPresentationsList
         teacherPresentations={teacherPresentations}
         subjectId={subjectId}

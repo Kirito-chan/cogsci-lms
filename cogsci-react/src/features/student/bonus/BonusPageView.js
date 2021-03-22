@@ -8,8 +8,18 @@ import "./Bonus.css";
 import Navigation from "./../../../components/Navigation";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import { insertComment, loadComments } from "./bonusSlice";
 
-function BonusPageView({ bonus, subjectId, comments, currentUserId, isAdmin }) {
+function BonusPageView({
+  bonus,
+  subjectId,
+  comments,
+  currentUserId,
+  isAdmin,
+  commentsMap,
+  refToScrolledElement,
+  setScrollElementIndex,
+}) {
   return (
     <div className="pb-5">
       <Navigation />
@@ -33,7 +43,12 @@ function BonusPageView({ bonus, subjectId, comments, currentUserId, isAdmin }) {
         <CommentsList
           comments={comments}
           currentUserId={currentUserId}
-          bonusId={bonus?.id}
+          id={bonus?.id}
+          commentsMap={commentsMap}
+          refToScrolledElement={refToScrolledElement}
+          setScrollElementIndex={setScrollElementIndex}
+          insertComment={insertComment}
+          loadComments={loadComments}
         />
 
         <OverlayTrigger

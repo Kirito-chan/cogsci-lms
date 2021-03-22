@@ -5,7 +5,7 @@ import { getAttendance, loadAttendance } from "../homeSlice";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import AttendanceTable from "./AttendanceTable";
 import { useParams } from "react-router";
-import { showLoaderIfNull } from "../../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
 
 export default function Attendance() {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export default function Attendance() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfNull(attendances) || (
+    showLoaderIfAnyNull(attendances) || (
       <AttendanceTable attendances={attendances} />
     )
   );

@@ -130,14 +130,15 @@ app.delete("/api/admin/bonus/:bonusId", async (req, res) => {
 });
 
 // bonus comments
-app.get("/api/comment", async (req, res) => {
-  const { bonusId } = req.query;
+app.get("/api/bonus/:bonusId/comment", async (req, res) => {
+  const { bonusId } = req.params;
   const rows = await queries.getBonusComments(bonusId);
   res.json(rows);
 });
 
-app.post("/api/comment", async (req, res) => {
-  const { bonusId, userId, content, refCommentId } = req.body;
+app.post("/api/bonus/:bonusId/comment", async (req, res) => {
+  const { bonusId } = req.params;
+  const { userId, content, refCommentId } = req.body;
   const date = getCurrentDate();
   // prettier-ignore
   const id = await queries.insertBonusComment(bonusId, userId, content, date, refCommentId);
@@ -145,11 +146,54 @@ app.post("/api/comment", async (req, res) => {
 });
 
 // presentation comments
-app.get("/api/presentation/comment", async (req, res) => {
-  const { presentationId } = req.query;
-  const rows = await queries.getPresentationComments(presentationId);
-  res.json(rows);
-});
+app.get(
+  "/api/presentation/:presentationId/student/comment",
+  async (req, res) => {
+    const { presentationId } = req.params;
+    const rows = await queries.getPresentationComments(
+      presentationId,
+      constants.STUDENT
+    );
+    res.json(rows);
+  }
+);
+
+app.get(
+  "/api/presentation/:presentationId/teacher/comment",
+  async (req, res) => {
+    const { presentationId } = req.params;
+    const rows = await queries.getPresentationComments(
+      presentationId,
+      constants.TEACHER
+    );
+    res.json(rows);
+  }
+);
+
+app.post(
+  "/api/presentation/:presentationId/teacher/comment",
+  async (req, res) => {
+    const { presentationId } = req.params;
+    const { userId, content, refCommentId } = req.body;
+    const date = getCurrentDate();
+    // prettier-ignore
+    const id = await queries.insertPresentationComment(presentationId, userId, content, date, refCommentId, constants.TEACHER);
+    res.json(id);
+  }
+);
+
+app.post(
+  "/api/presentation/:presentationId/student/comment",
+  async (req, res) => {
+    const { presentationId } = req.params;
+    const { userId, content, refCommentId } = req.body;
+    const date = getCurrentDate();
+    console.log(refCommentId);
+    // prettier-ignore
+    //const id = await queries.insertPresentationComment(presentationId, userId, content, date, refCommentId, constants.STUDENT);
+    res.json("id");
+  }
+);
 
 // presentation valuation types
 app.get("/api/presentation/valuation-types", async (req, res) => {

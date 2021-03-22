@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { getCurrentUserId, getIsAdmin } from "../../../app/currentUserSlice";
-import { showLoaderIfNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import { getBonuses, loadBonuses } from "../home/homeSlice";
 import BonusesPageList from "./BonusesPageList";
 
@@ -26,7 +26,7 @@ function BonusesPage() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfNull(bonuses) || (
+    showLoaderIfAnyNull(bonuses) || (
       <BonusesPageList
         bonuses={bonuses}
         subjectId={subjectId}

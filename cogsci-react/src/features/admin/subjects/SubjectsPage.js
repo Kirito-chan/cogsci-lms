@@ -7,7 +7,7 @@ import {
   clearCurrentSubject,
   getCurrentSubjectId,
 } from "./subjectsSlice";
-import { showLoaderIfNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 
 function SubjectsPage() {
   const dispatch = useDispatch();
@@ -23,7 +23,9 @@ function SubjectsPage() {
     dispatch(clearCurrentSubject);
   }, [currentSubjectId]);
 
-  return showLoaderIfNull(subjects) || <SubjectsPageList subjects={subjects} />;
+  return (
+    showLoaderIfAnyNull(subjects) || <SubjectsPageList subjects={subjects} />
+  );
 }
 
 export default SubjectsPage;

@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Discussion from "../home/Discussion";
 import "./Bonus.css";
-import { showLoaderIfNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import { useDispatch } from "react-redux";
 import { deleteBonus, loadBonus, updateBonusInfo } from "./bonusSlice";
 import ModalEdit from "./ModalEdit";
@@ -62,7 +62,7 @@ function BonusInfo({
 
   return (
     <div>
-      {showLoaderIfNull(bonus) || (
+      {showLoaderIfAnyNull(bonus) || (
         <article key={bonus.id} className="mb-5">
           <Row>
             <Col>

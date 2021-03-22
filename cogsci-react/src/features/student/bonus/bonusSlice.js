@@ -72,12 +72,12 @@ export const deleteBonus = (bonusId) => (dispatch) => {
   );
 };
 
-const urlComment = "/comment";
+const urlBonus = "/bonus";
 
 export const loadComments = (bonusId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlComment + "/?bonusId=" + bonusId,
+      url: urlBonus + "/" + bonusId + "/comment",
       onStart: commentsRequested.type,
       onSuccess: commentsReceived.type,
       onError: commentsRequestFailed.type,
@@ -88,13 +88,13 @@ export const loadComments = (bonusId) => (dispatch) => {
 export const insertComment = (userId, bonusId, content, refCommentId) => (
   dispatch
 ) => {
-  const data = { userId, bonusId, content, refCommentId };
+  const data = { userId, content, refCommentId };
 
   return dispatch(
     apiCallBegan({
       data,
       method: "post",
-      url: urlComment,
+      url: urlBonus + "/" + bonusId + "/comment",
       onSuccess: commentInserted.type,
     })
   );

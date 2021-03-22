@@ -19,8 +19,10 @@ export const slice = createSlice({
     commentsRequested: () => {},
     commentsReceived: (state, action) => {
       state.comments = action.payload;
+      console.log();
     },
     commentsRequestFailed: () => {},
+    commentInserted: () => {},
     valuationTypesRequested: () => {},
     valuationTypesReceived: (state, action) => {
       state.valuationTypes = action.payload;
@@ -36,6 +38,7 @@ export const {
   commentsRequested,
   commentsReceived,
   commentsRequestFailed,
+  commentInserted,
   valuationTypesRequested,
   valuationTypesReceived,
   valuationTypesRequestFailed,
@@ -49,15 +52,63 @@ export const loadPresentation = (presentation) => (dispatch) => {
   dispatch({ type: presentationReceived.type, payload: presentation });
 };
 
-const urlComment = "/presentation/comment";
+const urlPresentation = "/presentation";
 
-export const loadComments = (presentationId) => (dispatch) => {
+// nacita komentare ktore patria ku prezentacii ucitela, cize nenacitava komentare, ktore ucitel napisal
+export const loadTeacherComments = (presentationId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlComment + "/?presentationId=" + presentationId,
+      url: urlPresentation + "/" + presentationId + "/teacher/comment",
       onStart: commentsRequested.type,
       onSuccess: commentsReceived.type,
       onError: commentsRequestFailed.type,
+    })
+  );
+};
+// nacita komentare ktore patria ku prezentacii studenta, cize nenacitava komentare, ktore student napisal
+export const loadStudentComments = (presentationId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlPresentation + "/" + presentationId + "/student/comment",
+      onStart: commentsRequested.type,
+      onSuccess: commentsReceived.type,
+      onError: commentsRequestFailed.type,
+    })
+  );
+};
+
+export const insertTeacherComment = (
+  userId,
+  presentationId,
+  content,
+  refCommentId
+) => (dispatch) => {
+  const data = { userId, content, refCommentId };
+
+  return dispatch(
+    apiCallBegan({
+      data,
+      method: "post",
+      url: urlPresentation + "/" + presentationId + "/teacher/comment",
+      onSuccess: commentInserted.type,
+    })
+  );
+};
+
+export const insertStudentComment = (
+  userId,
+  presentationId,
+  content,
+  refCommentId
+) => (dispatch) => {
+  const data = { userId, content, refCommentId };
+
+  return dispatch(
+    apiCallBegan({
+      data,
+      method: "post",
+      url: urlPresentation + "/" + presentationId + "/student/comment",
+      onSuccess: commentInserted.type,
     })
   );
 };
