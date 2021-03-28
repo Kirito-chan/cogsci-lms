@@ -5,10 +5,10 @@ import { URL_PRESENTATIONS } from "../../../../constants";
 
 import Discussion from "../Discussion";
 
-function TeacherPresentationsList({ teacherPresentations, subjectId }) {
+function TeacherPresentationsList({ teacherPresentations, subjectId, h2 }) {
   return (
     <div className="mb-5">
-      <h3>Učiteľské prezentácie</h3>
+      {h2 ? <h2>Učiteľské prezentácie</h2> : <h3>Učiteľské prezentácie</h3>}
 
       {teacherPresentations.length !== 0 || (
         <p className="text-secondary">Žiadne</p>

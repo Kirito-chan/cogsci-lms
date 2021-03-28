@@ -6,7 +6,10 @@ import BonusPageView from "./BonusPageView";
 import { getBonus, getComments, loadBonus, loadComments } from "./bonusSlice";
 import { HashLink } from "react-router-hash-link";
 import createOrderedCommentsMap from "./../../../components/ArrayUtils";
-import { scrollWithOffset } from "./../../../components/ScrollUtils";
+import {
+  cursorFocus,
+  scrollWithOffset,
+} from "./../../../components/ScrollUtils";
 
 function BonusPage() {
   const dispatch = useDispatch();
@@ -56,8 +59,8 @@ function BonusPage() {
 
   useEffect(() => {
     if (scrollElementIndex && refToScrolledElement.length > 0) {
+      cursorFocus(refToScrolledElement[scrollElementIndex].current);
       scrollWithOffset(refToScrolledElement[scrollElementIndex].current);
-      refToScrolledElement[scrollElementIndex].current.focus();
       setScrollElementIndex(null);
     }
   }, [scrollElementIndex, refToScrolledElement, comments]);

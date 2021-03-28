@@ -15,8 +15,9 @@ import {
   URL_SUBJECTS,
   URL_TERMS,
   URL_HOME_ADMIN,
+  URL_ADMIN_PRESENTATIONS,
 } from "../constants";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import {
   loadSubject,
   getCurrentSubjectName,
@@ -31,6 +32,9 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const subjectIdParams = useParams().subjectId;
   const subjectName = useSelector(getCurrentSubjectName);
   const subjectId = useSelector(getCurrentSubjectId);
+  const inSubjectsPage = [URL_SUBJECTS, URL_ADMIN_SUBJECTS].includes(
+    useLocation().pathname
+  );
 
   useEffect(() => {
     if (subjectIdParams) dispatch(loadSubject(subjectIdParams));
@@ -68,28 +72,32 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
           <NavLink
             // prettier-ignore
             to={"/subject/" + subjectId + (isAdmin ? URL_HOME_ADMIN : URL_HOME_STUDENT) }
-            className={"nav-link " + (!subjectId ? "d-none" : "")}
+            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
           >
-            {subjectName || ""}
+            {(!inSubjectsPage && subjectName) || ""}
           </NavLink>
           <NavLink
             // prettier-ignore
             to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_BONUSES : URL_BONUSES) }
-            className={"nav-link " + (!subjectId ? "d-none" : "")}
+            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
           >
-            {subjectId && "Bonusy"}
+            {!inSubjectsPage && "Bonusy"}
           </NavLink>
           <NavLink
-            to={"/subject/" + subjectId + URL_PRESENTATIONS}
-            className={"nav-link " + (!subjectId ? "d-none" : "")}
+            to={
+              "/subject/" +
+              subjectId +
+              (isAdmin ? URL_ADMIN_PRESENTATIONS : URL_PRESENTATIONS)
+            }
+            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
           >
-            {!isAdmin && subjectId && "Prezentácie"}
+            {!inSubjectsPage && "Prezentácie"}
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_TERMS}
-            className={"nav-link " + (!subjectId ? "d-none" : "")}
+            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
           >
-            {!isAdmin && subjectId && "Podmienky"}
+            {!isAdmin && !inSubjectsPage && "Podmienky"}
           </NavLink>
         </Nav>
         <Nav>

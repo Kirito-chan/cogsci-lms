@@ -1,6 +1,6 @@
 import React, { createRef, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import {
   loadMyPresentation,
   loadStudentPresentationsClosed,
@@ -16,20 +16,30 @@ import {
   insertStudentComment,
 } from "./presentationSlice";
 import PresentationPageView from "./PresentationPageView";
-import { getCurrentUserId } from "../../../app/currentUserSlice";
+import { getCurrentUserId, getIsAdmin } from "../../../app/currentUserSlice";
 import { HashLink } from "react-router-hash-link";
-import { scrollWithOffset } from "./../../../components/ScrollUtils";
+import {
+  cursorFocus,
+  scrollWithOffset,
+} from "./../../../components/ScrollUtils";
 import createOrderedCommentsMap from "./../../../components/ArrayUtils";
+import { loadStudentPresentationsNeutral } from "../../admin/home/homeSlice";
 
 function PresentationPage() {
   const dispatch = useDispatch();
   const { presentationId, subjectId } = useParams();
   const location = useLocation();
+  const history = useHistory();
   // prettier-ignore
-  const presIsOpened =  new URLSearchParams(location.search).get("is_opened") == "true";
+  const [presIsOpened] = useState(new URLSearchParams(location.search).get("is_opened") == "true");
   // prettier-ignore
-  const isTeacherPres = new URLSearchParams(location.search).get("teacher") == "true";
-  const isMyPres = new URLSearchParams(location.search).get("is_my") == "true";
+  const [presIsNeutral] = useState(new URLSearchParams(location.search).get("is_opened") == "neutral");
+  // prettier-ignore
+  const [isTeacherPres] = useState(new URLSearchParams(location.search).get("teacher") == "true");
+  const [isMyPres] = useState(
+    new URLSearchParams(location.search).get("is_my") == "true"
+  );
+  const isAdmin = useSelector(getIsAdmin);
 
   const currentUserId = useSelector(getCurrentUserId);
   const comments = useSelector(getComments);
@@ -44,6 +54,7 @@ function PresentationPage() {
       state,
       presentationId,
       presIsOpened,
+      presIsNeutral,
       isTeacherPres,
       isMyPres
     )
@@ -63,6 +74,7 @@ function PresentationPage() {
   }, [presentationId]);
 
   useEffect(() => {
+    dispatch(loadStudentPresentationsNeutral(currentUserId, subjectId));
     dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
     dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
     dispatch(loadMyPresentation(currentUserId, subjectId));
@@ -87,8 +99,8 @@ function PresentationPage() {
 
   useEffect(() => {
     if (scrollElementIndex && refToScrolledElement.length > 0) {
+      cursorFocus(refToScrolledElement[scrollElementIndex].current);
       scrollWithOffset(refToScrolledElement[scrollElementIndex].current);
-      refToScrolledElement[scrollElementIndex].current.focus();
       setScrollElementIndex(null);
     }
   }, [scrollElementIndex, refToScrolledElement, comments]);
@@ -135,6 +147,8 @@ function PresentationPage() {
         commentsMap={commentsMap}
         refToScrolledElement={refToScrolledElement}
         setScrollElementIndex={setScrollElementIndex}
+        isAdmin={isAdmin}
+        history={history}
       />
     </div>
   );

@@ -217,6 +217,14 @@ export const updateBonusInfo = async (id, title, content, videoURL, date) => {
   );
 };
 
+export const updateBonusValuated = async (commentId, valuated) => {
+  await execute(
+    `UPDATE announcement_comments a SET a.valuated = ?
+     WHERE id = ?`,
+    [valuated, commentId]
+  );
+};
+
 export const deleteBonus = async (id) => {
   await execute(`DELETE FROM announcement a WHERE a.id = ?`, [id]);
 };
@@ -232,7 +240,7 @@ export const getStudentPresentations = async (
     `
   WITH
    tab1 as 
-   (SELECT p.id, p.title, p.owner_id as user_id, p.path, user.first_name, user.last_name,
+   (SELECT p.id, p.title, p.owner_id as user_id, p.path, p.status, user.first_name, user.last_name,
            count(u.user_id) as num_all_comments   
    FROM ((presentation p JOIN user_subject_lookup as usl
        ON p.id = usl.presentation_id)
@@ -262,6 +270,14 @@ export const getStudentPresentations = async (
     [statusOpen, subjectId, userId, userId, subjectId, subjectId]
   );
   return row;
+};
+
+export const updatePresentationStatus = async (id, status) => {
+  await execute(
+    `UPDATE presentation p SET p.status = ?
+     WHERE id = ?`,
+    [status, id]
+  );
 };
 
 export const getPresentationWeight = async (subjectId) => {

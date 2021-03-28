@@ -12,14 +12,11 @@ export const slice = createSlice({
     presentationRequested: () => {},
     presentationReceived: (state, action) => {
       state.presentation = action.payload;
-      state.loading = false;
     },
     presentationRequestFailed: () => {},
-
     commentsRequested: () => {},
     commentsReceived: (state, action) => {
       state.comments = action.payload;
-      console.log();
     },
     commentsRequestFailed: () => {},
     commentInserted: () => {},
@@ -28,6 +25,9 @@ export const slice = createSlice({
       state.valuationTypes = action.payload;
     },
     valuationTypesRequestFailed: () => {},
+    updatedPresentationStatus: (state, action) => {
+      state.presentation.status = action.payload;
+    },
   },
 });
 
@@ -42,17 +42,33 @@ export const {
   valuationTypesRequested,
   valuationTypesReceived,
   valuationTypesRequestFailed,
+  updatedPresentationStatus,
 } = slice.actions;
 
 export default slice.reducer;
 
 // Action Creators
 
+const urlPresentation = "/presentation";
+const urlAdminPresentation = "/admin/presentation";
+
 export const loadPresentation = (presentation) => (dispatch) => {
   dispatch({ type: presentationReceived.type, payload: presentation });
 };
 
-const urlPresentation = "/presentation";
+export const updatePresentationStatus = (presentationId, status) => (
+  dispatch
+) => {
+  const data = { status };
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminPresentation + "/" + presentationId,
+      method: "patch",
+      data,
+      onSuccess: updatedPresentationStatus.type,
+    })
+  );
+};
 
 // nacita komentare ktore patria ku prezentacii ucitela, cize nenacitava komentare, ktore ucitel napisal
 export const loadTeacherComments = (presentationId) => (dispatch) => {
@@ -126,12 +142,15 @@ export const loadValuationTypes = (subjectId) => (dispatch) => {
   );
 };
 // prettier-ignore
-export const getPresentation = (state, presentationId, presIsOpened, isTeacherPres, isMyPres) => {
+export const getPresentation = (state, presentationId, presIsOpened, presIsNeutral, isTeacherPres, isMyPres) => {
   let presentations = null;
   // prettier-ignore
   if (isTeacherPres) { presentations = state.features.student.home.teacherPresentations;}
   // prettier-ignore
   else if (isMyPres) { presentations = [state.features.student.home.myPresentation.presentation]}
+  else if (presIsNeutral) {
+    presentations = state.features.admin.home.studentPresentationsNeutral;
+  }
   else if (presIsOpened) {
     presentations = state.features.student.home.studentPresentationsOpened;
   } else {

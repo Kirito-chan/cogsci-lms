@@ -8,20 +8,26 @@ import { Link } from "react-router-dom";
 function StudentPresentationsList({
   studentPresentations,
   subjectId,
-  textForStatus,
+  headerText,
   hideHodnotitBtn,
   myPresentationId,
+  hideEvalDiscussion,
 }) {
   return (
     <div>
-      <h3>Študentské prezentácie {textForStatus}</h3>
+      <h3>{headerText}</h3>
+
+      {studentPresentations.length == 0 && (
+        <p className="text-secondary">Žiadne</p>
+      )}
+
       {studentPresentations.map((presentation, i) => (
         <article key={i}>
           <Row>
             {/* prettier-ignore */}
-
             <Link to={"/subject/" + subjectId + URL_PRESENTATIONS + "/" + presentation.id + 
-            (hideHodnotitBtn
+            (hideEvalDiscussion ? "?is_opened=neutral"
+            : hideHodnotitBtn
             ? "?is_opened=false"
             : myPresentationId == presentation.id
             ? "?is_my=true"
@@ -34,27 +40,29 @@ function StudentPresentationsList({
             </Link>
           </Row>
 
-          <Row>
-            <Col>
-              <StudentPresInfo
-                presentation={presentation}
-                hideHodnotitBtn={hideHodnotitBtn}
-                isMyPres={myPresentationId == presentation.id ? true : false}
-                subjectId={subjectId}
-                redirectTo={
-                  "/subject/" +
-                  subjectId +
-                  URL_PRESENTATIONS +
-                  "/" +
-                  presentation.id
-                }
-                queryString={
-                  "?is_opened=" + (hideHodnotitBtn ? "false" : "true")
-                }
-                hash={"#sliderForm"}
-              />
-            </Col>
-          </Row>
+          {hideEvalDiscussion || (
+            <Row>
+              <Col>
+                <StudentPresInfo
+                  presentation={presentation}
+                  hideHodnotitBtn={hideHodnotitBtn}
+                  isMyPres={myPresentationId == presentation.id ? true : false}
+                  subjectId={subjectId}
+                  redirectTo={
+                    "/subject/" +
+                    subjectId +
+                    URL_PRESENTATIONS +
+                    "/" +
+                    presentation.id
+                  }
+                  queryString={
+                    "?is_opened=" + (hideHodnotitBtn ? "false" : "true")
+                  }
+                  hash={"#sliderForm"}
+                />
+              </Col>
+            </Row>
+          )}
         </article>
       ))}
     </div>

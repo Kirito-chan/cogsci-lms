@@ -9,19 +9,22 @@ import {
   showLoaderIfAnyNull,
   showLoaderIfEmptyArray,
 } from "../../../components/StringUtils";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getIsAdmin } from "../../../app/currentUserSlice";
 
 function CommentsList({
   comments,
   currentUserId,
-  id,
+  id, // bonusId or presentationId
   commentsMap,
   refToScrolledElement,
   setScrollElementIndex,
   insertComment,
   loadComments,
+  isBonus,
 }) {
   const dispatch = useDispatch();
+  const isAdmin = useSelector(getIsAdmin);
   const [myCommentClass, setMyCommentClass] = useState(-1);
 
   const handleOdpovedat = (event) => {
@@ -64,14 +67,17 @@ function CommentsList({
                       isMyComment={currentUserId == comment.user_id}
                       isAdminComment={comment.user_role == IS_ADMIN}
                       index={i}
+                      isAdmin={isAdmin}
+                      id={id}
+                      isBonus={isBonus}
                     />
 
                     {commentsMap.get(comment).map((subcomment) => (
                       <div key={subcomment.id}>
                         <Comment
+                          isSubcomment={true}
                           parentId={comment.id}
                           comment={subcomment}
-                          indentLeft="ml-5"
                           index={i}
                           handleOdpovedat={handleOdpovedat}
                           isMyComment={currentUserId == subcomment.user_id}

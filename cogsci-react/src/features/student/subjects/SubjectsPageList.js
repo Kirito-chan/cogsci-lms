@@ -14,8 +14,9 @@ function SubjectsPageList({ subjects }) {
 
   const handleEnterClick = (event) => {
     const subjectId = parseInt(event.target.id);
-    dispatch(loadCurrentSubjectId(subjectId));
-    history.push({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
+    dispatch(loadCurrentSubjectId(subjectId)).then(() => {
+      history.push({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
+    });
   };
 
   return (

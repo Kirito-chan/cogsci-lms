@@ -1,13 +1,14 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
-import StudentPresentationsList from "../home/presentations/StudentPresentationsList";
-import TeacherPresentationsList from "../home/presentations/TeacherPresentationsList";
-import MyPresentationList from "../home/presentations/MyPresentationList";
+import StudentPresentationsList from "../../student/home/presentations/StudentPresentationsList";
+import TeacherPresentationsList from "../../student/home/presentations/TeacherPresentationsList";
+import MyPresentationList from "../../student/home/presentations/MyPresentationList";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 
 function PresentationsPageList({
+  studentPresentationsNeutral,
   studentPresentationsOpened,
   studentPresentationsClosed,
   teacherPresentations,
@@ -21,22 +22,23 @@ function PresentationsPageList({
       <Container fluid>
         <h2 className="mb-3">Študentské prezentácie</h2>
         <Row className="mb-4">
-          <Col lg="3">
+          <Col lg="4">
             {showLoaderIfAnyNull(
-              myPresentation,
+              studentPresentationsNeutral,
               myPresentation,
               myPresentation?.presentation
             ) || (
-              <MyPresentationList
-                myPresentation={myPresentation.presentation}
-                presentationWeight={myPresentation.presentationWeight}
+              <StudentPresentationsList
+                studentPresentations={studentPresentationsNeutral}
+                headerText="Prijaté na feedback"
                 subjectId={subjectId}
-                classname="mt-0"
+                myPresentationId={myPresentation.presentation.id}
+                hideEvalDiscussion={true}
               />
             )}
           </Col>
 
-          <Col lg="5">
+          <Col lg="4" className="my-4 my-lg-0">
             {showLoaderIfAnyNull(
               studentPresentationsOpened,
               myPresentation,
@@ -74,6 +76,18 @@ function PresentationsPageList({
           <TeacherPresentationsList
             teacherPresentations={teacherPresentations}
             h2="true"
+          />
+        )}
+        {showLoaderIfAnyNull(
+          myPresentation,
+          myPresentation,
+          myPresentation?.presentation
+        ) || (
+          <MyPresentationList
+            myPresentation={myPresentation.presentation}
+            presentationWeight={myPresentation.presentationWeight}
+            subjectId={subjectId}
+            classname="mt-0"
           />
         )}
       </Container>

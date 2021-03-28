@@ -9,6 +9,7 @@ import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import download from "js-file-download";
 import axios from "axios";
 import { createUrlToDownloadPresentation } from "../../../constants";
+import PresStatusButtons from "./PresStatusButtons";
 
 function PresentationPageView({
   presentation,
@@ -22,6 +23,8 @@ function PresentationPageView({
   setScrollElementIndex,
   insertComment,
   loadComments,
+  isAdmin,
+  history,
 }) {
   const handleDownload = (e) => {
     e.preventDefault();
@@ -41,35 +44,47 @@ function PresentationPageView({
         download(res.data, presentation.path);
       });
   };
+
   return (
-    <div>
+    <div id="ferko">
       <Navigation />
       <Container>
         {showLoaderIfAnyNull(presentation) || (
-          <div className="mb-4">
-            <Row>
-              <Col>
-                <h2>{presentation.title}</h2>
+          <div>
+            <div className="mb-4">
+              <Row>
+                <Col>
+                  <h2>{presentation.title}</h2>
 
-                <h5>
-                  {presentation.first_name} {presentation.last_name}
-                </h5>
-              </Col>
-            </Row>
+                  <h5>
+                    {presentation.first_name} {presentation.last_name}
+                  </h5>
+                </Col>
+              </Row>
 
-            <Row>
-              <Col>
-                <p className="d-inline">
-                  <b>Prevziať:</b>{" "}
-                </p>
-                <a
-                  onClick={handleDownload}
-                  href={presentation.path ? presentation.path : "#"}
-                >
-                  {presentation.path}
-                </a>
-              </Col>
-            </Row>
+              <Row>
+                <Col>
+                  <p className="d-inline">
+                    <b>Prevziať:</b>{" "}
+                  </p>
+                  <a
+                    onClick={handleDownload}
+                    href={presentation.path ? presentation.path : "#"}
+                  >
+                    {presentation.path}
+                  </a>
+                </Col>
+              </Row>
+            </div>
+            {isAdmin && (
+              <PresStatusButtons
+                status={presentation.status}
+                presentationId={presentation.id}
+                subjectId={subjectId}
+                currentUserId={currentUserId}
+                history={history}
+              />
+            )}
           </div>
         )}
 

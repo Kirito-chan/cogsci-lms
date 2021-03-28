@@ -19,8 +19,9 @@ function SubjectsPageList({ subjects }) {
 
   const handleEditClick = (event) => {
     const subjectId = parseInt(event.target.id);
-    dispatch(loadCurrentSubjectId(subjectId));
-    history.push({ pathname: `/subject/${subjectId}${URL_HOME_ADMIN}` });
+    dispatch(loadCurrentSubjectId(subjectId)).then(() => {
+      history.push({ pathname: `/subject/${subjectId}${URL_HOME_ADMIN}` });
+    });
   };
 
   return (

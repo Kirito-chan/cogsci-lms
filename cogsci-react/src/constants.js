@@ -16,17 +16,22 @@ export const URL_TERMS = "/terms";
 
 export const URL_ADMIN_SUBJECTS = "/admin/subjects";
 export const URL_ADMIN_BONUSES = "/admin/bonus";
+export const URL_ADMIN_PRESENTATIONS = "/admin/presentation";
 export const URL_HOME_ADMIN = "/home-admin";
 
 // konstanty z databazy
 export const IS_STUDENT = 1; // rola pouzivatela, ktora ja v tabulke user v stlpci role
 export const IS_ADMIN = 2; // rola pouzivatela, ktora ja v tabulke user v stlpci role
+export const STUD_PRES_NEUTRAL = 0; // student presentation, ktora je poslana na feedback pre ucitela, aby ju student mohol este doladit
 export const STUD_PRES_OPENED = 1; // student presentation, ktora ma status OPENED, cize otvorena na hodnotenie
 export const STUD_PRES_CLOSED = 2; // student presentation, ktora ma status CLOSED, cize uz uzatvorena na hodnotenie
 export const SUMMER_SEASON = 1; // letny semester - stlpec season v tabulke subject
 export const WINTER_SEASON = 2; // zimny semester - stlpec season v tabulke subject
 export const SUBJ_IS_ACTIVE = 1;
 export const SUBJ_IS_NOT_ACTIVE = 2;
+export const NOT_VALUATED_BONUS_POINT = null; // stlpec valuated v tabulke announcement_comments = NULL znamena, ze este nebol hodnoteny ucitelom
+export const ZERO_BONUS_POINTS = 0; // stlpec valuated v tabulke announcement_comments = 0 znamena, ze dostal 0 bodov
+export const ONE_BONUS_POINT = 1; // stlpec valuated v tabulke announcement_comments = 1 znamena, ze dostal 1 bod
 
 // URL na API
 export const createUrlToDownloadPresentation = (

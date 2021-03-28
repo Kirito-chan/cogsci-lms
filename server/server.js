@@ -145,6 +145,14 @@ app.post("/api/bonus/:bonusId/comment", async (req, res) => {
   res.json(id);
 });
 
+app.patch("/api/admin/bonus/:bonusId/comment/:commentId", async (req, res) => {
+  const { commentId } = req.params;
+  const { valuated } = req.body;
+  if (valuated !== undefined)
+    await queries.updateBonusValuated(commentId, valuated);
+  res.json(valuated);
+});
+
 // presentation comments
 app.get(
   "/api/presentation/:presentationId/student/comment",
@@ -188,12 +196,18 @@ app.post(
     const { presentationId } = req.params;
     const { userId, content, refCommentId } = req.body;
     const date = getCurrentDate();
-    console.log(refCommentId);
     // prettier-ignore
-    //const id = await queries.insertPresentationComment(presentationId, userId, content, date, refCommentId, constants.STUDENT);
-    res.json("id");
+    const id = await queries.insertPresentationComment(presentationId, userId, content, date, refCommentId, constants.STUDENT);
+    res.json(id);
   }
 );
+
+app.patch("/api/admin/presentation/:presentationId", async (req, res) => {
+  const { presentationId } = req.params;
+  const { status } = req.body;
+  if (status) await queries.updatePresentationStatus(presentationId, status);
+  res.json(status);
+});
 
 // presentation valuation types
 app.get("/api/presentation/valuation-types", async (req, res) => {
@@ -223,7 +237,6 @@ app.get("/api/student-presentations/:userId/:subjectId", async (req, res) => {
 // get my presentation - title and points
 app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
-  //const subjectId = 15;
   const presentation = await queries.getMyPresentation(userId, subjectId);
   const presentationWeight = await queries.getPresentationWeight(subjectId);
   res.json({ presentation, presentationWeight });
@@ -239,7 +252,6 @@ app.get(
     if (teacherPres == "true") {
       filePath = `uploads/teacher/${subjectId}/${presentationId}_${filename}`;
     } else filePath = `uploads/${subjectId}/${presentationId}_${filename}`;
-    console.log(filePath);
     res.download(filePath);
   }
 );
@@ -270,7 +282,7 @@ app.post("/api/subject/:subjectId/presentation/upload", upload.single("file"),
     const { teacherPres, userId } = req.query;
     const file = req.file;
     // prettier-ignore
-    const presId = await queries.insertPresentation(path.parse(file.filename).name, file.filename, constants.STUD_PRES_OPENED, parseInt(userId));
+    const presId = await queries.insertPresentation(path.parse(file.filename).name, file.filename, constants.STUD_PRES_NEUTRAL, parseInt(userId));
     await queries.updatePresentation(presId, userId, subjectId)
     if (!file) {
       const error = new Error("No File");

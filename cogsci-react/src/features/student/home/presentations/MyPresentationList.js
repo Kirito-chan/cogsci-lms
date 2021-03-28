@@ -11,9 +11,10 @@ function MyPresentationList({
   subjectId,
   handleUpload,
   fileInputRef,
+  classname,
 }) {
   return (
-    <div className="mt-5 mb-5">
+    <div className={classname}>
       <h3>Moja prezentácia</h3>
       <div>
         {Object.entries(myPresentation).length !== 0 ? (

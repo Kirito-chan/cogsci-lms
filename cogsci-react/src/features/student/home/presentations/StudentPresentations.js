@@ -32,6 +32,7 @@ function StudentPresentations() {
           studentPresentations={studentPresentations}
           subjectId={subjectId}
           myPresentationId={myPresentation.presentation.id}
+          headerText="Študentské prezentácie"
         />
       )}
     </div>

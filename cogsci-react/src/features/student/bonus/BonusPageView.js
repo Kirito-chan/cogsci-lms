@@ -49,6 +49,7 @@ function BonusPageView({
           setScrollElementIndex={setScrollElementIndex}
           insertComment={insertComment}
           loadComments={loadComments}
+          isBonus={true}
         />
 
         <OverlayTrigger
@@ -69,7 +70,7 @@ function BonusPageView({
               }
             >
               <FaArrowUp />
-            </Button>{" "}
+            </Button>
           </div>
         </OverlayTrigger>
       </Container>

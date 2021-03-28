@@ -66,7 +66,7 @@ export const loadSubject = (subjectId) => (dispatch) => {
 };
 
 export const loadCurrentSubjectId = (subjectId) => (dispatch) => {
-  dispatch({ type: currentSubjectIdReceived.type, payload: subjectId });
+  return dispatch({ type: currentSubjectIdReceived.type, payload: subjectId });
 };
 
 export const clearCurrentSubject = () => (dispatch) => {

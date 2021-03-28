@@ -43,6 +43,7 @@ function MyPresentation() {
         currentUserId={currentUserId}
         handleUpload={handleUpload}
         fileInputRef={fileInputRef}
+        classname="mt-5 mb-5"
       />
     )
   );

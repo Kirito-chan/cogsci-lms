@@ -15,6 +15,7 @@ export const slice = createSlice({
     },
     bonusRequestFailed: () => {},
     bonusInfoUpdated: () => {},
+    bonusValuatedUpdated: () => {},
     bonusDeleted: () => {},
     commentsRequested: () => {},
     commentsReceived: (state, action) => {
@@ -30,6 +31,7 @@ export const {
   bonusReceived,
   bonusRequestFailed,
   bonusInfoUpdated,
+  bonusValuatedUpdated,
   bonusDeleted,
   commentsRequested,
   commentsReceived,
@@ -46,6 +48,20 @@ export const loadBonus = (userId, subjectId) => (dispatch) => {
 };
 
 const urlBonusAdmin = "/admin/bonus";
+
+export const updateBonusValuated = (bonusId, commentId, valuated) => (
+  dispatch
+) => {
+  const data = { valuated };
+  return dispatch(
+    apiCallBegan({
+      url: urlBonusAdmin + "/" + bonusId + "/comment/" + commentId,
+      method: "patch",
+      data,
+      onSuccess: bonusValuatedUpdated.type,
+    })
+  );
+};
 
 export const updateBonusInfo = (bonusId, title, content, videoURL) => (
   dispatch
