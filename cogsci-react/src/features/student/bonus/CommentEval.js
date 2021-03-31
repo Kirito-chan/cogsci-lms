@@ -7,6 +7,7 @@ import {
   ZERO_BONUS_POINTS,
 } from "../../../constants";
 import { updateBonusValuated } from "./bonusSlice";
+import "./CommentEval.css";
 
 function CommentEval({ bonusId, comment }) {
   const dispatch = useDispatch();
@@ -76,41 +77,42 @@ function CommentEval({ bonusId, comment }) {
   return (
     <React.Fragment>
       <span className={"mx-2 " + notEvaluatedDisplayed}>nehodnotené</span>
-
-      <Button
-        variant={zeroPointsActive ? "warning" : "outline-warning"}
-        size="sm"
-        onClick={zeroPointsClicked}
-        active={false}
-        className="mybtn"
-        style={{ boxShadow: "none" }}
-      >
-        {loadingZero ? (
-          <span>
-            <span className={"spinner-border spinner-border-sm "}></span>{" "}
-            Loading...
-          </span>
-        ) : (
-          "0 bodov"
-        )}
-      </Button>
-      <Button
-        variant={onePointActive ? "success" : "outline-success"}
-        size="sm"
-        className="mx-2 mybtn"
-        onClick={onePointClicked}
-        style={{ boxShadow: "none" }}
-      >
-        {loadingOne ? (
-          <span>
-            <span className={"spinner-border spinner-border-sm "}></span>{" "}
-            Loading...
-          </span>
-        ) : (
-          "1 bod"
-        )}
-      </Button>
-      <Button variant="outline-danger" size="sm">
+      <div className="d-inline-block">
+        <Button
+          variant={zeroPointsActive ? "success" : "outline-success"}
+          size="sm"
+          onClick={zeroPointsClicked}
+          active={false}
+          className="left-btn"
+          style={{ boxShadow: "none" }}
+        >
+          {loadingZero ? (
+            <span>
+              <span className={"spinner-border spinner-border-sm "}></span>{" "}
+              Loading...
+            </span>
+          ) : (
+            "0 bodov"
+          )}
+        </Button>
+        <Button
+          variant={onePointActive ? "success" : "outline-success"}
+          size="sm"
+          onClick={onePointClicked}
+          className="right-btn"
+          style={{ boxShadow: "none" }}
+        >
+          {loadingOne ? (
+            <span>
+              <span className={"spinner-border spinner-border-sm "}></span>{" "}
+              Loading...
+            </span>
+          ) : (
+            "1 bod"
+          )}
+        </Button>
+      </div>
+      <Button variant="outline-danger" size="sm" className="ml-2">
         Odstrániť
       </Button>
     </React.Fragment>

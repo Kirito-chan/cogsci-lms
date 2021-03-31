@@ -1,4 +1,5 @@
 import React from "react";
+import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
@@ -23,52 +24,54 @@ function SubjectsPageList({ subjects }) {
     <div>
       <Navigation />
       <h2 className="text-center mb-5">Predmety</h2>
-      <Row>
-        <Col></Col>
-        <Col lg={8}>
-          {subjects.map((subject) => (
-            <article
-              key={subject.id}
-              className="mx-lg-5 border border-dark rounded p-3 mb-5"
-            >
-              <Row>
-                <Col>
-                  <h3>
-                    {subject.name} –{" "}
-                    {subject.season == WINTER_SEASON ? "ZS" : "LS"}{" "}
-                    {subject.year}
-                  </h3>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <p>{subject.about}</p>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <p>
-                    {subject.is_enrolled ? (
-                      <Button
-                        variant="success"
-                        id={subject.id}
-                        onClick={handleEnterClick}
-                      >
-                        Vstúp
-                      </Button>
-                    ) : (
-                      <Button variant="warning" size="sm">
-                        Prihlásiť sa
-                      </Button>
-                    )}
-                  </p>
-                </Col>
-              </Row>
-            </article>
-          ))}
-        </Col>
-        <Col></Col>
-      </Row>
+      <Container fluid>
+        <Row>
+          <Col></Col>
+          <Col lg={8}>
+            {subjects.map((subject) => (
+              <article
+                key={subject.id}
+                className="mx-lg-5 border border-dark rounded p-3 mb-5"
+              >
+                <Row>
+                  <Col>
+                    <h3>
+                      {subject.name} –{" "}
+                      {subject.season == WINTER_SEASON ? "ZS" : "LS"}{" "}
+                      {subject.year}
+                    </h3>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p>{subject.about}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <p>
+                      {subject.is_enrolled ? (
+                        <Button
+                          variant="success"
+                          id={subject.id}
+                          onClick={handleEnterClick}
+                        >
+                          Vstúp
+                        </Button>
+                      ) : (
+                        <Button variant="warning" size="sm">
+                          Prihlásiť sa
+                        </Button>
+                      )}
+                    </p>
+                  </Col>
+                </Row>
+              </article>
+            ))}
+          </Col>
+          <Col></Col>
+        </Row>
+      </Container>
     </div>
   );
 }

@@ -21,7 +21,6 @@ function BonusesPage() {
   useEffect(() => {
     if (currentUserId && subjectId) {
       dispatch(loadBonuses(currentUserId, subjectId));
-      console.log("loadujem");
     }
   }, [currentUserId, subjectId]);
 

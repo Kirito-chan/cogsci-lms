@@ -2,6 +2,8 @@ import React from "react";
 import formatTranslation from "../../../components/StringUtils";
 import BonusEvaluation from "./bonuses/BonusEvaluation";
 import { HashLink } from "react-router-hash-link";
+import { useSelector } from "react-redux";
+import { getIsAdmin } from "../../../app/currentUserSlice";
 
 function Discussion({
   data,
@@ -11,6 +13,7 @@ function Discussion({
   hash,
   queryString,
 }) {
+  const isAdmin = useSelector(getIsAdmin);
   const num_of_all_comments = data?.num_all_comments;
   const num_of_my_comments = data?.num_of_comments;
 
@@ -20,7 +23,7 @@ function Discussion({
         {num_of_all_comments || 0}{" "}
         {formatTranslation(num_of_all_comments, "príspevok")},{" "}
         {num_of_my_comments} {formatTranslation(num_of_my_comments, "váš")}
-        {!evaluation || (
+        {isAdmin || !evaluation || (
           <span>
             , <BonusEvaluation evaluation={evaluation} />
           </span>

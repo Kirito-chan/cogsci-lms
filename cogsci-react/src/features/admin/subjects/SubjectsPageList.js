@@ -1,24 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
+import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import { loadCurrentSubjectId } from "./subjectsSlice";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   WINTER_SEASON,
   SUBJ_IS_ACTIVE,
   URL_HOME_ADMIN,
 } from "../../../constants";
 import Navigation from "../../../components/Navigation";
+import AddSubjectModal from "./AddSubjectModal";
+import Badge from "react-bootstrap/Badge";
 
 function SubjectsPageList({ subjects }) {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [showAddSubject, setShowAddSubject] = useState(false);
+  const showModalAddSubject = () => setShowAddSubject(true);
 
-  const handleEditClick = (event) => {
-    const subjectId = parseInt(event.target.id);
+  const handleEnterSubjClick = (event) => {
+    const subjectId = parseInt(event.target.getAttribute("subjectid"));
     dispatch(loadCurrentSubjectId(subjectId)).then(() => {
       history.push({ pathname: `/subject/${subjectId}${URL_HOME_ADMIN}` });
     });
@@ -28,51 +33,78 @@ function SubjectsPageList({ subjects }) {
     <div>
       <Navigation />
       <h2 className="text-center mb-5">Predmety</h2>
-      <Row>
-        <Col></Col>
-        <Col lg={8}>
-          <Table hover size="sm">
-            <thead>
-              <tr>
-                <th>Názov predmetu</th>
-                <th>Školský rok</th>
-                <th>Semester</th>
-                <th>Limit</th>
-                <th>Status</th>
-                <th>Možnosti</th>
-              </tr>
-            </thead>
-            <tbody>
-              {subjects.map((subject) => {
-                const subjIsActive = subject.status == SUBJ_IS_ACTIVE;
-                return (
-                  <tr key={subject.id}>
-                    <td>{subject.name}</td>
-                    <td>{subject.year}</td>
-                    {/* prettier-ignore */}
-                    <td>{subject.season == WINTER_SEASON ? "Zimný semester": "Letný semester"}</td>
-                    <td>
-                      {subject.count_students}/{subject.user_limit}
-                    </td>
-                    <td>{subjIsActive ? "Aktívny" : "Neaktívny"}</td>
-                    <td>
-                      <Button
-                        variant={subjIsActive ? "success" : "info"}
-                        id={subject.id}
-                        onClick={handleEditClick}
-                        size="sm"
-                      >
-                        {subjIsActive ? "Vstúp" : "Edituj"}
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </Col>
-        <Col></Col>
-      </Row>
+      <Container fluid>
+        <Row>
+          <Col></Col>
+          <Col xl={8} lg={12}>
+            <Button
+              variant="success"
+              size="sm"
+              className="mb-3"
+              onClick={showModalAddSubject}
+            >
+              Pridať predmet
+            </Button>
+            <Table hover size="sm">
+              <thead>
+                <tr>
+                  <th>Názov predmetu</th>
+                  <th>Stav</th>
+                  <th>Školský rok</th>
+                  <th>Semester</th>
+                  <th>Limit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subjects.map((subject) => {
+                  const subjIsActive = subject.status == SUBJ_IS_ACTIVE;
+                  return (
+                    <tr
+                      key={subject.id}
+                      onClick={handleEnterSubjClick}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td subjectid={subject.id}>
+                        {
+                          <Link
+                            to={`/subject/${subject.id}${URL_HOME_ADMIN}`}
+                            subjectid={subject.id}
+                          >
+                            {subject.name}
+                          </Link>
+                        }
+                      </td>
+                      <td>
+                        {subjIsActive ? (
+                          <Badge pill variant="success">
+                            Aktívny
+                          </Badge>
+                        ) : (
+                          <Badge pill variant="secondary">
+                            Neaktívny
+                          </Badge>
+                        )}
+                      </td>
+                      <td>{subject.year}</td>
+                      {/* prettier-ignore */}
+                      <td>{subject.season == WINTER_SEASON ? "Zimný semester": "Letný semester"}</td>
+                      <td>
+                        {subject.count_students}/{subject.user_limit}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Col>
+          <Col></Col>
+        </Row>
+      </Container>
+
+      <AddSubjectModal
+        showAddSubject={showAddSubject}
+        setShowAddSubject={setShowAddSubject}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -6,12 +6,24 @@ import Navigation from "../../../components/Navigation";
 import BonusInfo from "../bonus/BonusInfo";
 import { Link } from "react-router-dom";
 import { URL_BONUSES } from "../../../constants";
+import Button from "react-bootstrap/esm/Button";
+import AddBonusModal from "./AddBonusModal";
 
 function BonusesPageList({ bonuses, subjectId, isAdmin }) {
+  const [showAddBonus, setShowAddBonus] = useState(false);
+  const showModalAddBonus = () => setShowAddBonus(true);
+
   return (
     <div>
       <Navigation />
       <h2 className="text-center mb-4">Bonusové úlohy</h2>
+      <Container className="mb-3">
+        {isAdmin && (
+          <Button variant="success" size="sm" onClick={showModalAddBonus}>
+            Pridať bonusovú úlohu
+          </Button>
+        )}
+      </Container>
 
       {bonuses.map((bonus, i) => (
         <Container key={i}>
@@ -36,6 +48,11 @@ function BonusesPageList({ bonuses, subjectId, isAdmin }) {
           </Row>
         </Container>
       ))}
+      <AddBonusModal
+        showAddBonus={showAddBonus}
+        setShowAddBonus={setShowAddBonus}
+        subjectId={subjectId}
+      />
     </div>
   );
 }

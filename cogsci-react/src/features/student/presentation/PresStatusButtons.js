@@ -66,7 +66,7 @@ function PresStatusButtons({ presentationId, status, subjectId, history }) {
         disabled={isNeutral}
         onClick={returnToFeedback}
       >
-        Vrátiť na feedback
+        Vrátiť medzi prijaté
       </Button>
       <Button
         variant="success"

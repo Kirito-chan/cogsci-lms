@@ -13,6 +13,7 @@ export const slice = createSlice({
     subjectsReceived: (state, action) => {
       state.subjects = action.payload;
     },
+    subjectInserted: () => {},
     subjectsRequestFailed: () => {},
     currentSubjectIdReceived: (state, action) => {
       state.currentSubjectId = action.payload;
@@ -35,6 +36,7 @@ export const {
   subjectReceived,
   clearedCurrentSubject,
   currentSubjectIdReceived,
+  subjectInserted,
 } = slice.actions;
 
 export default slice.reducer;
@@ -42,6 +44,21 @@ export default slice.reducer;
 // Action Creators
 
 const urlSubjects = "/admin/subjects";
+
+// prettier-ignore
+export const insertSubject = (name, year, season, about, userLimit, weeks, active) => (
+  dispatch
+) => {
+  const data = { name, year, season, about, userLimit, weeks, active };
+  return dispatch(
+    apiCallBegan({
+      url: urlSubjects,
+      method: "post",
+      data,
+      onSuccess: subjectInserted.type,
+    })
+  );
+};
 
 export const loadSubjects = () => (dispatch) => {
   return dispatch(

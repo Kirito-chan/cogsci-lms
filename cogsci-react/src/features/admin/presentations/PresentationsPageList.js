@@ -62,7 +62,7 @@ function PresentationsPageList({
               ) || (
                 <StudentPresentationsList
                   studentPresentations={studentPresentationsClosed}
-                  headerText="Uzavreté na hodnotenie"
+                  headerText="Uzavreté hodnotenie"
                   hideHodnotitBtn={true}
                   subjectId={subjectId}
                   myPresentationId={myPresentation.presentation.id}

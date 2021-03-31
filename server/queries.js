@@ -1,5 +1,12 @@
 import pool from "./db.js";
-import { TEACHER } from "./constants.js";
+import {
+  TEACHER,
+  SUBJ_IS_ACTIVE,
+  SUBJ_IS_NOT_ACTIVE,
+  ATTENDANCE_WEIGHT,
+  PRESENTATION_WEIGHT,
+  COMMENT_WEIGHT,
+} from "./constants.js";
 
 // subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
 // subject_id = 18 je KV mozog a mysel co som chodil naposledy, minuly semester
@@ -12,6 +19,54 @@ const execute = async (queryString, paramsArr) => {
   return rows;
 };
 
+// prettier-ignore
+export const insertBonus = async (subjectId, title, content, urlRef, created) => {
+  const [row] = await execute(
+    `INSERT INTO announcement (subject_id, content, title, created, updated, updated_count, video_URL)
+     VALUES (?, ?, ?, ?, ?, 0, ?)`,
+    [subjectId, content, title, created, created, urlRef]
+  );
+  return row.insertId;
+};
+
+export const insertSubject = async (
+  name,
+  year,
+  season,
+  about,
+  userLimit,
+  weeks,
+  active
+) => {
+  const [row] = await execute(
+    `INSERT INTO subject (name, year, season, about, user_limit, status, weeks, 
+       val_attendance, val_presentation, val_comment)
+     VALUES (?, ?, ?, ?, ?,  ?, ?, ?, ?, ?)`,
+    [
+      name,
+      year,
+      season,
+      about,
+      userLimit,
+      active,
+      weeks,
+      ATTENDANCE_WEIGHT,
+      PRESENTATION_WEIGHT,
+      COMMENT_WEIGHT,
+    ]
+  );
+  return row.insertId;
+};
+
+export const insertSubjectValuation = async (subjectId, A, B, C, D, E, Fx) => {
+  const [row] = await execute(
+    `INSERT INTO subject_valuation (subject_id, A, B, C, D, E, Fx)
+     VALUES (?, ?, ?, ?, ?,  ?, ?)`,
+    [subjectId, A, B, C, D, E, Fx]
+  );
+  return row.insertId;
+};
+
 export const getStudentSubjects = async (userId) => {
   const [rows] = await execute(
     `SELECT s.id, s.name, s.year, s.season, s.about, 
@@ -19,7 +74,7 @@ export const getStudentSubjects = async (userId) => {
       FROM subject s LEFT JOIN user_subject_lookup usl ON
            usl.user_id = ? AND s.id = usl.subject_id
            WHERE s.status = 1
-           ORDER BY is_enrolled DESC
+           ORDER BY is_enrolled DESC, s.year DESC
      `,
     [userId]
   );
@@ -202,7 +257,7 @@ export const getBonuses = async (userId, subjectId) => {
 
   SELECT tab1.*, tab2.num_all_comments, pw.weight
   FROM (tab1 LEFT JOIN tab2 USING(id)) CROSS JOIN pres_weight pw
-  ORDER BY tab2.id DESC`,
+  ORDER BY tab1.id DESC`,
     [userId, subjectId, subjectId]
   );
   return row;

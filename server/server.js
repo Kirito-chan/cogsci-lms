@@ -27,6 +27,15 @@ app.use(cors());
 // parse requests of content-type - application/json
 app.use(express.json());
 
+app.post("/api/admin/subject/:subjectId/bonus", async function (req, res) {
+  const { title, content, urlRef } = req.body;
+  const { subjectId } = req.params;
+  const created = getCurrentDate();
+  //prettier-ignore
+  const bonusId = await queries.insertBonus(subjectId, title, content, urlRef, created);
+  res.json(bonusId);
+});
+
 const isCorrectPassword = (typedPassword, salt, DBpassword) => {
   const password = `${typedPassword}{${salt}}`;
   const hashedPassword = crypto
@@ -43,7 +52,7 @@ app.get("/api/subjects", async function (req, res) {
   res.json(rows);
 });
 
-// subjects student
+// subjects admin
 app.get("/api/admin/subjects", async function (req, res) {
   const rows = await queries.getAllSubjects();
   res.json(rows);
@@ -53,6 +62,30 @@ app.get("/api/subject/:subjectId", async function (req, res) {
   const { subjectId } = req.params;
   const row = await queries.getSubject(subjectId);
   res.json(row);
+});
+
+app.post("/api/admin/subjects", async function (req, res) {
+  let { name, year, season, about, userLimit, weeks, active } = req.body;
+  if (about === undefined) about = null;
+  const subjectId = await queries.insertSubject(
+    name,
+    year,
+    season,
+    about,
+    userLimit,
+    weeks,
+    active
+  );
+  await queries.insertSubjectValuation(
+    subjectId,
+    constants.A,
+    constants.B,
+    constants.C,
+    constants.D,
+    constants.E,
+    constants.Fx
+  );
+  res.json(subjectId);
 });
 
 app.post("/api/checkToken", withAuth, function (req, res) {

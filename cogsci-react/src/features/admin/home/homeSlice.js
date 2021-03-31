@@ -32,6 +32,7 @@ export const slice = createSlice({
     uploadedPresentationReceived: (state) => {
       state.uploadedPresentation = true;
     },
+    insertedBonus: () => {},
   },
 });
 
@@ -41,11 +42,29 @@ export const {
   studentPresentationsOpenedReceived,
   studentPresentationsClosedReceived,
   uploadedPresentationReceived,
+  insertedBonus,
 } = slice.actions;
 
 export default slice.reducer;
 
 // Action Creators
+const urlAdminSubject = "/admin/subject";
+const urlBonus = "/bonus";
+
+export const insertBonus = (subjectId, title, content, urlRef) => (
+  dispatch
+) => {
+  const data = { title, content, urlRef };
+
+  return dispatch(
+    apiCallBegan({
+      method: "post",
+      data,
+      url: urlAdminSubject + "/" + subjectId + urlBonus,
+      onSuccess: insertedBonus.type,
+    })
+  );
+};
 
 export const uploadPresentation = (file, subjectId, currentUserId) => (
   dispatch

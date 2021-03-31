@@ -40,11 +40,11 @@ function Comment({
           </span>
         </p>
 
-        <p className="small mb-1 d-inline">
+        <div className="small mb-1 d-inline">
           {isBonus && isAdmin && !isSubcomment && !isAdminComment && (
             <CommentEval comment={comment} bonusId={id} />
           )}
-        </p>
+        </div>
       </div>
       <div className="with-spaces">
         <p>{comment.content}</p>
