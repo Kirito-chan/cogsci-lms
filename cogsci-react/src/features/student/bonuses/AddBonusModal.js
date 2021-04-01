@@ -7,7 +7,12 @@ import { loadBonuses } from "../home/homeSlice";
 import { useDispatch } from "react-redux";
 import { insertBonus } from "../../admin/home/homeSlice";
 
-function AddBonusModal({ showAddBonus, setShowAddBonus, subjectId }) {
+function AddBonusModal({
+  showAddBonus,
+  setShowAddBonus,
+  subjectId,
+  currentUserId,
+}) {
   const dispatch = useDispatch();
   const [bonusTitle, setBonusTitle] = useState("");
   const handleBonusTitle = (e) => setBonusTitle(e.target.value);
@@ -35,7 +40,7 @@ function AddBonusModal({ showAddBonus, setShowAddBonus, subjectId }) {
 
     dispatch(insertBonus(subjectId, bonusTitle, bonusContent, urlRef)).then(
       () => {
-        dispatch(loadBonuses());
+        dispatch(loadBonuses(currentUserId, subjectId));
         resetInputs();
       }
     );

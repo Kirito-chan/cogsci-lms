@@ -242,6 +242,23 @@ app.patch("/api/admin/presentation/:presentationId", async (req, res) => {
   res.json(status);
 });
 
+app.delete(
+  "/api/admin/subject/:subjectId/presentation/:presentationId",
+  async (req, res) => {
+    const { presentationId, subjectId } = req.params;
+    const { path } = req.query;
+    const editedPath = `uploads/teacher/${subjectId}/${presentationId}_${path}`;
+    await queries.deletePresentation(presentationId);
+    fs.unlink(editedPath, (err) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+    res.json(presentationId);
+  }
+);
+
 // presentation valuation types
 app.get("/api/presentation/valuation-types", async (req, res) => {
   const { subjectId } = req.query;
@@ -307,30 +324,49 @@ const storage = multer.diskStorage({
 
 let upload = multer({ storage: storage });
 
-// co robi await? ked ho tam dam a ked ho tam nedam?
-// prettier-ignore
-app.post("/api/subject/:subjectId/presentation/upload", upload.single("file"),
+app.post(
+  "/api/subject/:subjectId/presentation/upload",
+  upload.single("file"),
   async (req, res, next) => {
     const { subjectId } = req.params;
     const { teacherPres, userId } = req.query;
     const file = req.file;
-    // prettier-ignore
-    const presId = await queries.insertPresentation(path.parse(file.filename).name, file.filename, constants.STUD_PRES_NEUTRAL, parseInt(userId));
-    await queries.updatePresentation(presId, userId, subjectId)
+    let presId = null;
+
     if (!file) {
       const error = new Error("No File");
       error.httpStatusCode = 400;
       return next(error);
     }
+    if (teacherPres === "true") {
+      presId = await queries.insertTeacherPresentation(
+        subjectId,
+        path.parse(file.filename).name,
+        file.filename,
+        getCurrentDate()
+      );
+    } else {
+      presId = await queries.insertStudentPresentation(
+        path.parse(file.filename).name,
+        file.filename,
+        constants.STUD_PRES_NEUTRAL,
+        parseInt(userId)
+      );
+      await queries.updatePresentation(presId, userId, subjectId);
+    }
     let destFolder = "uploads";
-    if (teacherPres == "true") {
+    if (teacherPres === "true") {
       destFolder += "/teacher";
     }
     destFolder += "/" + subjectId + "/";
-    fs.rename(destFolder + file.filename, destFolder + presId + "_" + file.filename, function(err) {
-      if ( err ) console.log('ERROR: ' + err);
-  });
-    res.json({subjectId, userId});
+    fs.rename(
+      destFolder + file.filename,
+      destFolder + presId + "_" + file.filename,
+      function (err) {
+        if (err) console.log("ERROR: " + err);
+      }
+    );
+    res.json({ subjectId, userId });
   }
 );
 

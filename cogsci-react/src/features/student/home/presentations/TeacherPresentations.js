@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
 import TeacherPresentationsList from "./TeacherPresentationsList";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import {
   loadTeacherPresentations,
   getTeacherPresentations,
 } from "../homeSlice";
 import { useParams } from "react-router";
 import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
+import { getCurrentUserId } from "../../../../app/currentUserSlice";
 
 function TeacherPresentations() {
   const dispatch = useDispatch();
-  const { subjectId } = useParams();
   const currentUserId = useSelector(getCurrentUserId);
+  const { subjectId } = useParams();
   const teacherPresentations = useSelector(getTeacherPresentations);
 
   useEffect(() => {

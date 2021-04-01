@@ -28,6 +28,7 @@ export const slice = createSlice({
     updatedPresentationStatus: (state, action) => {
       state.presentation.status = action.payload;
     },
+    presentationDeleted: () => {},
   },
 });
 
@@ -43,6 +44,7 @@ export const {
   valuationTypesReceived,
   valuationTypesRequestFailed,
   updatedPresentationStatus,
+  presentationDeleted,
 } = slice.actions;
 
 export default slice.reducer;
@@ -54,6 +56,26 @@ const urlAdminPresentation = "/admin/presentation";
 
 export const loadPresentation = (presentation) => (dispatch) => {
   dispatch({ type: presentationReceived.type, payload: presentation });
+};
+
+export const deletePresentation = (presentationId, path, subjectId) => (
+  dispatch
+) => {
+  return dispatch(
+    apiCallBegan({
+      method: "delete",
+      url:
+        "/admin" +
+        "/subject/" +
+        subjectId +
+        urlPresentation +
+        "/" +
+        presentationId +
+        "/?path=" +
+        path,
+      onSuccess: presentationDeleted.type,
+    })
+  );
 };
 
 export const updatePresentationStatus = (presentationId, status) => (
@@ -145,7 +167,7 @@ export const loadValuationTypes = (subjectId) => (dispatch) => {
 export const getPresentation = (state, presentationId, presIsOpened, presIsNeutral, isTeacherPres, isMyPres) => {
   let presentations = null;
   // prettier-ignore
-  if (isTeacherPres) { presentations = state.features.student.home.teacherPresentations;}
+  if (isTeacherPres) {  presentations = state.features.student.home.teacherPresentations;}
   // prettier-ignore
   else if (isMyPres) { presentations = [state.features.student.home.myPresentation.presentation]}
   else if (presIsNeutral) {

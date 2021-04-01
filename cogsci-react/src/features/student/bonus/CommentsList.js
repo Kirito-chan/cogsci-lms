@@ -11,6 +11,8 @@ import {
 } from "../../../components/StringUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsAdmin } from "../../../app/currentUserSlice";
+import { loadBonuses } from "../home/homeSlice";
+import { useParams } from "react-router";
 
 function CommentsList({
   comments,
@@ -25,6 +27,7 @@ function CommentsList({
 }) {
   const dispatch = useDispatch();
   const isAdmin = useSelector(getIsAdmin);
+  const { subjectId } = useParams();
   const [myCommentClass, setMyCommentClass] = useState(-1);
 
   const handleOdpovedat = (event) => {
@@ -36,10 +39,12 @@ function CommentsList({
     const refCommentId = event.target.getAttribute("refcomment");
     const content = event.target.getAttribute("content");
     dispatch(insertComment(currentUserId, id, content, refCommentId)).then(
-      // prettier-ignore
-      () => {dispatch(loadComments(id)).then(()=>{
-        setMyCommentClass(-1);
-      })}
+      () => {
+        dispatch(loadBonuses(currentUserId, subjectId));
+        dispatch(loadComments(id)).then(() => {
+          setMyCommentClass(-1);
+        });
+      }
     );
   };
 

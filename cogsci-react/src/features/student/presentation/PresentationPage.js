@@ -5,6 +5,7 @@ import {
   loadMyPresentation,
   loadStudentPresentationsClosed,
   loadStudentPresentationsOpened,
+  loadTeacherPresentations,
 } from "../home/homeSlice";
 import {
   getPresentation,
@@ -77,6 +78,7 @@ function PresentationPage() {
     dispatch(loadStudentPresentationsNeutral(currentUserId, subjectId));
     dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
     dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
+    dispatch(loadTeacherPresentations(currentUserId, subjectId));
     dispatch(loadMyPresentation(currentUserId, subjectId));
   }, [currentUserId, subjectId]);
 

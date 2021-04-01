@@ -30,6 +30,7 @@ function BonusesPage() {
         bonuses={bonuses}
         subjectId={subjectId}
         isAdmin={isAdmin}
+        currentUserId={currentUserId}
       />
     )
   );

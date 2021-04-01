@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { deleteBonus, loadBonus, updateBonusInfo } from "./bonusSlice";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
+import { useHistory } from "react-router";
 
 function BonusInfo({
   headerComponent,
@@ -23,6 +24,7 @@ function BonusInfo({
   const dispatch = useDispatch();
   const bonusCreated = bonus?.created && formatDate(bonus.created);
   const bonusUpdated = bonus?.updated && formatDate(bonus.updated);
+  const history = useHistory();
   const [showOdstranit, setShowOdstranit] = useState(false);
   const [showUpravit, setShowUpravit] = useState(false);
   const [nadpis, setNadpis] = useState("");
@@ -57,6 +59,7 @@ function BonusInfo({
     closeModalOdstranit();
     dispatch(deleteBonus(bonus.id)).then(() => {
       dispatch(loadBonus(currentUserId, subjectId));
+      history.push(`/subject/${subjectId}/admin/bonus`);
     });
   };
 

@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { apiCallBegan } from "../../../app/apiConstants";
 import {
-  createUrlToUploadPresentation,
   STUD_PRES_CLOSED,
   STUD_PRES_OPENED,
   STUD_PRES_NEUTRAL,
@@ -62,26 +61,6 @@ export const insertBonus = (subjectId, title, content, urlRef) => (
       data,
       url: urlAdminSubject + "/" + subjectId + urlBonus,
       onSuccess: insertedBonus.type,
-    })
-  );
-};
-
-export const uploadPresentation = (file, subjectId, currentUserId) => (
-  dispatch
-) => {
-  const data = new FormData();
-  data.append("file", file);
-  const url = createUrlToUploadPresentation(subjectId, false, currentUserId);
-
-  return dispatch(
-    apiCallBegan({
-      method: "post",
-      data,
-      url,
-      onSuccess: uploadedPresentationReceived.type,
-      headers: {
-        "content-type": "multipart/form-data",
-      },
     })
   );
 };

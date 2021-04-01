@@ -74,21 +74,25 @@ function SubjectsPageList({ subjects }) {
                           </Link>
                         }
                       </td>
-                      <td>
+                      <td subjectid={subject.id}>
                         {subjIsActive ? (
-                          <Badge pill variant="success">
+                          <Badge pill variant="success" subjectid={subject.id}>
                             Aktívny
                           </Badge>
                         ) : (
-                          <Badge pill variant="secondary">
+                          <Badge
+                            pill
+                            variant="secondary"
+                            subjectid={subject.id}
+                          >
                             Neaktívny
                           </Badge>
                         )}
                       </td>
-                      <td>{subject.year}</td>
+                      <td subjectid={subject.id}>{subject.year}</td>
                       {/* prettier-ignore */}
-                      <td>{subject.season == WINTER_SEASON ? "Zimný semester": "Letný semester"}</td>
-                      <td>
+                      <td subjectid={subject.id}>{subject.season == WINTER_SEASON ? "Zimný semester": "Letný semester"}</td>
+                      <td subjectid={subject.id}>
                         {subject.count_students}/{subject.user_limit}
                       </td>
                     </tr>

@@ -286,6 +286,10 @@ export const deleteBonus = async (id) => {
 
 // presentations
 
+export const deletePresentation = async (id) => {
+  await execute(`DELETE FROM teacher_presentation t WHERE t.id = ?`, [id]);
+};
+
 export const getStudentPresentations = async (
   userId,
   subjectId,
@@ -416,9 +420,28 @@ export const getTeacherPresentations = async (userId, subjectId) => {
   return row;
 };
 
-export const insertPresentation = async (title, path, status, ownerId) => {
+export const insertTeacherPresentation = async (
+  subjectId,
+  title,
+  path,
+  date
+) => {
   const [row] = await execute(
-    `INSERT INTO presentation (title, path, status, owner_id) 
+    `INSERT INTO teacher_presentation (subject_id, title, path, date) 
+    VALUES(?, ?, ?, ?)`,
+    [subjectId, title, path, date]
+  );
+  return row.insertId;
+};
+
+export const insertStudentPresentation = async (
+  title,
+  path,
+  status,
+  ownerId
+) => {
+  const [row] = await execute(
+    `INSERT INTOpresentation (title, path, status, owner_id) 
     VALUES(?, ?, ?, ?)`,
     [title, path, status, ownerId]
   );

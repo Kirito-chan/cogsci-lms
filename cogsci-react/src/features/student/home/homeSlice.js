@@ -40,7 +40,7 @@ export const slice = createSlice({
         : {};
       state.myPresentation = {
         presentation,
-        presentationWeight: action.payload.presentationWeight.weight,
+        presentationWeight: action.payload.presentationWeight?.weight,
       };
     },
     subjectValuationReceived: (state, action) => {
@@ -67,12 +67,19 @@ export default slice.reducer;
 
 // Action Creators
 
-export const uploadPresentation = (file, subjectId, currentUserId) => (
-  dispatch
-) => {
+export const uploadPresentation = (
+  file,
+  subjectId,
+  currentUserId,
+  isTeacherPres
+) => (dispatch) => {
   const data = new FormData();
   data.append("file", file);
-  const url = createUrlToUploadPresentation(subjectId, false, currentUserId);
+  const url = createUrlToUploadPresentation(
+    subjectId,
+    isTeacherPres,
+    currentUserId
+  );
 
   return dispatch(
     apiCallBegan({

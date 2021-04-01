@@ -3,9 +3,9 @@ import Container from "react-bootstrap/Container";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import StudentPresentationsList from "../../student/home/presentations/StudentPresentationsList";
 import TeacherPresentationsList from "../../student/home/presentations/TeacherPresentationsList";
-import MyPresentationList from "../../student/home/presentations/MyPresentationList";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import UploadTeacherPresentations from "./UploadTeacherPresentations";
 
 function PresentationsPageList({
   studentPresentationsNeutral,
@@ -76,20 +76,11 @@ function PresentationsPageList({
           <TeacherPresentationsList
             teacherPresentations={teacherPresentations}
             h2="true"
-          />
-        )}
-        {showLoaderIfAnyNull(
-          myPresentation,
-          myPresentation,
-          myPresentation?.presentation
-        ) || (
-          <MyPresentationList
-            myPresentation={myPresentation.presentation}
-            presentationWeight={myPresentation.presentationWeight}
             subjectId={subjectId}
-            classname="mt-0"
           />
         )}
+
+        <UploadTeacherPresentations />
       </Container>
     </div>
   );

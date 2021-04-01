@@ -9,7 +9,7 @@ import { URL_BONUSES } from "../../../constants";
 import Button from "react-bootstrap/esm/Button";
 import AddBonusModal from "./AddBonusModal";
 
-function BonusesPageList({ bonuses, subjectId, isAdmin }) {
+function BonusesPageList({ bonuses, subjectId, isAdmin, currentUserId }) {
   const [showAddBonus, setShowAddBonus] = useState(false);
   const showModalAddBonus = () => setShowAddBonus(true);
 
@@ -52,6 +52,7 @@ function BonusesPageList({ bonuses, subjectId, isAdmin }) {
         showAddBonus={showAddBonus}
         setShowAddBonus={setShowAddBonus}
         subjectId={subjectId}
+        currentUserId={currentUserId}
       />
     </div>
   );
