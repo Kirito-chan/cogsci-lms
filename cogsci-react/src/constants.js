@@ -13,11 +13,13 @@ export const URL_SUBJECTS = "/subjects";
 export const URL_BONUSES = "/bonus";
 export const URL_PRESENTATIONS = "/presentation";
 export const URL_TERMS = "/terms";
+export const NOT_AUTHORIZED = "/not-authorized";
 
 export const URL_ADMIN_SUBJECTS = "/admin/subjects";
 export const URL_ADMIN_BONUSES = "/admin/bonus";
 export const URL_ADMIN_PRESENTATIONS = "/admin/presentation";
-export const URL_HOME_ADMIN = "/home-admin";
+export const URL_ADMIN_SETTINGS = "/admin/settings";
+export const URL_HOME_ADMIN = "/admin/home";
 
 // konstanty z databazy
 export const IS_STUDENT = 1; // rola pouzivatela, ktora ja v tabulke user v stlpci role

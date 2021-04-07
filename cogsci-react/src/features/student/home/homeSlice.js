@@ -176,6 +176,26 @@ export const loadSubjectValuation = (subjectId) => (dispatch) => {
   );
 };
 
+export const updateSubjectValuation = (
+  subjectId,
+  gradeA,
+  gradeB,
+  gradeC,
+  gradeD,
+  gradeE,
+  gradeFx
+) => (dispatch) => {
+  const data = { gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx };
+  return dispatch(
+    apiCallBegan({
+      method: "put",
+      data,
+      url: urlSubjectValuation + "/" + subjectId,
+      onSuccess: subjectValuationReceived.type,
+    })
+  );
+};
+
 // Selectors
 export const getLoading = (state) => state.features.student.home.loading;
 export const getAttendance = (state) => state.features.student.home.attendances;

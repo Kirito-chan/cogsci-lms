@@ -9,6 +9,7 @@ import AuthRoute from "./features/login/AuthRoute";
 import {
   URL_ADMIN_BONUSES,
   URL_ADMIN_PRESENTATIONS,
+  URL_ADMIN_SETTINGS,
   URL_ADMIN_SUBJECTS,
   URL_BONUSES,
   URL_HOME_ADMIN,
@@ -26,6 +27,7 @@ import TermsPage from "./features/student/terms/TermsPage";
 import NotAuthorizedPage from "./components/NotAuthorizedPage";
 import AdminHomePage from "./features/admin/home/AdminHomePage";
 import PresentationsPageAdmin from "./features/admin/presentations/PresentationsPage";
+import SettingsPage from "./features/admin/settings/SettingsPage";
 
 // prettier-ignore
 function App() {
@@ -34,28 +36,31 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <Switch>
-          <AuthRoute path="/" exact component={SubjectsPage} type="student" />
+          <AuthRoute path="/" exact component={Login} type="login" />
           <AuthRoute path="/login" component={Login} type="login" />
           <AuthRoute path="/not-authorized" component={NotAuthorizedPage} type="not-auth" />
           
           {/* admin routes */}
-          <AuthRoute path={"/subject/:subjectId" + URL_HOME_ADMIN} component={AdminHomePage} type="home-student" />
+          <AuthRoute path={"/subject/:subjectId" + URL_HOME_ADMIN} component={AdminHomePage} type="admin" />
           <AuthRoute path={URL_ADMIN_SUBJECTS} component={SubjectsPageAdmin} type="admin" />
-          <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_BONUSES} component={BonusesPage} type="bonus" />
-          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_BONUSES + "/:bonusId"} component={BonusPage} type="bonusId" />
-          <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_PRESENTATIONS} component={PresentationsPageAdmin} type="presentation" />
+          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_SETTINGS} component={SettingsPage} type="admin" />
+          <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_BONUSES} component={BonusesPage} type="admin" />
+          <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_PRESENTATIONS} component={PresentationsPageAdmin} type="admin" />
           
           {/* student routes */}
-          <AuthRoute path={"/subject/:subjectId" + URL_HOME_STUDENT} component={StudentHomePage} type="home-student"/>
-          <AuthRoute path={URL_SUBJECTS} component={SubjectsPage} type="subjects" />
-          <AuthRoute exact path={"/subject/:subjectId" + URL_BONUSES} component={BonusesPage} type="bonus" />
-          <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="bonusId" />
-          <AuthRoute exact path={"/subject/:subjectId" + URL_PRESENTATIONS} component={PresentationsPage} type="presentation" />
-          <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} 
-                     component={PresentationPage} type="presentationId" />
-          <AuthRoute path={"/subject/:subjectId" + URL_TERMS} component={TermsPage} type="term" />
+          <AuthRoute path={"/subject/:subjectId" + URL_HOME_STUDENT} component={StudentHomePage} type="student"/>
+          <AuthRoute path={URL_SUBJECTS} component={SubjectsPage} type="student" />
+          <AuthRoute exact path={"/subject/:subjectId" + URL_BONUSES} component={BonusesPage} type="student" />
+          <AuthRoute exact path={"/subject/:subjectId" + URL_PRESENTATIONS} component={PresentationsPage} type="student" />
+          <AuthRoute path={"/subject/:subjectId" + URL_TERMS} component={TermsPage} type="student" />
+
+          {/* student and admin common routes */}        
+          <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="both" />
+          <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} component={PresentationPage} type="both" />
+          
           {/* defaultna route, ak nematchne nic: /login, ak je neprihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />
+          
         </Switch>
       </BrowserRouter>
     </div>

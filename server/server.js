@@ -64,6 +64,13 @@ app.get("/api/subject/:subjectId", async function (req, res) {
   res.json(row);
 });
 
+app.patch("/api/subject/:subjectId", async function (req, res) {
+  const { subjectId } = req.params;
+  const { status } = req.body;
+  await queries.updateSubjectStatus(subjectId, status);
+  res.json(status);
+});
+
 app.post("/api/admin/subjects", async function (req, res) {
   let { name, year, season, about, userLimit, weeks, active } = req.body;
   if (about === undefined) about = null;
@@ -149,10 +156,17 @@ app.get("/api/bonus/", async (req, res) => {
 
 app.put("/api/admin/bonus/:bonusId", async (req, res) => {
   const { bonusId } = req.params;
-  const { title, content, videoURL } = req.body;
+  const { title, content, videoURL, isFocusingURL } = req.body;
   // prettier-ignore
   const date = getCurrentDate();
-  await queries.updateBonusInfo(bonusId, title, content, videoURL, date);
+  await queries.updateBonusInfo(
+    bonusId,
+    title,
+    content,
+    videoURL,
+    date,
+    isFocusingURL
+  );
   res.json({ bonusId });
 });
 
@@ -375,6 +389,32 @@ app.get("/api/subject-valuation/:subjectId", async (req, res) => {
   const { subjectId } = req.params;
   const row = await queries.getSubjectValuation(subjectId);
   res.json(row);
+});
+
+app.put("/api/subject-valuation/:subjectId", async (req, res) => {
+  const { subjectId } = req.params;
+  const { gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx } = req.body;
+  if (
+    !isNaN(gradeA) &&
+    !isNaN(gradeB) &&
+    !isNaN(gradeC) &&
+    !isNaN(gradeD) &&
+    !isNaN(gradeE) &&
+    !isNaN(gradeFx)
+  ) {
+    await queries.updateSubjectValuation(
+      subjectId,
+      gradeA,
+      gradeB,
+      gradeC,
+      gradeD,
+      gradeE,
+      gradeFx
+    );
+    res.json(subjectId);
+  } else {
+    res.sendStatus(415);
+  }
 });
 
 // set port, listen for requests

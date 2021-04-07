@@ -16,6 +16,8 @@ import {
   URL_TERMS,
   URL_HOME_ADMIN,
   URL_ADMIN_PRESENTATIONS,
+  NOT_AUTHORIZED,
+  URL_ADMIN_SETTINGS,
 } from "../constants";
 import { useLocation, useParams } from "react-router";
 import {
@@ -32,9 +34,11 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const subjectIdParams = useParams().subjectId;
   const subjectName = useSelector(getCurrentSubjectName);
   const subjectId = useSelector(getCurrentSubjectId);
-  const inSubjectsPage = [URL_SUBJECTS, URL_ADMIN_SUBJECTS].includes(
-    useLocation().pathname
-  );
+  const inSubjectsPage = [
+    URL_SUBJECTS,
+    URL_ADMIN_SUBJECTS,
+    NOT_AUTHORIZED,
+  ].includes(useLocation().pathname);
 
   useEffect(() => {
     if (subjectIdParams) dispatch(loadSubject(subjectIdParams));
@@ -95,9 +99,17 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_TERMS}
-            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+            className={
+              "nav-link " + (isAdmin || inSubjectsPage ? "d-none" : "")
+            }
           >
             {!isAdmin && !inSubjectsPage && "Podmienky"}
+          </NavLink>
+          <NavLink
+            to={"/subject/" + subjectId + URL_ADMIN_SETTINGS}
+            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+          >
+            {isAdmin && !inSubjectsPage && "Nastavenia"}
           </NavLink>
         </Nav>
         <Nav>

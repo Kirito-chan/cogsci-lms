@@ -99,6 +99,13 @@ export const getSubject = async (subjectId) => {
   return row[0];
 };
 
+export const updateSubjectStatus = async (subjectId, status) => {
+  await execute("UPDATE subject s SET s.status = ? WHERE id = ?", [
+    status,
+    subjectId,
+  ]);
+};
+
 export const getSubjectValuation = async (subjectId) => {
   const [
     row,
@@ -106,6 +113,22 @@ export const getSubjectValuation = async (subjectId) => {
     subjectId,
   ]);
   return row[0];
+};
+
+export const updateSubjectValuation = async (
+  subjectId,
+  gradeA,
+  gradeB,
+  gradeC,
+  gradeD,
+  gradeE,
+  gradeFx
+) => {
+  await execute(
+    `UPDATE subject_valuation s SET s.A = ?, s.B = ?, s.C = ?, s.D = ?, s.E = ?, s.Fx = ? 
+     WHERE subject_id = ?`,
+    [gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx, subjectId]
+  );
 };
 
 export const getUser = async (username) => {
@@ -263,12 +286,20 @@ export const getBonuses = async (userId, subjectId) => {
   return row;
 };
 
-export const updateBonusInfo = async (id, title, content, videoURL, date) => {
+export const updateBonusInfo = async (
+  id,
+  title,
+  content,
+  videoURL,
+  date,
+  isFocusingURL
+) => {
   await execute(
     `UPDATE announcement a SET a.title = ?, a.content = ?, a.video_URL = ?, 
-                               a.updated = ?, a.updated_count = updated_count + 1
+                               a.updated = ?, a.updated_count = updated_count + 1,
+                               a.is_focusing_URL = ?
      WHERE id = ?`,
-    [title, content, videoURL, date, id]
+    [title, content, videoURL, date, isFocusingURL ? true : false, id]
   );
 };
 

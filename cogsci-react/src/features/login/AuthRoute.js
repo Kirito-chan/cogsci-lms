@@ -55,7 +55,10 @@ const AuthRoute = (props) => {
             setComponent(<Redirect to={URL_SUBJECTS} />);
           }
         } else {
-          if (props.type == "admin" && isAdmin === false) {
+          if (
+            (isAdmin === false && props.type === "admin") ||
+            (isAdmin === true && props.type === "student")
+          ) {
             setComponent(<Redirect to="/not-authorized" />);
           } else {
             setComponent(<Route {...props} />);

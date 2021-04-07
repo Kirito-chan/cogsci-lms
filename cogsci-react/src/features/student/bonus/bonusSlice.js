@@ -63,10 +63,14 @@ export const updateBonusValuated = (bonusId, commentId, valuated) => (
   );
 };
 
-export const updateBonusInfo = (bonusId, title, content, videoURL) => (
-  dispatch
-) => {
-  const data = { title, content, videoURL };
+export const updateBonusInfo = (
+  bonusId,
+  title,
+  content,
+  videoURL,
+  isFocusingURL
+) => (dispatch) => {
+  const data = { title, content, videoURL, isFocusingURL };
 
   return dispatch(
     apiCallBegan({

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import formatDate from "../../../components/DateUtils";
 import { URL_BONUSES } from "../../../constants";
 import BonusVideo from "../bonuses/BonusVideo";
@@ -8,11 +8,8 @@ import Button from "react-bootstrap/Button";
 import Discussion from "../home/Discussion";
 import "./Bonus.css";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
-import { useDispatch } from "react-redux";
-import { deleteBonus, loadBonus, updateBonusInfo } from "./bonusSlice";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
-import { useHistory } from "react-router";
 
 function BonusInfo({
   headerComponent,
@@ -21,47 +18,14 @@ function BonusInfo({
   isAdmin,
   currentUserId,
 }) {
-  const dispatch = useDispatch();
   const bonusCreated = bonus?.created && formatDate(bonus.created);
   const bonusUpdated = bonus?.updated && formatDate(bonus.updated);
-  const history = useHistory();
+
   const [showOdstranit, setShowOdstranit] = useState(false);
-  const [showUpravit, setShowUpravit] = useState(false);
-  const [nadpis, setNadpis] = useState("");
-  const [obsah, setObsah] = useState("");
-  const [videoURL, setVideoURL] = useState("");
-
-  const handleNadpis = (e) => setNadpis(e.target.value);
-  const handleObsah = (e) => setObsah(e.target.value);
-  const handleVideoURL = (e) => setVideoURL(e.target.value);
-
-  const closeModalOdstranit = () => setShowOdstranit(false);
   const showModalOdstranit = () => setShowOdstranit(true);
-  const closeModalUpravit = () => setShowUpravit(false);
+
+  const [showUpravit, setShowUpravit] = useState(false);
   const showModalUpravit = () => setShowUpravit(true);
-
-  useEffect(() => {
-    if (bonus) {
-      setNadpis(bonus.title);
-      setObsah(bonus.content);
-      setVideoURL(bonus.video_URL);
-    }
-  }, [bonus]);
-
-  const handleUpravit = () => {
-    closeModalUpravit();
-    dispatch(updateBonusInfo(bonus.id, nadpis, obsah, videoURL)).then(() => {
-      dispatch(loadBonus(currentUserId, subjectId));
-    });
-  };
-
-  const handleOdstranit = () => {
-    closeModalOdstranit();
-    dispatch(deleteBonus(bonus.id)).then(() => {
-      dispatch(loadBonus(currentUserId, subjectId));
-      history.push(`/subject/${subjectId}/admin/bonus`);
-    });
-  };
 
   return (
     <div>
@@ -130,29 +94,28 @@ function BonusInfo({
 
             <Col lg={6}>
               {bonus.video_URL && bonus.video_URL != "null" && (
-                <BonusVideo url={bonus.video_URL} />
+                <BonusVideo
+                  url={bonus.video_URL}
+                  isFocusing={bonus.is_focusing_URL}
+                />
               )}
             </Col>
           </Row>
 
           <ModalDelete
             showOdstranit={showOdstranit}
-            closeModalOdstranit={closeModalOdstranit}
+            setShowOdstranit={setShowOdstranit}
+            currentUserId={currentUserId}
+            subjectId={subjectId}
             bonus={bonus}
-            handleOdstranit={handleOdstranit}
           />
 
           <ModalEdit
             showUpravit={showUpravit}
-            closeModalUpravit={closeModalUpravit}
+            setShowUpravit={setShowUpravit}
+            currentUserId={currentUserId}
+            subjectId={subjectId}
             bonus={bonus}
-            handleNadpis={handleNadpis}
-            nadpis={nadpis}
-            handleObsah={handleObsah}
-            obsah={obsah}
-            handleVideoURL={handleVideoURL}
-            videoURL={videoURL}
-            handleUpravit={handleUpravit}
           />
         </article>
       )}

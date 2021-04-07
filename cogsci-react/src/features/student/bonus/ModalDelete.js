@@ -1,13 +1,29 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
+import { deleteBonus, loadBonus } from "./bonusSlice";
 
 function ModalDelete({
   showOdstranit,
-  closeModalOdstranit,
-  handleOdstranit,
+  setShowOdstranit,
   bonus,
+  currentUserId,
+  subjectId,
 }) {
+  const closeModalOdstranit = () => setShowOdstranit(false);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleOdstranit = () => {
+    closeModalOdstranit();
+    dispatch(deleteBonus(bonus.id)).then(() => {
+      dispatch(loadBonus(currentUserId, subjectId));
+      history.push(`/subject/${subjectId}/admin/bonus`);
+    });
+  };
+
   return (
     <Modal show={showOdstranit} onHide={closeModalOdstranit} centered>
       <Modal.Header closeButton>
