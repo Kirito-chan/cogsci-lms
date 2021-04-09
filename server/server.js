@@ -83,15 +83,7 @@ app.post("/api/admin/subjects", async function (req, res) {
     weeks,
     active
   );
-  await queries.insertSubjectValuation(
-    subjectId,
-    constants.A,
-    constants.B,
-    constants.C,
-    constants.D,
-    constants.E,
-    constants.Fx
-  );
+  await queries.insertSubjectValuation(subjectId);
   res.json(subjectId);
 });
 
@@ -273,6 +265,30 @@ app.delete(
   }
 );
 
+app.post(
+  "/api/admin/subject/:subjectId/settings/presentation-criteria",
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { criteria } = req.body;
+    const { wereJustUpdatedNotDeletedOrInserted } = req.query;
+
+    if (wereJustUpdatedNotDeletedOrInserted == "true") {
+      for (const criterion of criteria) {
+        await queries.updatePresentationCriteria(
+          criterion.id,
+          criterion.name,
+          criterion.height
+        );
+      }
+      res.json(subjectId);
+    } else {
+      await queries.deletePresentationCriteria(subjectId);
+      const id = await queries.insertPresentationCriteria(subjectId, criteria);
+      res.json(id);
+    }
+  }
+);
+
 // presentation valuation types
 app.get("/api/presentation/valuation-types", async (req, res) => {
   const { subjectId } = req.query;
@@ -305,6 +321,41 @@ app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
   const presentationWeight = await queries.getPresentationWeight(subjectId);
   res.json({ presentation, presentationWeight });
 });
+
+// insert evaluation of a presentation that is taken from Sliders form
+app.post(
+  "/api/subject/:subjectId/presentation/:presentationId/evaluation",
+  async (req, res) => {
+    const { subjectId, presentationId } = req.params;
+    const { userWhoEvaluatesId, evaluatedUserId } = req.query;
+    const { values } = req.body;
+
+    const whoseUslId = await queries.getUslId(subjectId, userWhoEvaluatesId);
+    const targetUslId = await queries.getUslId(subjectId, evaluatedUserId);
+
+    for (const element of values) {
+      const pvpId = await queries.getPvpId(subjectId, element.name);
+      await queries.insertPresentationValuation(
+        whoseUslId,
+        targetUslId,
+        pvpId,
+        element.value
+      );
+    }
+
+    // await Promise.all(values.map(async (element) => {
+    //   const pvpId = await queries.getPvpId(subjectId, element.name);
+    //   await queries.insertPresentationValuation(
+    //     whoseUslId,
+    //     targetUslId,
+    //     pvpId,
+    //     element.value
+    //   );
+    // }));
+
+    res.json(presentationId);
+  }
+);
 
 // download presentation
 app.get(
@@ -363,7 +414,6 @@ app.post(
       presId = await queries.insertStudentPresentation(
         path.parse(file.filename).name,
         file.filename,
-        constants.STUD_PRES_NEUTRAL,
         parseInt(userId)
       );
       await queries.updatePresentation(presId, userId, subjectId);

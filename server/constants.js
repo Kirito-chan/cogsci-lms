@@ -14,6 +14,16 @@ export const ATTENDANCE_WEIGHT = 30; // val_attendance v subject tabulke, je to 
 export const PRESENTATION_WEIGHT = 40; // val_presentation v subject tabulke
 export const COMMENT_WEIGHT = 30; // val_comment v subject tabulke
 
+export const PENDING_FOR_SUBJ = 1; // v tabulke user_subject_lookup stlpec status hovori o tom,
+export const ACCEPTED_TO_SUBJ = 2; // ci je student cakajuci, prijaty alebo zmietnuty pre prihlasenie sa na dany predmet
+export const REJECTED_TO_SUBJ = 3;
+
+export const ATTENDANCE_CLOSED = 1; // v tabulke attendance stplec status, ci je otvorena alebo uzavreta dochadzka na dany tyzden
+export const ATTENDANCE_OPENED = 2;
+
+// ked sa hodnoti prezentacia podla roznych kriterii, tak aky je maximalny pocet bodov pre dane kriterium
+export const MAX_POINT_HEIGHT_PRES_EVALUATION = 10;
+
 export const TEACHER = "teacher"; // ked sa ziskavaju komentare, tak aby cez parameter TEACHER alebo STUDENT
 export const STUDENT = "student"; // zistil koho komentare ma vybrat z databazy
 

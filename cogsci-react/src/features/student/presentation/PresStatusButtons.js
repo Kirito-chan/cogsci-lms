@@ -35,7 +35,7 @@ function PresStatusButtons({ presentationId, status, subjectId, history }) {
   const openPresentation = () => {
     dispatch(updatePresentationStatus(presentationId, STUD_PRES_OPENED)).then(
       () => {
-        history.push({ pathname: `/subject/${subjectId}/presentation` });
+        history.push({ pathname: `/subject/${subjectId}/admin/presentation` });
         history.push({
           pathname: `/subject/${subjectId}/presentation/${presentationId}`,
           search: "?is_opened=true",
@@ -46,7 +46,7 @@ function PresStatusButtons({ presentationId, status, subjectId, history }) {
   const closePresentation = () => {
     dispatch(updatePresentationStatus(presentationId, STUD_PRES_CLOSED)).then(
       () => {
-        history.push({ pathname: `/subject/${subjectId}/presentation` });
+        history.push({ pathname: `/subject/${subjectId}/admin/presentation` });
         history.push({
           pathname: `/subject/${subjectId}/presentation/${presentationId}`,
           search: "?is_opened=false",

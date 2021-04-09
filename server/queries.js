@@ -1,11 +1,21 @@
 import pool from "./db.js";
 import {
   TEACHER,
-  SUBJ_IS_ACTIVE,
-  SUBJ_IS_NOT_ACTIVE,
   ATTENDANCE_WEIGHT,
   PRESENTATION_WEIGHT,
   COMMENT_WEIGHT,
+  PENDING_FOR_SUBJ,
+  STUD_PRES_NEUTRAL,
+  A,
+  B,
+  C,
+  D,
+  E,
+  Fx,
+  ACCEPTED_TO_SUBJ,
+  ATTENDANCE_CLOSED,
+  ATTENDANCE_OPENED,
+  MAX_POINT_HEIGHT_PRES_EVALUATION,
 } from "./constants.js";
 
 // subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
@@ -58,7 +68,7 @@ export const insertSubject = async (
   return row.insertId;
 };
 
-export const insertSubjectValuation = async (subjectId, A, B, C, D, E, Fx) => {
+export const insertSubjectValuation = async (subjectId) => {
   const [row] = await execute(
     `INSERT INTO subject_valuation (subject_id, A, B, C, D, E, Fx)
      VALUES (?, ?, ?, ?, ?,  ?, ?)`,
@@ -73,10 +83,10 @@ export const getStudentSubjects = async (userId) => {
             CASE WHEN usl.user_id IS NOT NULL THEN TRUE ELSE FALSE END as is_enrolled
       FROM subject s LEFT JOIN user_subject_lookup usl ON
            usl.user_id = ? AND s.id = usl.subject_id
-           WHERE s.status = 1
+           WHERE s.status = ?
            ORDER BY is_enrolled DESC, s.year DESC
      `,
-    [userId]
+    [userId, PENDING_FOR_SUBJ]
   );
   return rows;
 };
@@ -84,10 +94,10 @@ export const getStudentSubjects = async (userId) => {
 export const getAllSubjects = async () => {
   const [rows] = await execute(
     `SELECT s.*, count(DISTINCT usl.user_id) as count_students
-     FROM subject s LEFT JOIN user_subject_lookup usl ON usl.subject_id = s.id AND usl.user_id is not NULL AND usl.status = 2
+     FROM subject s LEFT JOIN user_subject_lookup usl ON usl.subject_id = s.id AND usl.user_id is not NULL AND usl.status = ?
      GROUP BY s.id
      ORDER BY s.status, s.year DESC`,
-    []
+    [ACCEPTED_TO_SUBJ]
   );
   return rows;
 };
@@ -152,7 +162,7 @@ export const getAttedance = async (userId, subjectId) => {
            ELSE 1
          END AS got_point,
          CASE
-          WHEN u.id is NULL AND a.status = 2 THEN 1
+          WHEN u.id is NULL AND a.status = ? THEN 1
           ELSE 0
         END AS show_password_input 
   FROM attendance AS a LEFT JOIN user_attendance_lookup AS u
@@ -166,7 +176,7 @@ export const getAttedance = async (userId, subjectId) => {
   SELECT tab1.date, tab1.id, tab1.got_point, tab1.show_password_input, pw.weight 
   FROM tab1 CROSS JOIN pres_weight pw
   ORDER BY tab1.date DESC`,
-    [userId, subjectId, subjectId]
+    [ATTENDANCE_OPENED, userId, subjectId, subjectId]
   );
   return row;
 };
@@ -238,6 +248,41 @@ export const getPresentationValuationTypes = async (subjectId) => {
     [subjectId]
   );
   return rows;
+};
+
+export const getUslId = async (subjectId, userId) => {
+  const [
+    row,
+  ] = await execute(
+    `SELECT id FROM user_subject_lookup WHERE subject_id = ? AND user_id = ?`,
+    [subjectId, userId]
+  );
+  return row[0].id;
+};
+
+export const getPvpId = async (subjectId, name) => {
+  const [
+    row,
+  ] = await execute(
+    `SELECT id FROM presentation_valuation_point WHERE subject_id = ? AND point = ?`,
+    [subjectId, name]
+  );
+  return row[0].id;
+};
+
+export const insertPresentationValuation = async (
+  whoseUslId,
+  targetUslId,
+  pvpId,
+  points
+) => {
+  const [
+    row,
+  ] = await execute(
+    `INSERT INTO user_presentation_valuation (whose_usl_id, target_usl_id, pvp_id, points) VALUES(?, ?, ?, ?)`,
+    [whoseUslId, targetUslId, pvpId, points]
+  );
+  return row.insertId;
 };
 
 // bonuses
@@ -317,6 +362,33 @@ export const deleteBonus = async (id) => {
 
 // presentations
 
+export const deletePresentationCriteria = async (subjectId) => {
+  await execute(
+    `DELETE FROM presentation_valuation_point WHERE subject_id = ?`,
+    [subjectId]
+  );
+};
+
+export const updatePresentationCriteria = async (id, name, height) => {
+  await execute(
+    `UPDATE presentation_valuation_point SET point = ?, height = ? WHERE id = ?`,
+    [name, height, id]
+  );
+};
+
+export const insertPresentationCriteria = async (subjectId, criteria) => {
+  let query =
+    "INSERT INTO presentation_valuation_point (subject_id, point, height) VALUES ";
+  for (let index = 0; index < criteria.length; index++) {
+    const criterion = criteria[index];
+    if (index !== criteria.length - 1) {
+      query += `(${subjectId}, '${criterion.name}', ${criterion.height}), `;
+    } else query += `(${subjectId}, '${criterion.name}', ${criterion.height})`;
+  }
+  const [row] = await execute(query, [subjectId]);
+  return row.insertId;
+};
+
 export const deletePresentation = async (id) => {
   await execute(`DELETE FROM teacher_presentation t WHERE t.id = ?`, [id]);
 };
@@ -324,7 +396,7 @@ export const deletePresentation = async (id) => {
 export const getStudentPresentations = async (
   userId,
   subjectId,
-  statusOpen
+  statusIsOpen
 ) => {
   const [row] = await execute(
     `
@@ -350,14 +422,14 @@ export const getStudentPresentations = async (
    SELECT tab2.*, CASE WHEN upv.id is NULL THEN FALSE ELSE TRUE END AS has_evaluated
    FROM tab2 LEFT JOIN user_presentation_valuation as upv
          ON upv.target_usl_id = (SELECT usl.id FROM user_subject_lookup as usl
-                                WHERE usl.user_id = ?
+                                WHERE usl.user_id = tab2.user_id
                                   AND usl.subject_id = ?)
          AND upv.whose_usl_id=(SELECT usl.id FROM user_subject_lookup as usl
-                               WHERE usl.user_id = tab2.user_id
+                               WHERE usl.user_id = ?
                                  AND usl.subject_id = ?) 
    GROUP BY tab2.id 
    ORDER BY has_evaluated ASC`,
-    [statusOpen, subjectId, userId, userId, subjectId, subjectId]
+    [statusIsOpen, subjectId, userId, subjectId, userId, subjectId]
   );
   return row;
 };
@@ -402,7 +474,7 @@ export const getMyPresentation = async (userId, subjectId) => {
      ),
 
     tab3 as (
-      SELECT tab2.*, ((SELECT weight FROM pres_weight)*(pvp.height/100))/10*tab2.points as points_per_category
+      SELECT tab2.*, ((SELECT weight FROM pres_weight)*(pvp.height/100))/?*tab2.points as points_per_category
       FROM tab2 LEFT JOIN presentation_valuation_point as pvp
       ON tab2.pvp_id = pvp.id
     ),
@@ -418,7 +490,7 @@ export const getMyPresentation = async (userId, subjectId) => {
     FROM tab4 JOIN user ON tab4.user_id = user.id 
     WHERE tab4.id is not null;
   `,
-    [userId, subjectId, subjectId]
+    [userId, subjectId, subjectId, MAX_POINT_HEIGHT_PRES_EVALUATION]
   );
   return row[0];
 };
@@ -465,16 +537,11 @@ export const insertTeacherPresentation = async (
   return row.insertId;
 };
 
-export const insertStudentPresentation = async (
-  title,
-  path,
-  status,
-  ownerId
-) => {
+export const insertStudentPresentation = async (title, path, ownerId) => {
   const [row] = await execute(
     `INSERT INTOpresentation (title, path, status, owner_id) 
     VALUES(?, ?, ?, ?)`,
-    [title, path, status, ownerId]
+    [title, path, STUD_PRES_NEUTRAL, ownerId]
   );
   return row.insertId;
 };

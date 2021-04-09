@@ -49,6 +49,7 @@ export const slice = createSlice({
     uploadedPresentationReceived: (state) => {
       state.uploadedPresentation = true;
     },
+    presentationCriteriaInserted: () => {},
   },
 });
 
@@ -61,6 +62,7 @@ export const {
   myPresentationReceived,
   subjectValuationReceived,
   uploadedPresentationReceived,
+  presentationCriteriaInserted,
 } = slice.actions;
 
 export default slice.reducer;
@@ -192,6 +194,35 @@ export const updateSubjectValuation = (
       data,
       url: urlSubjectValuation + "/" + subjectId,
       onSuccess: subjectValuationReceived.type,
+    })
+  );
+};
+
+const urlAdmin = "/admin";
+const urlSubject = "/subject";
+const urlSettings = "/settings";
+const urlPresCriteria = "/presentation-criteria";
+
+export const deleteOldAndInsertNewPresentationCriteria = (
+  subjectId,
+  criteria,
+  wereJustUpdatedNotDeletedOrInserted
+) => (dispatch) => {
+  const data = { criteria };
+  return dispatch(
+    apiCallBegan({
+      method: "post",
+      data,
+      url:
+        urlAdmin +
+        urlSubject +
+        "/" +
+        subjectId +
+        urlSettings +
+        urlPresCriteria +
+        "/?wereJustUpdatedNotDeletedOrInserted=" +
+        wereJustUpdatedNotDeletedOrInserted,
+      onSuccess: presentationCriteriaInserted.type,
     })
   );
 };

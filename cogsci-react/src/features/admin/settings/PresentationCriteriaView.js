@@ -13,6 +13,7 @@ function PresentationCriteriaView({
   deleteCriterion,
   handleName,
   handleHeight,
+  loading,
 }) {
   return (
     <div>
@@ -42,7 +43,7 @@ function PresentationCriteriaView({
               Pridať kritérium
             </Button>
           </Col>
-          <Col xs="2">
+          <Col xs="3">
             <Button
               variant="success"
               className={
@@ -52,7 +53,14 @@ function PresentationCriteriaView({
               size="sm"
               onClick={submitForm}
             >
-              Uložiť
+              {loading ? (
+                <span>
+                  <span className={"spinner-border spinner-border-sm "}></span>{" "}
+                  Loading...
+                </span>
+              ) : (
+                "Uložiť"
+              )}
             </Button>
             <br />
           </Col>
@@ -91,7 +99,7 @@ function TextInput({
         />
       </Col>
 
-      <Col xs="2" className="ml-sm-auto">
+      <Col xs="3" xl="2" className="ml-sm-auto">
         <Form.Control
           required
           type="text"

@@ -122,10 +122,10 @@ function PresentationPageView({
           </div>
         )}
 
-        {presIsOpened && (
+        {presIsOpened && !presentation?.has_evaluated && (
           <Row>
             <Col>
-              <PresentationEvaluation />
+              <PresentationEvaluation evaluatedUserId={presentation?.user_id} />
             </Col>
           </Row>
         )}

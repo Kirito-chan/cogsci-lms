@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import formatDate from "../../../components/DateUtils";
 import { URL_BONUSES } from "../../../constants";
 import BonusVideo from "../bonuses/BonusVideo";
@@ -26,6 +26,21 @@ function BonusInfo({
 
   const [showUpravit, setShowUpravit] = useState(false);
   const showModalUpravit = () => setShowUpravit(true);
+
+  const [url, setURL] = useState(null);
+
+  useEffect(() => {
+    if (bonus) {
+      let newUrl = bonus.video_URL;
+
+      if (newUrl.includes("ted") && !newUrl.includes("embed")) {
+        newUrl = new URL(newUrl);
+        newUrl.hostname = newUrl.hostname.replace("www", "embed");
+        newUrl = newUrl.href;
+      }
+      setURL(newUrl);
+    }
+  }, [bonus]);
 
   return (
     <div>
@@ -93,11 +108,8 @@ function BonusInfo({
             </Col>
 
             <Col lg={6}>
-              {bonus.video_URL && bonus.video_URL != "null" && (
-                <BonusVideo
-                  url={bonus.video_URL}
-                  isFocusing={bonus.is_focusing_URL}
-                />
+              {url && url != "null" && (
+                <BonusVideo url={url} isFocusing={bonus.is_focusing_URL} />
               )}
             </Col>
           </Row>

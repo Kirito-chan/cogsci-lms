@@ -29,6 +29,7 @@ export const slice = createSlice({
       state.presentation.status = action.payload;
     },
     presentationDeleted: () => {},
+    presentationEvaluationInserted: () => {},
   },
 });
 
@@ -45,6 +46,7 @@ export const {
   valuationTypesRequestFailed,
   updatedPresentationStatus,
   presentationDeleted,
+  presentationEvaluationInserted,
 } = slice.actions;
 
 export default slice.reducer;
@@ -53,6 +55,38 @@ export default slice.reducer;
 
 const urlPresentation = "/presentation";
 const urlAdminPresentation = "/admin/presentation";
+const urlPresentationEvaluation = "/evaluation";
+
+export const insertPresentationEvaluation = (
+  subjectId,
+  presentationId,
+  userWhoEvaluatesId,
+  evaluatedUserId,
+  values
+) => (dispatch) => {
+  const data = { values };
+
+  return dispatch(
+    apiCallBegan({
+      data,
+      method: "post",
+      url:
+        "/subject" +
+        "/" +
+        subjectId +
+        urlPresentation +
+        "/" +
+        presentationId +
+        urlPresentationEvaluation +
+        "/?userWhoEvaluatesId=" +
+        userWhoEvaluatesId +
+        "&evaluatedUserId=" +
+        evaluatedUserId,
+      onSuccess: presentationEvaluationInserted.type,
+    })
+  );
+};
+("/api/subject/:subjectId/presentation/:presentationId/evaluation");
 
 export const loadPresentation = (presentation) => (dispatch) => {
   dispatch({ type: presentationReceived.type, payload: presentation });
@@ -163,6 +197,7 @@ export const loadValuationTypes = (subjectId) => (dispatch) => {
     })
   );
 };
+
 // prettier-ignore
 export const getPresentation = (state, presentationId, presIsOpened, presIsNeutral, isTeacherPres, isMyPres) => {
   let presentations = null;

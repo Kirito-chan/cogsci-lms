@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
+import { deleteOldAndInsertNewPresentationCriteria } from "../../student/home/homeSlice";
 import {
   getValuationTypes,
   loadValuationTypes,
@@ -15,6 +16,7 @@ function PresentationCriteria() {
   const [errorSum, setErrorSum] = useState("d-none");
   const [allAreInvalid, setAllAreInvalid] = useState(false);
   const [count, setCount] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (subjectId) {
@@ -23,8 +25,8 @@ function PresentationCriteria() {
   }, [subjectId]);
 
   useEffect(() => {
-    if (valuationTypes.length && !values.length) {
-      let valuesCopy = JSON.parse(JSON.stringify(values));
+    if (valuationTypes.length) {
+      let valuesCopy = JSON.parse(JSON.stringify([]));
       valuationTypes.map((type) => {
         valuesCopy.push({ id: type.id, name: type.point, height: type.height });
       });
@@ -62,7 +64,7 @@ function PresentationCriteria() {
 
   const addCriterion = () => {
     let valuesCopy = JSON.parse(JSON.stringify(values));
-    valuesCopy.push({ id: "#" + count, name: "", height: "" });
+    valuesCopy.push({ id: "_" + count, name: "", height: "" });
     setCount(count + 1);
     setValues(valuesCopy);
   };
@@ -98,7 +100,26 @@ function PresentationCriteria() {
     // ak vsetko vyplnil a sucet je 100%, tak zapis do DB
     setErrorSum("d-none");
     setAllAreInvalid(false);
-    // dispatch(updateInsertPresentationValuationPoint(subjectId, values))
+    let wereJustUpdatedNotDeletedOrInserted = true;
+    if (values.length !== valuationTypes.length)
+      wereJustUpdatedNotDeletedOrInserted = false;
+    for (const value of values) {
+      if (String(value.id).includes("_"))
+        wereJustUpdatedNotDeletedOrInserted = false;
+    }
+
+    setLoading(true);
+    dispatch(
+      deleteOldAndInsertNewPresentationCriteria(
+        subjectId,
+        values,
+        wereJustUpdatedNotDeletedOrInserted
+      )
+    ).then(() => {
+      dispatch(loadValuationTypes(subjectId)).then(() => {
+        setLoading(false);
+      });
+    });
   };
 
   return (
@@ -111,6 +132,7 @@ function PresentationCriteria() {
       deleteCriterion={deleteCriterion}
       handleName={handleName}
       handleHeight={handleHeight}
+      loading={loading}
     />
   );
 }

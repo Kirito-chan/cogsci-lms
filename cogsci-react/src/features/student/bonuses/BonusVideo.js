@@ -5,7 +5,6 @@ import { ReactTinyLink } from "react-tiny-link";
 
 function BonusVideo({ url, isFocusing }) {
   const canPlay = ReactPlayer.canPlay(url);
-  console.log(isFocusing);
 
   return (
     <div>
@@ -19,8 +18,6 @@ function BonusVideo({ url, isFocusing }) {
             width="100%"
             height="100%"
             controls={false}
-            //width={width != null && width != undefined ? width + "px" : "0px"}
-            //height={height != null && height != undefined ? height + "px" : "0px"}
           />
         </div>
       ) : (

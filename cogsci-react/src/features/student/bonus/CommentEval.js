@@ -76,11 +76,11 @@ function CommentEval({ bonusId, comment }) {
   };
   return (
     <React.Fragment>
-      <span className={"mx-2 " + notEvaluatedDisplayed}>nehodnotené</span>
       <div className="d-inline-block">
         <Button variant="outline-danger" size="sm" className="mr-2">
           Odstrániť
         </Button>
+        <span className={"mx-2 " + notEvaluatedDisplayed}>nehodnotené</span>
         <Button
           variant={zeroPointsActive ? "success" : "outline-success"}
           size="sm"

@@ -3,12 +3,23 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Slider from "@material-ui/core/Slider";
 import { useDispatch, useSelector } from "react-redux";
-import { getValuationTypes, loadValuationTypes } from "./presentationSlice";
+import {
+  getValuationTypes,
+  insertPresentationEvaluation,
+  loadValuationTypes,
+} from "./presentationSlice";
 import { useParams } from "react-router";
+import { getCurrentUserId } from "../../../app/currentUserSlice";
+import {
+  loadStudentPresentationsOpened,
+  //updateHasEvaluatedToTrue,
+} from "../home/homeSlice";
+import { MAX_POINT_HEIGHT_PRES_EVALUATION } from "../../../constants";
 
-export default function SlidersForm() {
+export default function SlidersForm({ evaluatedUserId }) {
   const dispatch = useDispatch();
-  const { subjectId } = useParams();
+  const { subjectId, presentationId } = useParams();
+  const currentUserId = useSelector(getCurrentUserId);
   const valuationTypes = useSelector(getValuationTypes);
   const [values, setValues] = useState([]);
 
@@ -40,9 +51,19 @@ export default function SlidersForm() {
     setValues(valuesCopy);
   };
 
-  const sendValuation = (event) => {
-    event.preventDefault();
-    console.log(values);
+  const sendValuation = (e) => {
+    e.preventDefault();
+    dispatch(
+      insertPresentationEvaluation(
+        subjectId,
+        presentationId,
+        currentUserId,
+        evaluatedUserId,
+        values
+      )
+    ).then(() => {
+      dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
+    });
   };
 
   return (
@@ -61,7 +82,7 @@ export default function SlidersForm() {
                 step={1}
                 marks={marks}
                 min={0}
-                max={10}
+                max={MAX_POINT_HEIGHT_PRES_EVALUATION}
                 onChange={handleChange}
                 className="ml-1"
               />
@@ -78,52 +99,11 @@ export default function SlidersForm() {
   );
 }
 
-const marks = [
-  {
-    value: 0,
-    label: "0",
-  },
-  {
-    value: 1,
-    label: "1",
-  },
-  {
-    value: 2,
-    label: "2",
-  },
-  {
-    value: 3,
-    label: "3",
-  },
-  {
-    value: 4,
-    label: "4",
-  },
-  {
-    value: 5,
-    label: "5",
-  },
-  {
-    value: 6,
-    label: "6",
-  },
-  {
-    value: 7,
-    label: "7",
-  },
-  {
-    value: 8,
-    label: "8",
-  },
-  {
-    value: 9,
-    label: "9",
-  },
-  {
-    value: 10,
-    label: "10",
-  },
-];
+const marks = [];
+for (let index = 0; index <= MAX_POINT_HEIGHT_PRES_EVALUATION; index++) {
+  const mark = { value: index, label: String(index) };
+  marks.push(mark);
+}
 
 function valuetext(value) {
   return `${value}`;

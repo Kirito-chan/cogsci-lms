@@ -37,7 +37,6 @@ function ModalEdit({
 
   const handleUpravit = () => {
     closeModalUpravit();
-    console.log(isFocusingURL);
     dispatch(
       updateBonusInfo(bonus.id, nadpis, obsah, videoURL, isFocusingURL)
     ).then(() => {

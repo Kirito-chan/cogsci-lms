@@ -11,12 +11,12 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-//import Container from "react-bootstrap/Container";
 
 function Grades() {
   const dispatch = useDispatch();
   const subjectValuation = useSelector(getSubjectValuation);
   const { subjectId } = useParams();
+  const [loading, setLoading] = useState(false);
 
   const [gradeA, setGradeA] = useState(null);
   const [gradeB, setGradeB] = useState(null);
@@ -44,6 +44,7 @@ function Grades() {
 
   const changeGrades = (e) => {
     e.preventDefault();
+    setLoading(true);
     dispatch(
       updateSubjectValuation(
         subjectId,
@@ -55,7 +56,9 @@ function Grades() {
         gradeFx
       )
     ).then(() => {
-      dispatch(loadSubjectValuation(subjectId));
+      dispatch(loadSubjectValuation(subjectId)).then(() => {
+        setLoading(false);
+      });
     });
   };
 
@@ -90,7 +93,16 @@ function Grades() {
                 size="sm"
                 onClick={changeGrades}
               >
-                Uložiť
+                {loading ? (
+                  <span>
+                    <span
+                      className={"spinner-border spinner-border-sm "}
+                    ></span>{" "}
+                    Loading...
+                  </span>
+                ) : (
+                  "Uložiť"
+                )}
               </Button>
             </Col>
           </Row>

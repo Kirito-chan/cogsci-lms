@@ -3,8 +3,9 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import SlidersForm from "./SlidersForm";
 import Container from "react-bootstrap/Container";
+import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 
-function PresentationEvaluation() {
+function PresentationEvaluation({ evaluatedUserId }) {
   return (
     <div className="mt-3">
       <Container>
@@ -13,7 +14,9 @@ function PresentationEvaluation() {
         </Row>
         <Row>
           <Col md={10} className="pl-0">
-            <SlidersForm />
+            {showLoaderIfAnyNull(evaluatedUserId) || (
+              <SlidersForm evaluatedUserId={evaluatedUserId} />
+            )}
           </Col>
         </Row>
       </Container>
