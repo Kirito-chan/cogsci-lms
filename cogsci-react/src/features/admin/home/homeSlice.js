@@ -14,6 +14,7 @@ export const slice = createSlice({
     studentPresentationsOpened: null, // []
     studentPresentationsClosed: null, // []
     uploadedPresentation: null,
+    studentEmails: null, // []
   },
   reducers: {
     teacherPresentationsReceived: (state, action) => {
@@ -32,6 +33,9 @@ export const slice = createSlice({
       state.uploadedPresentation = true;
     },
     insertedBonus: () => {},
+    userEmailsAndNamesReceived: (state, action) => {
+      state.studentEmails = action.payload;
+    },
   },
 });
 
@@ -42,12 +46,25 @@ export const {
   studentPresentationsClosedReceived,
   uploadedPresentationReceived,
   insertedBonus,
+  userEmailsAndNamesReceived,
 } = slice.actions;
 
 export default slice.reducer;
 
 // Action Creators
 const urlAdminSubject = "/admin/subject";
+
+const urlEmail = "/email";
+
+export const loadUserEmailsAndNames = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminSubject + "/" + subjectId + urlEmail,
+      onSuccess: userEmailsAndNamesReceived.type,
+    })
+  );
+};
+
 const urlBonus = "/bonus";
 
 export const insertBonus = (subjectId, title, content, urlRef) => (
@@ -124,3 +141,5 @@ export const getStudentPresentationsOpened = (state) =>
   state.features.admin.home.studentPresentationsOpened;
 export const getStudentPresentationsClosed = (state) =>
   state.features.admin.home.studentPresentationsClosed;
+export const getStudentEmailsAndNames = (state) =>
+  state.features.admin.home.studentEmails;

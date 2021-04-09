@@ -17,6 +17,7 @@ import {
   URL_PRESENTATIONS,
   URL_SUBJECTS,
   URL_TERMS,
+  URL_EMAIL,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
@@ -28,6 +29,7 @@ import NotAuthorizedPage from "./components/NotAuthorizedPage";
 import AdminHomePage from "./features/admin/home/AdminHomePage";
 import PresentationsPageAdmin from "./features/admin/presentations/PresentationsPage";
 import SettingsPage from "./features/admin/settings/SettingsPage";
+import EmailPage from "./features/admin/email/EmailPage";
 
 // prettier-ignore
 function App() {
@@ -46,6 +48,7 @@ function App() {
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_SETTINGS} component={SettingsPage} type="admin" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_BONUSES} component={BonusesPage} type="admin" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_PRESENTATIONS} component={PresentationsPageAdmin} type="admin" />
+          <AuthRoute exact path={"/subject/:subjectId" + URL_EMAIL} component={EmailPage} type="admin" />
           
           {/* student routes */}
           <AuthRoute path={"/subject/:subjectId" + URL_HOME_STUDENT} component={StudentHomePage} type="student"/>

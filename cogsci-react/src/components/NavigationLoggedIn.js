@@ -18,6 +18,7 @@ import {
   URL_ADMIN_PRESENTATIONS,
   NOT_AUTHORIZED,
   URL_ADMIN_SETTINGS,
+  URL_EMAIL,
 } from "../constants";
 import { useLocation, useParams } from "react-router";
 import {
@@ -110,6 +111,12 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
             className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
           >
             {isAdmin && !inSubjectsPage && "Nastavenia"}
+          </NavLink>
+          <NavLink
+            to={"/subject/" + subjectId + URL_EMAIL}
+            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+          >
+            {isAdmin && !inSubjectsPage && "Email"}
           </NavLink>
         </Nav>
         <Nav>

@@ -239,6 +239,16 @@ export const insertPresentationComment = async (
   return row.insertId;
 };
 
+export const getUserEmailsAndNames = async (subjectId) => {
+  const [rows] = await execute(
+    `SELECT u.id, u.first_name, u.last_name, u.email FROM user u JOIN user_subject_lookup usl 
+         ON u.id = usl.user_id AND usl.subject_id = ? AND usl.status = ? 
+         ORDER BY u.first_name, u.last_name `,
+    [subjectId, ACCEPTED_TO_SUBJ]
+  );
+  return rows;
+};
+
 // presentation valuation types
 export const getPresentationValuationTypes = async (subjectId) => {
   const [

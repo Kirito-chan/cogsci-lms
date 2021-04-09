@@ -322,6 +322,12 @@ app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
   res.json({ presentation, presentationWeight });
 });
 
+app.get("/api/admin/subject/:subjectId/email", async (req, res) => {
+  const { subjectId } = req.params;
+  const rows = await queries.getUserEmailsAndNames(subjectId);
+  res.json(rows);
+});
+
 // insert evaluation of a presentation that is taken from Sliders form
 app.post(
   "/api/subject/:subjectId/presentation/:presentationId/evaluation",
