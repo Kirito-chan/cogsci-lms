@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   loadUserEmailsAndNames,
   getStudentEmailsAndNames,
+  sendEmail,
 } from "../home/homeSlice";
 import { useParams } from "react-router";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
@@ -27,17 +28,19 @@ function EmailPage() {
   console.log(checkedEmails);
 
   const handleChange = (e) => {
-    const item = e.target.id;
+    const email = e.target.id;
     const isChecked = e.target.checked;
     setCheckedEmails((prevState) => ({
-      checkedItems: prevState.checkedItems.set(item, isChecked),
+      checkedItems: prevState.checkedItems.set(email, isChecked),
     }));
   };
 
-  const handleCheckAll = () => {
-    setCheckedEmails([]);
+  const handleCheckAll = (e) => {
+    const isChecked = e.target.checked;
     studentEmailsAndNames.forEach((student) =>
-      setCheckedEmails((prevState) => [...prevState, student.email])
+      setCheckedEmails((prevState) => ({
+        checkedItems: prevState.checkedItems.set(student.email, isChecked),
+      }))
     );
   };
 
@@ -47,6 +50,12 @@ function EmailPage() {
 
   useEffect(() => {
     if (studentEmailsAndNames) {
+      for (const student of studentEmailsAndNames) {
+        setCheckedEmails((prevState) => ({
+          checkedItems: prevState.checkedItems.set(student.email, false),
+        }));
+      }
+
       const emailsDivided = [];
       let SIZE = 10;
       if (studentEmailsAndNames.length < 40) SIZE = 10;
@@ -67,12 +76,25 @@ function EmailPage() {
     }
   }, [studentEmailsAndNames]);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(
+      sendEmail(
+        "fero.kochjar@gmail.com",
+        "kiritochan776@gmail.com",
+        "Ferko Kochjar",
+        "Sprava z testovania",
+        "Cau, ja som Kirito, jak sa mas?"
+      )
+    );
+  };
+
   return (
     <div>
       <Navigation />
       <h2 className="text-center mb-5">Hromadné posielanie emailu študentom</h2>
       <Container>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Form.Group>
             {showLoaderIfAnyNull(studentEmailsAndNamesDoubleArr) || (
               <Row>

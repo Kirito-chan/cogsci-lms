@@ -9,6 +9,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import * as constants from "./constants.js";
+import * as mailer from "./mailer.js";
 
 dotenv.config();
 
@@ -26,6 +27,26 @@ app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());
+
+/* ... */
+
+app.post("/api/send_email", function (req, res) {
+  res.set("Content-Type", "application/json");
+
+  const { toEmail, fromEmail, fromName, subject, text } = req.body;
+
+  const messageInfo = {
+    toEmail,
+    fromEmail,
+    fromName,
+    subject,
+    text,
+  };
+
+  mailer.sendOne(messageInfo);
+
+  res.send('{"message":"Email sent."}');
+});
 
 app.post("/api/admin/subject/:subjectId/bonus", async function (req, res) {
   const { title, content, urlRef } = req.body;

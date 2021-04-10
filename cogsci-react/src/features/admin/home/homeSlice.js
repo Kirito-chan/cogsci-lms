@@ -36,6 +36,7 @@ export const slice = createSlice({
     userEmailsAndNamesReceived: (state, action) => {
       state.studentEmails = action.payload;
     },
+    emailSent: () => {},
   },
 });
 
@@ -47,6 +48,7 @@ export const {
   uploadedPresentationReceived,
   insertedBonus,
   userEmailsAndNamesReceived,
+  emailSent,
 } = slice.actions;
 
 export default slice.reducer;
@@ -61,6 +63,22 @@ export const loadUserEmailsAndNames = (subjectId) => (dispatch) => {
     apiCallBegan({
       url: urlAdminSubject + "/" + subjectId + urlEmail,
       onSuccess: userEmailsAndNamesReceived.type,
+    })
+  );
+};
+
+const urlSendEmail = "/send_email";
+
+export const sendEmail = (toEmail, fromEmail, fromName, subject, text) => (
+  dispatch
+) => {
+  const data = { toEmail, fromEmail, fromName, subject, text };
+  return dispatch(
+    apiCallBegan({
+      url: urlSendEmail,
+      method: "post",
+      data,
+      onSuccess: emailSent.type,
     })
   );
 };
