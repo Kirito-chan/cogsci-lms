@@ -3,12 +3,23 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Navigation from "../../components/Navigation";
 
-function LoginView({ error, setUsername, setPassword, handleSubmit }) {
+function LoginView({
+  error,
+  setUsername,
+  setPassword,
+  handleSubmit,
+  registerMessage,
+}) {
   return (
     <div>
       <Navigation />
       <h1 className="text-center mb-5">Kognitívne vedy</h1>
-      <Form className="login-wrapper" onSubmit={handleSubmit}>
+      {registerMessage ? (
+        <p className="text-success text-center">{registerMessage}</p>
+      ) : (
+        ""
+      )}
+      <Form className="wrapper" onSubmit={handleSubmit}>
         <Form.Group controlId="formBasicUsername">
           <Form.Label>Prihlasovacie meno</Form.Label>
           <Form.Control

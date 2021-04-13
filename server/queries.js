@@ -16,6 +16,7 @@ import {
   ATTENDANCE_CLOSED,
   ATTENDANCE_OPENED,
   MAX_POINT_HEIGHT_PRES_EVALUATION,
+  IS_STUDENT,
 } from "./constants.js";
 
 // subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
@@ -27,6 +28,23 @@ import {
 const execute = async (queryString, paramsArr) => {
   const rows = await pool.promise().query(queryString, paramsArr);
   return rows;
+};
+
+export const registerUser = async (
+  firstName,
+  lastName,
+  username,
+  password,
+  email,
+  salt,
+  date
+) => {
+  const [row] = await execute(
+    `INSERT INTO user (first_name, last_name, username, password, email, role, salt, last_visited_announcements)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [firstName, lastName, username, password, email, IS_STUDENT, salt, date]
+  );
+  return row.insertId;
 };
 
 // prettier-ignore
@@ -146,6 +164,11 @@ export const getUser = async (username) => {
     username,
   ]);
   return row[0];
+};
+
+export const getUserWithEmail = async (email) => {
+  const [row] = await execute("SELECT * FROM user WHERE email = ?", [email]);
+  return row[0]?.email;
 };
 
 // attendance

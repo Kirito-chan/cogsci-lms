@@ -18,6 +18,8 @@ import {
   URL_SUBJECTS,
   URL_TERMS,
   URL_EMAIL,
+  URL_NOT_AUTHORIZED,
+  URL_REGISTER,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
@@ -30,6 +32,7 @@ import AdminHomePage from "./features/admin/home/AdminHomePage";
 import PresentationsPageAdmin from "./features/admin/presentations/PresentationsPage";
 import SettingsPage from "./features/admin/settings/SettingsPage";
 import EmailPage from "./features/admin/email/EmailPage";
+import Register from "./features/login/Register";
 
 // prettier-ignore
 function App() {
@@ -38,9 +41,9 @@ function App() {
       <BrowserRouter>
         <ScrollToTop />
         <Switch>
-          <AuthRoute path="/" exact component={Login} type="login" />
+          <AuthRoute exact path="/" component={Login} type="login" />
           <AuthRoute path="/login" component={Login} type="login" />
-          <AuthRoute path="/not-authorized" component={NotAuthorizedPage} type="not-auth" />
+          <AuthRoute path={URL_NOT_AUTHORIZED} component={NotAuthorizedPage} type="not-auth" />
           
           {/* admin routes */}
           <AuthRoute path={"/subject/:subjectId" + URL_HOME_ADMIN} component={AdminHomePage} type="admin" />
@@ -48,7 +51,7 @@ function App() {
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_SETTINGS} component={SettingsPage} type="admin" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_BONUSES} component={BonusesPage} type="admin" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_PRESENTATIONS} component={PresentationsPageAdmin} type="admin" />
-          <AuthRoute exact path={"/subject/:subjectId" + URL_EMAIL} component={EmailPage} type="admin" />
+          <AuthRoute path={"/subject/:subjectId" + URL_EMAIL} component={EmailPage} type="admin" />
           
           {/* student routes */}
           <AuthRoute path={"/subject/:subjectId" + URL_HOME_STUDENT} component={StudentHomePage} type="student"/>
@@ -60,6 +63,7 @@ function App() {
           {/* student and admin common routes */}        
           <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="both" />
           <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} component={PresentationPage} type="both" />
+          <AuthRoute path={URL_REGISTER} component={Register} type="register" />
           
           {/* defaultna route, ak nematchne nic: /login, ak je neprihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />

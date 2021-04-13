@@ -25,7 +25,12 @@ function EmailPage() {
   const [checkedEmails, setCheckedEmails] = useState({
     checkedItems: new Map(),
   });
-  console.log(checkedEmails);
+
+  const [subject, setSubject] = useState("");
+  const handleSubject = (e) => setSubject(e.target.value);
+
+  const [message, setMessage] = useState("");
+  const handleMessage = (e) => setMessage(e.target.value);
 
   const handleChange = (e) => {
     const email = e.target.id;
@@ -82,11 +87,14 @@ function EmailPage() {
       sendEmail(
         "fero.kochjar@gmail.com",
         "kiritochan776@gmail.com",
-        "Ferko Kochjar",
-        "Sprava z testovania",
-        "Cau, ja som Kirito, jak sa mas?"
+        "Kirito",
+        subject,
+        message
       )
-    );
+    ).then(() => {
+      setSubject("");
+      setMessage("");
+    });
   };
 
   return (
@@ -144,12 +152,21 @@ function EmailPage() {
                 <Form.Label>
                   <b>Predmet</b>
                 </Form.Label>
-                <Form.Control type="text" />
+                <Form.Control
+                  type="text"
+                  value={subject}
+                  onChange={handleSubject}
+                />
                 <Form.Label>
                   <b>Správa</b>
                 </Form.Label>
 
-                <Form.Control as="textarea" rows={5} />
+                <Form.Control
+                  as="textarea"
+                  rows={5}
+                  value={message}
+                  onChange={handleMessage}
+                />
                 <Button
                   variant="success"
                   type="submit"

@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import bcrypt from "bcrypt";
 import * as constants from "./constants.js";
 import * as mailer from "./mailer.js";
 
@@ -129,9 +130,6 @@ app.post("/api/login", async function (req, res) {
     const payload = { username, password };
     const token = jwt.sign(payload, secret, { expiresIn: "1h" });
 
-    // vygenerujem salt - vygenerujem nanoId
-    // spojim password z registracneho formu a spojim so saltom (ako v pass o 2 riadky nizsie)
-    // a zahashujem ako hashedPassword
     res.json({ token, user });
   } else {
     res.status(401).send("Nesprávne heslo");
@@ -139,18 +137,51 @@ app.post("/api/login", async function (req, res) {
 });
 
 // POST route to register a user
-app.post("/api/register", function (req, res) {
-  const { firstName, lastName, username, password, email } = req.body;
-  const query = `INSERT INTO user (first_name, last_name, username, password, email, role, salt, last_visited_announcements)
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-  const studentRole = 1;
-  const adminRole = 0;
-  const hashedPassword = "hash(password)";
-  const salt = "generateSalt()";
-  // prettier-ignore
+app.post("/api/register", async function (req, res) {
+  const {
+    firstName,
+    lastName,
+    username,
+    password,
+    passwordAgain,
+    email,
+  } = req.body;
+  if (password !== passwordAgain) {
+    res.status(403).send("Heslá sa nezhodujú !");
+    return;
+  }
+
+  const user = await queries.getUser(username);
+  const userEmail = await queries.getUserWithEmail(email);
+
+  if (user) {
+    res.status(409).send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
+    return;
+  }
+  if (userEmail) {
+    res.status(409).send("Zadaný email už existuje, zvoľte iný !");
+    return;
+  }
+  const typedPassword = password;
+
+  const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
+  const passwordAndSalt = `${typedPassword}{${salt}}`;
+  const hashedPassword = crypto
+    .createHash("sha512")
+    .update(passwordAndSalt)
+    .digest("base64");
   const date = getCurrentDate();
-  // prettier-ignore
-  const array = [firstName, lastName, username, hashedPassword, email, studentRole, salt, date];
+
+  const id = await queries.registerUser(
+    firstName,
+    lastName,
+    username,
+    hashedPassword,
+    email,
+    salt,
+    date
+  );
+  res.json(id);
 });
 
 // get attendance

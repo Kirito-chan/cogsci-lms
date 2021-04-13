@@ -73,6 +73,8 @@ const AuthRoute = (props) => {
       if (props.type === "login") {
         setComponent(<Route {...props} />);
         history.push("/login");
+      } else if (props.type === "register") {
+        setComponent(<Route {...props} />);
       } else {
         setComponent(<Redirect to="/login" />);
       }

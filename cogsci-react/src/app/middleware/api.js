@@ -36,7 +36,7 @@ const api = ({ dispatch }) => (next) => async (action) => {
     // Specific
     if (onError) {
       const customMessage = error.response?.data || "";
-      //if (error.response) customMessage = error.response.data
+
       dispatch({
         type: onError,
         payload: {

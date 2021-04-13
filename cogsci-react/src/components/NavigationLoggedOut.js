@@ -2,26 +2,25 @@ import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { FaBrain, FaUser, FaUserPlus } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { URL_REGISTER } from "../constants";
 
 function NavigationLoggedOut() {
-  const location = useLocation();
-
   return (
-    <Navbar bg="dark" variant="dark" fixed="top" expand="md">
+    <Navbar bg="dark" variant="dark" fixed="top">
       <Nav className="mr-auto">
-        <Nav.Link href="/login">
+        <NavLink to={"/login"} className="nav-link mr-4">
           <FaBrain size={25} />
-        </Nav.Link>
+        </NavLink>
       </Nav>
 
-      <Nav activeKey={location.pathname}>
-        <Nav.Link href="/login" className="mr-4">
+      <Nav>
+        <NavLink to={"/login"} className="nav-link mr-4">
           <FaUser /> Login
-        </Nav.Link>
-        <Nav.Link href="/register">
-          <FaUserPlus size={22} /> Register
-        </Nav.Link>
+        </NavLink>
+        <NavLink to={URL_REGISTER} className="nav-link">
+          <FaUserPlus size={22} /> Registrácia
+        </NavLink>
       </Nav>
     </Navbar>
   );

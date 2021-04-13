@@ -33,3 +33,5 @@ export const C = 80;
 export const D = 70;
 export const E = 60;
 export const Fx = 50;
+
+export const SALT_ROUNDS = 10;

@@ -35,6 +35,15 @@ export const slice = createSlice({
     checkTokenFailed: (state, action) => {
       state.tokenError = action.payload.message;
     },
+    userRegistered: () => {},
+    userRegisterFailed: (state, action) => {
+      state.error = action.payload.message;
+      state.errorCustomMessage = action.payload.customMessage;
+    },
+    errorCleared: (state) => {
+      state.error = "";
+      state.errorCustomMessage = "";
+    },
   },
 });
 
@@ -44,6 +53,9 @@ export const {
   tokenChecked,
   tokenRequestFailed,
   checkTokenFailed,
+  userRegistered,
+  userRegisterFailed,
+  errorCleared,
 } = slice.actions;
 
 export default slice.reducer;
@@ -83,6 +95,39 @@ export const checkToken = (token) => (dispatch) => {
 
 export const clearToken = () => (dispatch) => {
   dispatch({ type: tokenCleared.type });
+};
+
+const urlRegister = "/register";
+
+export const registerNewUser = (
+  firstName,
+  lastName,
+  username,
+  password,
+  passwordAgain,
+  email
+) => (dispatch) => {
+  const data = {
+    firstName,
+    lastName,
+    username,
+    password,
+    passwordAgain,
+    email,
+  };
+  return dispatch(
+    apiCallBegan({
+      url: urlRegister,
+      onSuccess: userRegistered.type,
+      method: "post",
+      data,
+      onError: userRegisterFailed.type,
+    })
+  );
+};
+
+export const clearError = () => (dispatch) => {
+  dispatch({ type: errorCleared.type });
 };
 
 // Selectors

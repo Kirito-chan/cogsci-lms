@@ -16,7 +16,7 @@ import {
   URL_TERMS,
   URL_HOME_ADMIN,
   URL_ADMIN_PRESENTATIONS,
-  NOT_AUTHORIZED,
+  URL_NOT_AUTHORIZED,
   URL_ADMIN_SETTINGS,
   URL_EMAIL,
 } from "../constants";
@@ -38,7 +38,7 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const inSubjectsPage = [
     URL_SUBJECTS,
     URL_ADMIN_SUBJECTS,
-    NOT_AUTHORIZED,
+    URL_NOT_AUTHORIZED,
   ].includes(useLocation().pathname);
 
   useEffect(() => {
