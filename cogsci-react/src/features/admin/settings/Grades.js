@@ -85,10 +85,9 @@ function Grades() {
             </Col>
           </Row>
           <Row>
-            <Col className="text-center">
+            <Col className="text-right">
               <Button
                 variant="success"
-                className="mr-2"
                 type="submit"
                 size="sm"
                 onClick={changeGrades}
@@ -101,7 +100,7 @@ function Grades() {
                     Loading...
                   </span>
                 ) : (
-                  "Uložiť"
+                  "Uložiť zmeny"
                 )}
               </Button>
             </Col>
@@ -118,7 +117,7 @@ function TextInput({ label, content, handleContent }) {
       <Form.Label column xs="1" className="text-left pl-3">
         <b>{label}</b>
       </Form.Label>
-      <Col xs="10" className="ml-sm-auto">
+      <Col xs="11" sm="10" className="ml-sm-auto">
         <Form.Control
           required
           type="text"

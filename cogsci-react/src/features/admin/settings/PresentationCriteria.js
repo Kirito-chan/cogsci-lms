@@ -13,6 +13,7 @@ function PresentationCriteria() {
   const { subjectId } = useParams();
   const valuationTypes = useSelector(getValuationTypes);
   const [values, setValues] = useState([]);
+  const [sum, setSum] = useState();
   const [errorSum, setErrorSum] = useState("d-none");
   const [allAreInvalid, setAllAreInvalid] = useState(false);
   const [count, setCount] = useState(1);
@@ -86,13 +87,14 @@ function PresentationCriteria() {
     let sum = 0;
     for (const item of values) {
       sum += parseInt(item.height);
-      // aby zobrazil hlasku ze policko je Required ak nevyplnil aspon jedno policko
+      // aby zobrazil hlasku ze policko je Required ak nevyplnil policko
       if (item.height == "" || item.name == "") {
         return;
       }
     }
     e.preventDefault();
     if (sum != 100) {
+      setSum(sum);
       setErrorSum("d-inline-block");
       setAllAreInvalid(true);
       return;
@@ -125,6 +127,7 @@ function PresentationCriteria() {
   return (
     <PresentationCriteriaView
       values={values}
+      sum={sum}
       errorSum={errorSum}
       allAreInvalid={allAreInvalid}
       submitForm={submitForm}

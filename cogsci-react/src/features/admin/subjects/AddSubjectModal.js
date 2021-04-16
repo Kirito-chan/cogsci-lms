@@ -92,73 +92,75 @@ function AddSubjectModal({ showAddSubject, setShowAddSubject }) {
       size="lg"
       backdrop="static"
     >
-      <Modal.Header closeButton>
-        <Modal.Title>Pridať nový predmet</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <TextInput
-          title="Názov predmetu"
-          content={subjectName}
-          handleContent={handleSubjectName}
-        />
-        <Form.Group as={Row}>
-          <Form.Label column sm="3" className="text-right">
-            <b>Stav</b>
-          </Form.Label>
-          <Col sm="9">
-            <Form.Control as="select" onChange={handleActiveType}>
-              <option activetype={SUBJ_IS_ACTIVE}>Aktívny</option>
-              <option activetype={SUBJ_IS_NOT_ACTIVE}>Neaktívny</option>
-            </Form.Control>
-          </Col>
-        </Form.Group>
-        <TextInput
-          title="Školský rok (yyyy/yyyy)"
-          content={year}
-          handleContent={handleYear}
-        />
+      <Form>
+        <Modal.Header closeButton>
+          <Modal.Title>Pridať nový predmet</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <TextInput
+            title="Názov predmetu"
+            content={subjectName}
+            handleContent={handleSubjectName}
+          />
+          <Form.Group as={Row}>
+            <Form.Label column sm="3" className="text-right">
+              <b>Stav</b>
+            </Form.Label>
+            <Col sm="9">
+              <Form.Control as="select" onChange={handleActiveType}>
+                <option activetype={SUBJ_IS_ACTIVE}>Aktívny</option>
+                <option activetype={SUBJ_IS_NOT_ACTIVE}>Neaktívny</option>
+              </Form.Control>
+            </Col>
+          </Form.Group>
+          <TextInput
+            title="Školský rok (yyyy/yyyy)"
+            content={year}
+            handleContent={handleYear}
+          />
 
-        <Form.Group as={Row}>
-          <Form.Label column sm="3" className="text-right">
-            <b>Semester</b>
-          </Form.Label>
-          <Col sm="9">
-            <Form.Control
-              as="select"
-              onChange={handleSeason}
-              defaultValue={"" + getCurrentSeason()}
-            >
-              <option value={WINTER_SEASON}>Zimný semester</option>
-              <option value={SUMMER_SEASON}>Letný semester</option>
-            </Form.Control>
-          </Col>
-        </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="3" className="text-right">
+              <b>Semester</b>
+            </Form.Label>
+            <Col sm="9">
+              <Form.Control
+                as="select"
+                onChange={handleSeason}
+                defaultValue={"" + getCurrentSeason()}
+              >
+                <option value={WINTER_SEASON}>Zimný semester</option>
+                <option value={SUMMER_SEASON}>Letný semester</option>
+              </Form.Control>
+            </Col>
+          </Form.Group>
 
-        <TextInput
-          title="Limit počtu študentov"
-          content={userLimit}
-          handleContent={handleUserLimit}
-        />
-        <TextInput
-          title="Počet týždňov"
-          content={weeks}
-          handleContent={handleWeeks}
-        />
-        <TextAreaInput
-          title="O predmete"
-          content={aboutSubject}
-          handleContent={handleAboutSubject}
-          rows={3}
-        />
-      </Modal.Body>
-      <Modal.Footer className="d-flex justify-content-between">
-        <Button variant="secondary" onClick={closeModalAddSubject}>
-          Zrušiť
-        </Button>
-        <Button variant="success" type="submit" onClick={handleAddSubject}>
-          Pridať predmet
-        </Button>
-      </Modal.Footer>
+          <TextInput
+            title="Limit počtu študentov"
+            content={userLimit}
+            handleContent={handleUserLimit}
+          />
+          <TextInput
+            title="Počet týždňov"
+            content={weeks}
+            handleContent={handleWeeks}
+          />
+          <TextAreaInput
+            title="O predmete"
+            content={aboutSubject}
+            handleContent={handleAboutSubject}
+            rows={3}
+          />
+        </Modal.Body>
+        <Modal.Footer className="d-flex justify-content-between">
+          <Button variant="secondary" onClick={closeModalAddSubject}>
+            Zrušiť
+          </Button>
+          <Button variant="success" type="submit" onClick={handleAddSubject}>
+            Pridať predmet
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 }

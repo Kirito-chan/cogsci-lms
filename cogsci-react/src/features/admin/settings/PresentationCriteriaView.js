@@ -14,6 +14,7 @@ function PresentationCriteriaView({
   handleName,
   handleHeight,
   loading,
+  sum,
 }) {
   return (
     <div>
@@ -21,6 +22,16 @@ function PresentationCriteriaView({
       <Form>
         <Row>
           <Col>
+            <Row>
+              <Col xs="5">
+                <h6> Kritérium</h6>
+              </Col>
+              <Col xs="3" xl="2">
+                <h6>Váha</h6>
+              </Col>
+            </Row>
+
+            <Col></Col>
             {values.map((val) => (
               <div key={val.id}>
                 <TextInput
@@ -28,7 +39,9 @@ function PresentationCriteriaView({
                   name={val.name}
                   handleName={handleName}
                   content={val.height}
-                  handleContent={handleHeight}
+                  handleContent={(e) => {
+                    handleHeight(e);
+                  }}
                   allAreInvalid={allAreInvalid}
                   deleteCriterion={deleteCriterion}
                 />
@@ -43,12 +56,16 @@ function PresentationCriteriaView({
               Pridať kritérium
             </Button>
           </Col>
-          <Col xs="3">
+          <Col>
+            <span className={"text-danger " + errorSum}>
+              Súčet percent kritérií je {sum}, musí byť 100 !
+            </span>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs="11" sm="8" xl="9" className="text-right mt-2">
             <Button
               variant="success"
-              className={
-                "mr-2 " + (values.length === 0 ? "d-none" : "d-inline-block")
-              }
               type="submit"
               size="sm"
               onClick={submitForm}
@@ -59,18 +76,10 @@ function PresentationCriteriaView({
                   Loading...
                 </span>
               ) : (
-                "Uložiť"
+                "Uložiť zmeny"
               )}
             </Button>
             <br />
-          </Col>
-        </Row>
-        <Row>
-          <Col xs="5"></Col>
-          <Col>
-            <span className={"text-danger mt-1 " + errorSum}>
-              Súčet percent kritérií nie je 100 !
-            </span>
           </Col>
         </Row>
       </Form>

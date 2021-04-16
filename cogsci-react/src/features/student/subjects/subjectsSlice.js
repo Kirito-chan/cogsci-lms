@@ -25,6 +25,7 @@ export const slice = createSlice({
       state.currentSubjectId = null;
       state.currentSubjectName = null;
     },
+    signedInForSubject: () => {},
   },
 });
 
@@ -35,6 +36,7 @@ export const {
   subjectReceived,
   clearedCurrentSubject,
   currentSubjectIdReceived,
+  signedInForSubject,
 } = slice.actions;
 
 export default slice.reducer;
@@ -71,6 +73,20 @@ export const loadCurrentSubjectId = (subjectId) => (dispatch) => {
 
 export const clearCurrentSubject = () => (dispatch) => {
   dispatch({ type: clearedCurrentSubject.type });
+};
+
+const urlSignInToSubject = "/sign-in";
+
+export const signInForSubject = (userId, subjectId) => (dispatch) => {
+  const data = { userId };
+  return dispatch(
+    apiCallBegan({
+      method: "post",
+      url: urlSubject + "/" + subjectId + urlSignInToSubject,
+      data,
+      onSuccess: signedInForSubject.type,
+    })
+  );
 };
 
 export const getSubjects = (state) => state.features.student.subjects.subjects;

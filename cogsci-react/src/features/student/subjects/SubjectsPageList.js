@@ -3,13 +3,23 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { loadCurrentSubjectId } from "./subjectsSlice";
+import {
+  loadCurrentSubjectId,
+  loadSubjects,
+  signInForSubject,
+} from "./subjectsSlice";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { URL_HOME_STUDENT, WINTER_SEASON } from "../../../constants";
+import {
+  URL_HOME_STUDENT,
+  WINTER_SEASON,
+  PENDING_FOR_SUBJ,
+  ACCEPTED_TO_SUBJ,
+  REJECTED_TO_SUBJ,
+} from "../../../constants";
 import Navigation from "../../../components/Navigation";
 
-function SubjectsPageList({ subjects }) {
+function SubjectsPageList({ subjects, currentUserId }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -17,6 +27,13 @@ function SubjectsPageList({ subjects }) {
     const subjectId = parseInt(event.target.id);
     dispatch(loadCurrentSubjectId(subjectId)).then(() => {
       history.push({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
+    });
+  };
+
+  const handleSignInClick = (event) => {
+    const subjectId = parseInt(event.target.id);
+    dispatch(signInForSubject(currentUserId, subjectId)).then(() => {
+      dispatch(loadSubjects(currentUserId));
     });
   };
 
@@ -50,18 +67,45 @@ function SubjectsPageList({ subjects }) {
                 <Row>
                   <Col>
                     <p>
-                      {subject.is_enrolled ? (
+                      {console.log(subject.is_enrolled)}
+                      {!subject.is_enrolled && (
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          id={subject.id}
+                          onClick={handleSignInClick}
+                        >
+                          Prihlásiť sa
+                        </Button>
+                      )}
+
+                      {subject.is_enrolled &&
+                      subject.status === ACCEPTED_TO_SUBJ ? (
                         <Button
                           variant="success"
+                          size="sm"
                           id={subject.id}
                           onClick={handleEnterClick}
                         >
                           Vstúp
                         </Button>
-                      ) : (
-                        <Button variant="warning" size="sm">
-                          Prihlásiť sa
+                      ) : subject.is_enrolled &&
+                        subject.status === PENDING_FOR_SUBJ ? (
+                        <Button variant="warning" size="sm" disabled>
+                          Čaká sa na potvrdenie
                         </Button>
+                      ) : subject.is_enrolled &&
+                        subject.status === REJECTED_TO_SUBJ ? (
+                        <Button
+                          variant="warning"
+                          size="sm"
+                          id={subject.id}
+                          onClick={handleSignInClick}
+                        >
+                          Potvrdenie zamietnuté
+                        </Button>
+                      ) : (
+                        ""
                       )}
                     </p>
                   </Col>

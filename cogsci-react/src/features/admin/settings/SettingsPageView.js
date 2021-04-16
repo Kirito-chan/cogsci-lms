@@ -6,6 +6,7 @@ import Col from "react-bootstrap/Col";
 import { SUBJ_IS_ACTIVE } from "../../../constants";
 import Grades from "./Grades";
 import PresentationCriteria from "./PresentationCriteria";
+import SubjectParameters from "./SubjectParameters";
 
 function SettingsPageView({ subjectStatus, changeSubjectStatus }) {
   const isActive = subjectStatus === SUBJ_IS_ACTIVE;
@@ -27,12 +28,17 @@ function SettingsPageView({ subjectStatus, changeSubjectStatus }) {
               </Button>
             </Col>
           </Row>
-          <Row className="mt-4">
+          <Row className="mt-4 pb-5">
             <Col lg="4">
               <Grades />
             </Col>
             <Col lg="7" className="ml-lg-5 mt-4 mt-lg-0">
               <PresentationCriteria />
+            </Col>
+          </Row>
+          <Row className="mt-2">
+            <Col>
+              <SubjectParameters />
             </Col>
           </Row>
         </Container>

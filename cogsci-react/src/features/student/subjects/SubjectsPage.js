@@ -29,7 +29,9 @@ function SubjectsPage() {
   }, [currentSubjectId]);
 
   return (
-    showLoaderIfAnyNull(subjects) || <SubjectsPageList subjects={subjects} />
+    showLoaderIfAnyNull(subjects) || (
+      <SubjectsPageList subjects={subjects} currentUserId={currentUserId} />
+    )
   );
 }
 

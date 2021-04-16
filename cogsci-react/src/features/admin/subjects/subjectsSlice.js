@@ -4,6 +4,7 @@ import { apiCallBegan } from "../../../app/apiConstants";
 export const slice = createSlice({
   name: "subjects",
   initialState: {
+    currentSubject: null,
     currentSubjectId: null,
     currentSubjectName: null,
     currentSubjectStatus: null,
@@ -23,6 +24,7 @@ export const slice = createSlice({
       state.currentSubjectId = action.payload.id;
       state.currentSubjectName = action.payload.name;
       state.currentSubjectStatus = action.payload.status;
+      state.currentSubject = action.payload;
     },
     clearedCurrentSubject: (state) => {
       state.currentSubjectId = null;
@@ -94,6 +96,26 @@ export const insertSubject = (
   );
 };
 
+export const updateSubject = (
+  name,
+  year,
+  season,
+  about,
+  userLimit,
+  weeks,
+  active
+) => (dispatch) => {
+  const data = { name, year, season, about, userLimit, weeks, active };
+  return dispatch(
+    apiCallBegan({
+      url: urlSubjects,
+      method: "put",
+      data,
+      onSuccess: subjectInserted.type,
+    })
+  );
+};
+
 export const updateSubjectStatus = (subjectId, status) => (dispatch) => {
   const data = { status };
   return dispatch(
@@ -115,6 +137,8 @@ export const clearCurrentSubject = () => (dispatch) => {
 };
 
 export const getSubjects = (state) => state.features.admin.subjects.subjects;
+export const getCurrentSubject = (state) =>
+  state.features.admin.subjects.currentSubject;
 export const getCurrentSubjectId = (state) =>
   state.features.admin.subjects.currentSubjectId;
 export const getCurrentSubjectName = (state) =>

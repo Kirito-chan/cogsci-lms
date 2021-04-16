@@ -109,6 +109,42 @@ app.post("/api/admin/subjects", async function (req, res) {
   res.json(subjectId);
 });
 
+// admin loading students
+
+app.get(
+  "/api/admin/subject/:subjectId/students/pending",
+  async function (req, res) {
+    const { subjectId } = req.params;
+    const rows = await queries.getPendingStudents(subjectId);
+    res.json(rows);
+  }
+);
+
+app.get(
+  "/api/admin/subject/:subjectId/students/accepted",
+  async function (req, res) {
+    const { subjectId } = req.params;
+    const rows = await queries.getAcceptedStudents(subjectId);
+    res.json(rows);
+  }
+);
+
+app.get(
+  "/api/admin/subject/:subjectId/students/rejected",
+  async function (req, res) {
+    const { subjectId } = req.params;
+    const rows = await queries.getRejectedStudents(subjectId);
+    res.json(rows);
+  }
+);
+
+app.post("/api/subject/:subjectId/sign-in", async function (req, res) {
+  const { subjectId } = req.params;
+  const { userId } = req.body;
+  const id = await queries.insertNewUserToSubject(userId, subjectId);
+  res.json(id);
+});
+
 app.post("/api/checkToken", withAuth, function (req, res) {
   res.sendStatus(200);
 });

@@ -5,6 +5,8 @@ import {
   PRESENTATION_WEIGHT,
   COMMENT_WEIGHT,
   PENDING_FOR_SUBJ,
+  ACCEPTED_TO_SUBJ,
+  REJECTED_TO_SUBJ,
   STUD_PRES_NEUTRAL,
   A,
   B,
@@ -12,11 +14,11 @@ import {
   D,
   E,
   Fx,
-  ACCEPTED_TO_SUBJ,
   ATTENDANCE_CLOSED,
   ATTENDANCE_OPENED,
   MAX_POINT_HEIGHT_PRES_EVALUATION,
   IS_STUDENT,
+  SUBJ_IS_ACTIVE,
 } from "./constants.js";
 
 // subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
@@ -43,6 +45,49 @@ export const registerUser = async (
     `INSERT INTO user (first_name, last_name, username, password, email, role, salt, last_visited_announcements)
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [firstName, lastName, username, password, email, IS_STUDENT, salt, date]
+  );
+  return row.insertId;
+};
+
+// admin loading students
+export const getPendingStudents = async (subjectId) => {
+  const [rows] = await execute(
+    `SELECT u.*, usl.presentation_id FROM 
+     user_subject_lookup usl JOIN user u ON u.id = usl.user_id 
+     WHERE usl.subject_id = ? AND usl.status = ? 
+     ORDER BY u.last_name, u.first_name`,
+    [subjectId, PENDING_FOR_SUBJ]
+  );
+  return rows;
+};
+
+export const getAcceptedStudents = async (subjectId) => {
+  const [rows] = await execute(
+    `SELECT u.*, usl.presentation_id FROM 
+     user_subject_lookup usl JOIN user u ON u.id = usl.user_id 
+     WHERE usl.subject_id = ? AND usl.status = ? 
+     ORDER BY u.last_name, u.first_name`,
+    [subjectId, ACCEPTED_TO_SUBJ]
+  );
+  return rows;
+};
+
+export const getRejectedStudents = async (subjectId) => {
+  const [rows] = await execute(
+    `SELECT u.*, usl.presentation_id FROM 
+     user_subject_lookup usl JOIN user u ON u.id = usl.user_id 
+     WHERE usl.subject_id = ? AND usl.status = ? 
+     ORDER BY u.last_name, u.first_name`,
+    [subjectId, REJECTED_TO_SUBJ]
+  );
+  return rows;
+};
+
+export const insertNewUserToSubject = async (userId, subjectId) => {
+  const [row] = await execute(
+    `INSERT INTO user_subject_lookup (user_id, subject_id, status)
+     VALUES (?, ?, ?)`,
+    [userId, subjectId, PENDING_FOR_SUBJ]
   );
   return row.insertId;
 };
@@ -95,16 +140,20 @@ export const insertSubjectValuation = async (subjectId) => {
   return row.insertId;
 };
 
+// ORDER BY (usl.status = ?) DESC, (usl.status = ?) DESC, s.year DESC
+//   - znamena, ze najprv to usortuje podla predmetov, do ktorych bol prijaty (kedze usl.status = ACCEPTED_TO_SUBJ ) DESC
+//            znamena ze najpr tie ktora maju status = accepted lebo tie su TRUE a DESC usporiada najprv TRUE a az potom FALSE hodnoty, kedze 1 > 0
+
 export const getStudentSubjects = async (userId) => {
   const [rows] = await execute(
-    `SELECT s.id, s.name, s.year, s.season, s.about, 
+    `SELECT s.id, s.name, s.year, s.season, s.about, usl.status,
             CASE WHEN usl.user_id IS NOT NULL THEN TRUE ELSE FALSE END as is_enrolled
-      FROM subject s LEFT JOIN user_subject_lookup usl ON
-           usl.user_id = ? AND s.id = usl.subject_id
+      FROM user_subject_lookup usl RIGHT JOIN subject s ON
+           usl.user_id = ? AND usl.subject_id = s.id
            WHERE s.status = ?
-           ORDER BY is_enrolled DESC, s.year DESC
+           ORDER BY (usl.status = ?) DESC, (usl.status = ?) DESC, s.year DESC
      `,
-    [userId, PENDING_FOR_SUBJ]
+    [userId, SUBJ_IS_ACTIVE, ACCEPTED_TO_SUBJ, PENDING_FOR_SUBJ]
   );
   return rows;
 };

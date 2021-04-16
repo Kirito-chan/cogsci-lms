@@ -13,6 +13,9 @@ export const slice = createSlice({
     studentPresentationsNeutral: null, // []   prezentacie prijate na ucitelov feedback, este nezobrazene pre studentov
     studentPresentationsOpened: null, // []
     studentPresentationsClosed: null, // []
+    pendingStudents: null,
+    acceptedStudents: null,
+    rejectedStudents: null,
     uploadedPresentation: null,
     studentEmails: null, // []
   },
@@ -37,6 +40,15 @@ export const slice = createSlice({
       state.studentEmails = action.payload;
     },
     emailSent: () => {},
+    pendingStudentsReceived: (state, action) => {
+      state.pendingStudents = action.payload;
+    },
+    acceptedStudentsReceived: (state, action) => {
+      state.acceptedStudents = action.payload;
+    },
+    rejectedStudentsReceived: (state, action) => {
+      state.rejectedStudents = action.payload;
+    },
   },
 });
 
@@ -49,12 +61,46 @@ export const {
   insertedBonus,
   userEmailsAndNamesReceived,
   emailSent,
+  pendingStudentsReceived,
+  acceptedStudentsReceived,
+  rejectedStudentsReceived,
 } = slice.actions;
 
 export default slice.reducer;
 
 // Action Creators
 const urlAdminSubject = "/admin/subject";
+
+const urlPendingStudents = "/students/pending";
+const urlAcceptedStudents = "/students/accepted";
+const urlRejectedStudents = "/students/rejected";
+
+export const loadPendingStudents = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminSubject + "/" + subjectId + urlPendingStudents,
+      onSuccess: pendingStudentsReceived.type,
+    })
+  );
+};
+
+export const loadAcceptedStudents = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminSubject + "/" + subjectId + urlAcceptedStudents,
+      onSuccess: acceptedStudentsReceived.type,
+    })
+  );
+};
+
+export const loadRejectedStudents = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminSubject + "/" + subjectId + urlRejectedStudents,
+      onSuccess: rejectedStudentsReceived.type,
+    })
+  );
+};
 
 const urlEmail = "/email";
 
@@ -161,3 +207,9 @@ export const getStudentPresentationsClosed = (state) =>
   state.features.admin.home.studentPresentationsClosed;
 export const getStudentEmailsAndNames = (state) =>
   state.features.admin.home.studentEmails;
+export const getPendingStudents = (state) =>
+  state.features.admin.home.pendingStudents;
+export const getAcceptedStudents = (state) =>
+  state.features.admin.home.acceptedStudents;
+export const getRejectedStudents = (state) =>
+  state.features.admin.home.rejectedStudents;

@@ -71,3 +71,40 @@ export function TextInputRegistration({
     </Form.Group>
   );
 }
+
+export function TextInputSettings({ title, content, handleContent }) {
+  return (
+    <Form.Group as={Row}>
+      <Form.Label column sm="2">
+        <b> {title}</b>
+      </Form.Label>
+      <Col sm="5">
+        <Form.Control
+          required
+          type="text"
+          onChange={handleContent}
+          value={content}
+        />
+      </Col>
+    </Form.Group>
+  );
+}
+
+export function TextAreaInputSettings({ title, content, handleContent, rows }) {
+  return (
+    <Form.Group as={Row}>
+      <Form.Label column sm="2">
+        <b> {title}</b>
+      </Form.Label>
+      <Col sm="5">
+        <Form.Control
+          required
+          as="textarea"
+          rows={rows}
+          onChange={handleContent}
+          value={content}
+        />
+      </Col>
+    </Form.Group>
+  );
+}
