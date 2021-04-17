@@ -176,6 +176,39 @@ export const getSubject = async (subjectId) => {
   return row[0];
 };
 
+export const updateSubject = async (
+  subjectId,
+  name,
+  year,
+  season,
+  about,
+  userLimit,
+  weeks,
+  active,
+  subjectValPres,
+  subjectValAttendance,
+  subjectValComment
+) => {
+  await execute(
+    `UPDATE subject SET name = ?, year = ?, season = ?, about = ?, user_limit = ?,
+    weeks = ?, status = ?, val_presentation = ?, val_attendance = ?, val_comment = ?
+    WHERE id = ?`,
+    [
+      name,
+      year,
+      season,
+      about,
+      userLimit,
+      weeks,
+      active,
+      subjectValPres,
+      subjectValAttendance,
+      subjectValComment,
+      subjectId,
+    ]
+  );
+};
+
 export const updateSubjectStatus = async (subjectId, status) => {
   await execute("UPDATE subject s SET s.status = ? WHERE id = ?", [
     status,
@@ -621,7 +654,7 @@ export const insertTeacherPresentation = async (
 
 export const insertStudentPresentation = async (title, path, ownerId) => {
   const [row] = await execute(
-    `INSERT INTOpresentation (title, path, status, owner_id) 
+    `INSERT INTO presentation (title, path, status, owner_id) 
     VALUES(?, ?, ?, ?)`,
     [title, path, STUD_PRES_NEUTRAL, ownerId]
   );

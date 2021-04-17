@@ -32,6 +32,7 @@ export const slice = createSlice({
       state.currentSubjectStatus = null;
     },
     subjectStatusChanged: () => {},
+    subjectUpdated: () => {},
   },
 });
 
@@ -44,13 +45,14 @@ export const {
   currentSubjectIdReceived,
   subjectInserted,
   subjectStatusChanged,
+  subjectUpdated,
 } = slice.actions;
 
 export default slice.reducer;
 
 // Action Creators
 
-const urlSubjects = "/admin/subjects";
+const urlSubjects = "/admin/subject";
 
 // prettier-ignore
 
@@ -97,21 +99,37 @@ export const insertSubject = (
 };
 
 export const updateSubject = (
+  subjectId,
   name,
   year,
   season,
   about,
   userLimit,
   weeks,
-  active
+  active,
+  subjectValPres,
+  subjectValAttendance,
+  subjectValComment
 ) => (dispatch) => {
-  const data = { name, year, season, about, userLimit, weeks, active };
+  const data = {
+    name,
+    year,
+    season,
+    about,
+    userLimit,
+    weeks,
+    active,
+    subjectValPres,
+    subjectValAttendance,
+    subjectValComment,
+  };
+
   return dispatch(
     apiCallBegan({
-      url: urlSubjects,
+      url: urlSubjects + "/" + subjectId,
       method: "put",
       data,
-      onSuccess: subjectInserted.type,
+      onSuccess: subjectUpdated.type,
     })
   );
 };

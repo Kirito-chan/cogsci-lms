@@ -14,11 +14,8 @@ import {
   updateSubject,
   loadSubjects,
   getCurrentSubject,
+  loadSubject,
 } from "../subjects/subjectsSlice";
-import {
-  getCurrentSchoolYear,
-  getCurrentSeason,
-} from "../../../components/DateUtils";
 import {
   TextAreaInputSettings,
   TextInputSettings,
@@ -43,25 +40,21 @@ function SubjectParameters() {
     }
   }, [subject]);
 
-  const [subjectName, setSubjectName] = useState();
+  const [subjectName, setSubjectName] = useState("");
   const handleSubjectName = (e) => setSubjectName(e.target.value);
 
-  const [subjectValPres, setSubjectValPres] = useState();
+  const [subjectValPres, setSubjectValPres] = useState("");
   const handleSubjectValPres = (e) => setSubjectValPres(e.target.value);
 
-  const [subjectValAttendance, setSubjectValAttendance] = useState();
+  const [subjectValAttendance, setSubjectValAttendance] = useState("");
   const handleSubjectValAttendance = (e) =>
     setSubjectValAttendance(e.target.value);
 
-  const [subjectValComment, setSubjectValComment] = useState();
+  const [subjectValComment, setSubjectValComment] = useState("");
   const handleSubjectValComment = (e) => setSubjectValComment(e.target.value);
 
-  const [active, setActive] = useState(SUBJ_IS_ACTIVE);
-  const handleActiveType = (e) => {
-    const index = e.target.selectedIndex;
-    const activeType = e.target.childNodes[index].getAttribute("activetype");
-    setActive(activeType);
-  };
+  const [active, setActive] = useState(SUBJ_IS_NOT_ACTIVE);
+  const handleActiveType = (e) => setActive(e.target.value);
 
   const [aboutSubject, setAboutSubject] = useState("");
   const handleAboutSubject = (e) => setAboutSubject(e.target.value);
@@ -69,43 +62,50 @@ function SubjectParameters() {
   const [userLimit, setUserLimit] = useState("");
   const handleUserLimit = (e) => setUserLimit(e.target.value);
 
-  const [season, setSeason] = useState(getCurrentSeason);
-  const handleSeason = (e) => {
-    const index = e.target.selectedIndex;
-    const seasonType = e.target.childNodes[index].getAttribute("semestertype");
-    setSeason(seasonType);
-  };
+  const [season, setSeason] = useState("");
+  const handleSeason = (e) => setSeason(e.target.value);
 
-  const [year, setYear] = useState(getCurrentSchoolYear);
+  const [year, setYear] = useState("");
   const handleYear = (e) => setYear(e.target.value);
 
   const [weeks, setWeeks] = useState("");
   const handleWeeks = (e) => setWeeks(e.target.value);
 
-  const resetInputs = () => {
-    setActive(SUBJ_IS_ACTIVE);
-    setSeason(getCurrentSeason);
-    setSubjectName("");
-    setYear(getCurrentSchoolYear);
-    setWeeks("");
-    setUserLimit("");
-    setAboutSubject("");
-  };
+  const [sum, setSum] = useState();
+  const [errorSum, setErrorSum] = useState("d-none");
+  const [allAreInvalid, setAllAreInvalid] = useState(false);
 
-  const handleUpdateSubject = () => {
+  const handleUpdateSubject = (e) => {
+    e.preventDefault();
+    const sum =
+      parseInt(subjectValPres) +
+      parseInt(subjectValAttendance) +
+      parseInt(subjectValComment);
+    if (sum !== 100) {
+      setSum(sum);
+      setErrorSum("d-inline-block");
+      setAllAreInvalid(true);
+      return;
+    }
+    setErrorSum("d-none");
+    setAllAreInvalid(false);
     dispatch(
       updateSubject(
+        subject.id,
         subjectName,
         year,
         season,
         aboutSubject,
         userLimit,
         weeks,
-        active
+        active,
+        subjectValPres,
+        subjectValAttendance,
+        subjectValComment
       )
     ).then(() => {
+      dispatch(loadSubject(subject.id));
       dispatch(loadSubjects());
-      resetInputs();
     });
   };
 
@@ -123,9 +123,13 @@ function SubjectParameters() {
             <b>Stav</b>
           </Form.Label>
           <Col sm="5">
-            <Form.Control as="select" onChange={handleActiveType}>
-              <option activetype={SUBJ_IS_ACTIVE}>Aktívny</option>
-              <option activetype={SUBJ_IS_NOT_ACTIVE}>Neaktívny</option>
+            <Form.Control
+              as="select"
+              onChange={handleActiveType}
+              value={active}
+            >
+              <option value={SUBJ_IS_ACTIVE}>Aktívny</option>
+              <option value={SUBJ_IS_NOT_ACTIVE}>Neaktívny</option>
             </Form.Control>
           </Col>
         </Form.Group>
@@ -134,23 +138,17 @@ function SubjectParameters() {
           content={year}
           handleContent={handleYear}
         />
-
         <Form.Group as={Row}>
           <Form.Label column sm="2">
             <b>Semester</b>
           </Form.Label>
           <Col sm="5">
-            <Form.Control
-              as="select"
-              onChange={handleSeason}
-              defaultValue={"" + getCurrentSeason()}
-            >
+            <Form.Control as="select" onChange={handleSeason} value={season}>
               <option value={WINTER_SEASON}>Zimný semester</option>
               <option value={SUMMER_SEASON}>Letný semester</option>
             </Form.Control>
           </Col>
         </Form.Group>
-
         <TextInputSettings
           title="Limit počtu študentov"
           content={userLimit}
@@ -165,17 +163,21 @@ function SubjectParameters() {
           title="Váha prezentácie"
           content={subjectValPres}
           handleContent={handleSubjectValPres}
+          allAreInvalid={allAreInvalid}
         />
         <TextInputSettings
           title="Váha dochádzky"
           content={subjectValAttendance}
           handleContent={handleSubjectValAttendance}
+          allAreInvalid={allAreInvalid}
         />
         <TextInputSettings
           title="Váha bonusových úloh"
           content={subjectValComment}
           handleContent={handleSubjectValComment}
+          allAreInvalid={allAreInvalid}
         />
+
         <TextAreaInputSettings
           title="O predmete"
           content={aboutSubject}
@@ -192,6 +194,14 @@ function SubjectParameters() {
             Uložiť zmeny
           </Button>
         </div>
+        <Row className="mt-2">
+          <Col sm="2"></Col>
+          <Col sm="5" className="text-right">
+            <span className={"text-danger " + errorSum}>
+              Súčet váh prezentácie je {sum}, musí byť 100 !
+            </span>
+          </Col>
+        </Row>
       </Form>
     </div>
   );

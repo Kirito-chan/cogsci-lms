@@ -43,7 +43,7 @@ export default slice.reducer;
 
 // Action Creators
 
-const urlSubjects = "/subjects";
+const urlSubjects = "/subject";
 
 export const loadSubjects = (userId) => (dispatch) => {
   return dispatch(

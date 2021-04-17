@@ -68,16 +68,48 @@ const isCorrectPassword = (typedPassword, salt, DBpassword) => {
 };
 
 // subjects student
-app.get("/api/subjects", async function (req, res) {
+app.get("/api/subject", async function (req, res) {
   const { userId } = req.query;
   const rows = await queries.getStudentSubjects(userId);
   res.json(rows);
 });
 
 // subjects admin
-app.get("/api/admin/subjects", async function (req, res) {
+app.get("/api/admin/subject", async function (req, res) {
   const rows = await queries.getAllSubjects();
   res.json(rows);
+});
+
+// subjects admin
+app.put("/api/admin/subject/:subjectId", async function (req, res) {
+  const { subjectId } = req.params;
+  const {
+    name,
+    year,
+    season,
+    about,
+    userLimit,
+    weeks,
+    active,
+    subjectValPres,
+    subjectValAttendance,
+    subjectValComment,
+  } = req.body;
+
+  await queries.updateSubject(
+    subjectId,
+    name,
+    year,
+    season,
+    about,
+    userLimit,
+    weeks,
+    active,
+    subjectValPres,
+    subjectValAttendance,
+    subjectValComment
+  );
+  res.json(subjectId);
 });
 
 app.get("/api/subject/:subjectId", async function (req, res) {

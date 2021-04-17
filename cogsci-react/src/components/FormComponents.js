@@ -72,7 +72,12 @@ export function TextInputRegistration({
   );
 }
 
-export function TextInputSettings({ title, content, handleContent }) {
+export function TextInputSettings({
+  title,
+  content,
+  handleContent,
+  allAreInvalid,
+}) {
   return (
     <Form.Group as={Row}>
       <Form.Label column sm="2">
@@ -84,6 +89,7 @@ export function TextInputSettings({ title, content, handleContent }) {
           type="text"
           onChange={handleContent}
           value={content}
+          isInvalid={allAreInvalid}
         />
       </Col>
     </Form.Group>
