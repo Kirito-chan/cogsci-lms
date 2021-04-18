@@ -125,7 +125,7 @@ app.patch("/api/subject/:subjectId", async function (req, res) {
   res.json(status);
 });
 
-app.post("/api/admin/subjects", async function (req, res) {
+app.post("/api/admin/subject", async function (req, res) {
   let { name, year, season, about, userLimit, weeks, active } = req.body;
   if (about === undefined) about = null;
   const subjectId = await queries.insertSubject(
@@ -143,30 +143,27 @@ app.post("/api/admin/subjects", async function (req, res) {
 
 // admin loading students
 
-app.get(
-  "/api/admin/subject/:subjectId/students/pending",
-  async function (req, res) {
-    const { subjectId } = req.params;
-    const rows = await queries.getPendingStudents(subjectId);
-    res.json(rows);
+app.get("/api/admin/subject/:subjectId/students", async function (req, res) {
+  const { status } = req.query;
+  const { subjectId } = req.params;
+  let rows = null;
+  if (status === "pending") {
+    rows = await queries.getStudents(subjectId, constants.PENDING_FOR_SUBJ);
+  } else if (status === "accepted") {
+    rows = await queries.getStudents(subjectId, constants.ACCEPTED_TO_SUBJ);
+  } else {
+    rows = await queries.getStudents(subjectId, constants.REJECTED_TO_SUBJ);
   }
-);
+  res.json(rows);
+});
 
-app.get(
-  "/api/admin/subject/:subjectId/students/accepted",
+app.put(
+  "/api/admin/subject/:subjectId/student/:userId",
   async function (req, res) {
-    const { subjectId } = req.params;
-    const rows = await queries.getAcceptedStudents(subjectId);
-    res.json(rows);
-  }
-);
-
-app.get(
-  "/api/admin/subject/:subjectId/students/rejected",
-  async function (req, res) {
-    const { subjectId } = req.params;
-    const rows = await queries.getRejectedStudents(subjectId);
-    res.json(rows);
+    const { subjectId, userId } = req.params;
+    const { status } = req.body;
+    await queries.updateUserStatus(subjectId, userId, status);
+    res.json(userId);
   }
 );
 
@@ -255,12 +252,30 @@ app.post("/api/register", async function (req, res) {
 // get attendance
 app.get("/api/attendance/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
-  const rows = await queries.getAttedance(userId, subjectId);
+  const rows = await queries.getAttendanceAndUser(userId, subjectId);
   res.json(rows);
 });
 
+// get attendance admin
+
+app.get("/api/admin/subject/:subjectId/attendance", async (req, res) => {
+  const { subjectId } = req.params;
+  const rows = await queries.getAttendance(subjectId);
+  res.json(rows);
+});
+
+app.patch(
+  "/api/admin/subject/:subjectId/attendance/:attendanceId",
+  async (req, res) => {
+    const { attendanceId } = req.params;
+    const { status } = req.body;
+    const rows = await queries.updateAttendanceStatus(attendanceId, status);
+    res.json(rows);
+  }
+);
+
 // Bonuses
-app.get("/api/bonus/", async (req, res) => {
+app.get("/api/bonus", async (req, res) => {
   const { userId, subjectId } = req.query;
   const rows = await queries.getBonuses(userId, subjectId);
   res.json(rows);

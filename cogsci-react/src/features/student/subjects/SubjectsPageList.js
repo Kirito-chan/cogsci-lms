@@ -19,19 +19,20 @@ import {
 } from "../../../constants";
 import Navigation from "../../../components/Navigation";
 
+// prettier-ignore
 function SubjectsPageList({ subjects, currentUserId }) {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const handleEnterClick = (event) => {
-    const subjectId = parseInt(event.target.id);
+    const subjectId = parseInt(event.target.value);
     dispatch(loadCurrentSubjectId(subjectId)).then(() => {
       history.push({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
     });
   };
 
   const handleSignInClick = (event) => {
-    const subjectId = parseInt(event.target.id);
+    const subjectId = parseInt(event.target.value);
     dispatch(signInForSubject(currentUserId, subjectId)).then(() => {
       dispatch(loadSubjects(currentUserId));
     });
@@ -67,12 +68,11 @@ function SubjectsPageList({ subjects, currentUserId }) {
                 <Row>
                   <Col>
                     <p>
-                      {console.log(subject.is_enrolled)}
                       {!subject.is_enrolled && (
                         <Button
                           variant="warning"
                           size="sm"
-                          id={subject.id}
+                          value={subject.id}
                           onClick={handleSignInClick}
                         >
                           Prihlásiť sa
@@ -84,25 +84,29 @@ function SubjectsPageList({ subjects, currentUserId }) {
                         <Button
                           variant="success"
                           size="sm"
-                          id={subject.id}
+                          value={subject.id}
                           onClick={handleEnterClick}
                         >
                           Vstúp
                         </Button>
-                      ) : subject.is_enrolled &&
+                      ) : 
+                      
+                      subject.is_enrolled &&
                         subject.status === PENDING_FOR_SUBJ ? (
                         <Button variant="warning" size="sm" disabled>
                           Čaká sa na potvrdenie
                         </Button>
-                      ) : subject.is_enrolled &&
+                      ) : 
+                      
+                      subject.is_enrolled &&
                         subject.status === REJECTED_TO_SUBJ ? (
                         <Button
                           variant="warning"
                           size="sm"
-                          id={subject.id}
+                          value={subject.id}
                           onClick={handleSignInClick}
                         >
-                          Potvrdenie zamietnuté
+                          Potvrdenie zamietnuté - skúste ešteraz
                         </Button>
                       ) : (
                         ""

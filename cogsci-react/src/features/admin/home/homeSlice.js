@@ -9,6 +9,7 @@ import {
 export const slice = createSlice({
   name: "home",
   initialState: {
+    attendances: null,
     teacherPresentations: null, // []
     studentPresentationsNeutral: null, // []   prezentacie prijate na ucitelov feedback, este nezobrazene pre studentov
     studentPresentationsOpened: null, // []
@@ -49,6 +50,11 @@ export const slice = createSlice({
     rejectedStudentsReceived: (state, action) => {
       state.rejectedStudents = action.payload;
     },
+    updatedStudentStatus: () => {},
+    attendancesReceived: (state, action) => {
+      state.attendances = action.payload;
+    },
+    updatedAttendanceStatus: () => {},
   },
 });
 
@@ -64,6 +70,9 @@ export const {
   pendingStudentsReceived,
   acceptedStudentsReceived,
   rejectedStudentsReceived,
+  updatedStudentStatus,
+  attendancesReceived,
+  updatedAttendanceStatus,
 } = slice.actions;
 
 export default slice.reducer;
@@ -71,14 +80,38 @@ export default slice.reducer;
 // Action Creators
 const urlAdminSubject = "/admin/subject";
 
-const urlPendingStudents = "/students/pending";
-const urlAcceptedStudents = "/students/accepted";
-const urlRejectedStudents = "/students/rejected";
+const urlAttendance = "/attendance";
+
+export const loadAttendance = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminSubject + "/" + subjectId + urlAttendance,
+      onSuccess: attendancesReceived.type,
+    })
+  );
+};
+
+export const updateAttendanceStatus = (subjectId, attendanceId, status) => (
+  dispatch
+) => {
+  const data = { status };
+  return dispatch(
+    apiCallBegan({
+      method: "patch",
+      data,
+      url:
+        urlAdminSubject + "/" + subjectId + urlAttendance + "/" + attendanceId,
+      onSuccess: updatedAttendanceStatus.type,
+    })
+  );
+};
+
+const urlStudents = "/students";
 
 export const loadPendingStudents = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlAdminSubject + "/" + subjectId + urlPendingStudents,
+      url: urlAdminSubject + "/" + subjectId + urlStudents + "/?status=pending",
       onSuccess: pendingStudentsReceived.type,
     })
   );
@@ -87,7 +120,7 @@ export const loadPendingStudents = (subjectId) => (dispatch) => {
 export const loadAcceptedStudents = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlAdminSubject + "/" + subjectId + urlAcceptedStudents,
+      url: urlAdminSubject + "/" + subjectId + "/students/?status=accepted",
       onSuccess: acceptedStudentsReceived.type,
     })
   );
@@ -96,11 +129,29 @@ export const loadAcceptedStudents = (subjectId) => (dispatch) => {
 export const loadRejectedStudents = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlAdminSubject + "/" + subjectId + urlRejectedStudents,
+      url: urlAdminSubject + "/" + subjectId + "/students/?status=rejected",
       onSuccess: rejectedStudentsReceived.type,
     })
   );
 };
+
+const urlStudent = "/student";
+
+export const updateStudentStatus = (subjectId, userId, status) => (
+  dispatch
+) => {
+  const data = { status };
+  return dispatch(
+    apiCallBegan({
+      method: "put",
+      url: urlAdminSubject + "/" + subjectId + urlStudent + "/" + userId,
+      data,
+      onSuccess: updatedStudentStatus.type,
+    })
+  );
+};
+
+("/api/admin/subject/:subjectId/student/:userId");
 
 const urlEmail = "/email";
 
@@ -213,3 +264,4 @@ export const getAcceptedStudents = (state) =>
   state.features.admin.home.acceptedStudents;
 export const getRejectedStudents = (state) =>
   state.features.admin.home.rejectedStudents;
+export const getAttendance = (state) => state.features.admin.home.attendances;

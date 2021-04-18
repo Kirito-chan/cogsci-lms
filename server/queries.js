@@ -50,37 +50,26 @@ export const registerUser = async (
 };
 
 // admin loading students
-export const getPendingStudents = async (subjectId) => {
+
+export const getStudents = async (subjectId, status) => {
   const [rows] = await execute(
-    `SELECT u.*, usl.presentation_id FROM 
-     user_subject_lookup usl JOIN user u ON u.id = usl.user_id 
+    `SELECT u.*, usl.presentation_id, p.status as pres_status FROM 
+     (user_subject_lookup usl JOIN user u ON u.id = usl.user_id)
+     LEFT JOIN presentation p ON p.id = usl.presentation_id
      WHERE usl.subject_id = ? AND usl.status = ? 
      ORDER BY u.last_name, u.first_name`,
-    [subjectId, PENDING_FOR_SUBJ]
+    [subjectId, status]
   );
   return rows;
 };
 
-export const getAcceptedStudents = async (subjectId) => {
-  const [rows] = await execute(
-    `SELECT u.*, usl.presentation_id FROM 
-     user_subject_lookup usl JOIN user u ON u.id = usl.user_id 
-     WHERE usl.subject_id = ? AND usl.status = ? 
-     ORDER BY u.last_name, u.first_name`,
-    [subjectId, ACCEPTED_TO_SUBJ]
+export const updateUserStatus = async (subjectId, userId, status) => {
+  const [row] = await execute(
+    `UPDATE user_subject_lookup SET status = ?
+     WHERE subject_id = ? AND user_id = ?`,
+    [status, subjectId, userId]
   );
-  return rows;
-};
-
-export const getRejectedStudents = async (subjectId) => {
-  const [rows] = await execute(
-    `SELECT u.*, usl.presentation_id FROM 
-     user_subject_lookup usl JOIN user u ON u.id = usl.user_id 
-     WHERE usl.subject_id = ? AND usl.status = ? 
-     ORDER BY u.last_name, u.first_name`,
-    [subjectId, REJECTED_TO_SUBJ]
-  );
-  return rows;
+  return row.insertId;
 };
 
 export const insertNewUserToSubject = async (userId, subjectId) => {
@@ -254,7 +243,7 @@ export const getUserWithEmail = async (email) => {
 };
 
 // attendance
-export const getAttedance = async (userId, subjectId) => {
+export const getAttendanceAndUser = async (userId, subjectId) => {
   const [row] = await execute(
     `
   WITH
@@ -284,6 +273,23 @@ export const getAttedance = async (userId, subjectId) => {
     [ATTENDANCE_OPENED, userId, subjectId, subjectId]
   );
   return row;
+};
+
+export const getAttendance = async (subjectId) => {
+  const [rows] = await execute(
+    `SELECT * FROM attendance WHERE subject_id = ?
+     ORDER BY id DESC`,
+    [subjectId]
+  );
+  return rows;
+};
+
+export const updateAttendanceStatus = async (id, status) => {
+  const [rows] = await execute(
+    `UPDATE attendance SET status = ? WHERE id = ?`,
+    [status, id]
+  );
+  return rows;
 };
 
 // bonus comments

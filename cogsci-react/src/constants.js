@@ -47,6 +47,9 @@ export const PENDING_FOR_SUBJ = 1; // v tabulke user_subject_lookup stlpec statu
 export const ACCEPTED_TO_SUBJ = 2; // ci je student cakajuci, prijaty alebo zmietnuty pre prihlasenie sa na dany predmet
 export const REJECTED_TO_SUBJ = 3;
 
+export const ATTENDANCE_CLOSED = 1; // v tabulke attendance stlpec status hovori o tom, ci je pre dany tyzden otvorena abo zatvorena dochadzka
+export const ATTENDANCE_OPENED = 2;
+
 // URL na API
 export const createUrlToDownloadPresentation = (
   subjectId,
