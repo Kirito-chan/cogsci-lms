@@ -85,8 +85,8 @@ function EmailPage() {
     e.preventDefault();
     dispatch(
       sendEmail(
-        "fero.kochjar@gmail.com",
         "kiritochan776@gmail.com",
+        "fero.kochjar@gmail.com",
         "Kirito",
         subject,
         message

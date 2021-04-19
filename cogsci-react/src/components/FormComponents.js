@@ -77,13 +77,14 @@ export function TextInputSettings({
   content,
   handleContent,
   allAreInvalid,
+  sm = ["2", "5"],
 }) {
   return (
     <Form.Group as={Row}>
-      <Form.Label column sm="2">
+      <Form.Label column sm={sm[0]}>
         <b>{title}</b>
       </Form.Label>
-      <Col sm="5">
+      <Col sm={sm[1]}>
         <Form.Control
           required
           type="text"

@@ -10,6 +10,7 @@ export const slice = createSlice({
   name: "home",
   initialState: {
     attendances: null, // []
+    attendanceErrorPassword: "",
     bonuses: null, // []
     teacherPresentations: null, // []
     studentPresentationsOpened: null, // []
@@ -50,6 +51,13 @@ export const slice = createSlice({
       state.uploadedPresentation = true;
     },
     presentationCriteriaInserted: () => {},
+    passwordForAttendanceAdded: () => {},
+    passwordForAttendanceFailed: (state, action) => {
+      state.attendanceErrorPassword = action.payload.customMessage;
+    },
+    attendancePasswordErrorCleared: (state) => {
+      state.attendanceErrorPassword = "";
+    },
   },
 });
 
@@ -63,6 +71,9 @@ export const {
   subjectValuationReceived,
   uploadedPresentationReceived,
   presentationCriteriaInserted,
+  passwordForAttendanceAdded,
+  attendancePasswordErrorCleared,
+  passwordForAttendanceFailed,
 } = slice.actions;
 
 export default slice.reducer;
@@ -97,6 +108,22 @@ export const uploadPresentation = (
 };
 
 const urlAttendance = "/attendance";
+const urlSubject = "/subject";
+
+export const addPasswordForAttendance = (userId, subjectId, password) => (
+  dispatch
+) => {
+  const data = { password };
+  return dispatch(
+    apiCallBegan({
+      method: "post",
+      url: urlSubject + "/" + subjectId + urlAttendance + "/?userId=" + userId,
+      data,
+      onSuccess: passwordForAttendanceAdded.type,
+      onError: passwordForAttendanceFailed.type,
+    })
+  );
+};
 
 export const loadAttendance = (userId, subjectId) => (dispatch) => {
   return dispatch(
@@ -199,7 +226,6 @@ export const updateSubjectValuation = (
 };
 
 const urlAdmin = "/admin";
-const urlSubject = "/subject";
 const urlSettings = "/settings";
 const urlPresCriteria = "/presentation-criteria";
 
@@ -227,9 +253,15 @@ export const deleteOldAndInsertNewPresentationCriteria = (
   );
 };
 
+export const clearAttendancePasswordError = () => (dispatch) => {
+  dispatch({ type: attendancePasswordErrorCleared.type, payload: "" });
+};
+
 // Selectors
 export const getLoading = (state) => state.features.student.home.loading;
 export const getAttendance = (state) => state.features.student.home.attendances;
+export const getAttendanceErrorPassword = (state) =>
+  state.features.student.home.attendanceErrorPassword;
 export const getBonuses = (state) => state.features.student.home.bonuses;
 export const getTeacherPresentations = (state) =>
   state.features.student.home.teacherPresentations;

@@ -55,6 +55,7 @@ export const slice = createSlice({
       state.attendances = action.payload;
     },
     updatedAttendanceStatus: () => {},
+    newAttendanceAdded: () => {},
   },
 });
 
@@ -73,6 +74,7 @@ export const {
   updatedStudentStatus,
   attendancesReceived,
   updatedAttendanceStatus,
+  newAttendanceAdded,
 } = slice.actions;
 
 export default slice.reducer;
@@ -81,6 +83,18 @@ export default slice.reducer;
 const urlAdminSubject = "/admin/subject";
 
 const urlAttendance = "/attendance";
+
+export const addnewAttendance = (subjectId, date, password) => (dispatch) => {
+  const data = { date, password };
+  return dispatch(
+    apiCallBegan({
+      method: "post",
+      url: urlAdminSubject + "/" + subjectId + urlAttendance,
+      data,
+      onSuccess: newAttendanceAdded.type,
+    })
+  );
+};
 
 export const loadAttendance = (subjectId) => (dispatch) => {
   return dispatch(
@@ -166,7 +180,7 @@ export const loadUserEmailsAndNames = (subjectId) => (dispatch) => {
 
 const urlSendEmail = "/send_email";
 
-export const sendEmail = (toEmail, fromEmail, fromName, subject, text) => (
+export const sendEmail = (fromEmail, toEmail, fromName, subject, text) => (
   dispatch
 ) => {
   const data = { toEmail, fromEmail, fromName, subject, text };

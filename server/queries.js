@@ -284,6 +284,38 @@ export const getAttendance = async (subjectId) => {
   return rows;
 };
 
+export const getAttendanceIdForPassword = async (subjectId, password) => {
+  const [
+    rows,
+  ] = await execute(
+    `SELECT id FROM attendance WHERE subject_id = ? AND password like binary ? AND status = ?`,
+    [subjectId, password, ATTENDANCE_OPENED]
+  );
+  console.log(rows);
+  if (rows.length > 0) return rows[0].id;
+  else return false;
+};
+
+export const insertAttendanceForUser = async (userId, attendanceId) => {
+  const [
+    row,
+  ] = await execute(
+    `INSERT INTO user_attendance_lookup (user_id, attendance_id) VALUES (?, ?)`,
+    [userId, attendanceId]
+  );
+  return row.insertId;
+};
+
+export const insertAttendance = async (subjectId, date, password) => {
+  const [
+    row,
+  ] = await execute(
+    `INSERT INTO attendance (subject_id, date, password, status) VALUES (?, ?, ?, ?)`,
+    [subjectId, date, password, ATTENDANCE_OPENED]
+  );
+  return row.insertId;
+};
+
 export const updateAttendanceStatus = async (id, status) => {
   const [rows] = await execute(
     `UPDATE attendance SET status = ? WHERE id = ?`,

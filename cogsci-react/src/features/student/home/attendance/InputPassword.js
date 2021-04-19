@@ -1,27 +1,45 @@
-import React from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import {
+  addPasswordForAttendance,
+  clearAttendancePasswordError,
+  getAttendanceErrorPassword,
+  loadAttendance,
+} from "../homeSlice";
+import InputPasswordView from "./InputPasswordView";
+import { getCurrentUserId } from "../../../../app/currentUserSlice";
 
 function InputPassword() {
+  const dispatch = useDispatch();
+  const { subjectId } = useParams();
+  const currentUserId = useSelector(getCurrentUserId);
+  const passwordError = useSelector(getAttendanceErrorPassword);
+
+  const [password, setPassword] = useState("");
+
+  const handlePassword = (e) => {
+    dispatch(clearAttendancePasswordError());
+    setPassword(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    dispatch(addPasswordForAttendance(currentUserId, subjectId, password)).then(
+      () => {
+        dispatch(loadAttendance(currentUserId, subjectId));
+      }
+    );
+  };
+
   return (
-    <div>
-      <Form>
-        <Form.Row>
-          <Col>
-            <label htmlFor="password" className="sr-only">
-              Heslo:
-            </label>
-            <Form.Control id="password" type="password" placeholder="Heslo" />
-          </Col>
-          <Col>
-            <Button variant="primary" type="submit">
-              Potvrdiť účasť
-            </Button>
-          </Col>
-        </Form.Row>
-      </Form>
-    </div>
+    <InputPasswordView
+      handleSubmit={handleSubmit}
+      password={password}
+      handlePassword={handlePassword}
+      error={passwordError}
+    />
   );
 }
 

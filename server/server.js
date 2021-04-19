@@ -24,6 +24,14 @@ const getCurrentDate = () => {
   );
 };
 
+const convertDateToSQLFormat = (date) => {
+  return (
+    new Date(date).toISOString().slice(0, 10) +
+    " " +
+    new Date(date).toLocaleTimeString("en-GB")
+  );
+};
+
 app.use(cors());
 
 // parse requests of content-type - application/json
@@ -249,11 +257,29 @@ app.post("/api/register", async function (req, res) {
   res.json(id);
 });
 
-// get attendance
+// attendance student
 app.get("/api/attendance/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
   const rows = await queries.getAttendanceAndUser(userId, subjectId);
   res.json(rows);
+});
+
+app.post("/api/subject/:subjectId/attendance", async (req, res) => {
+  const { subjectId } = req.params;
+  const { userId } = req.query;
+  const { password } = req.body;
+
+  const attendanceId = await queries.getAttendanceIdForPassword(
+    subjectId,
+    password
+  );
+
+  if (attendanceId) {
+    const id = await queries.insertAttendanceForUser(userId, attendanceId);
+    res.json(id);
+    return;
+  }
+  res.status(401).send("Nesprávne heslo");
 });
 
 // get attendance admin
@@ -262,6 +288,18 @@ app.get("/api/admin/subject/:subjectId/attendance", async (req, res) => {
   const { subjectId } = req.params;
   const rows = await queries.getAttendance(subjectId);
   res.json(rows);
+});
+
+app.post("/api/admin/subject/:subjectId/attendance", async (req, res) => {
+  const { subjectId } = req.params;
+  const { date, password } = req.body;
+
+  const id = await queries.insertAttendance(
+    subjectId,
+    convertDateToSQLFormat(date),
+    password
+  );
+  res.json(id);
 });
 
 app.patch(
