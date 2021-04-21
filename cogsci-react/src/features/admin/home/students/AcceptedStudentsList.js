@@ -45,9 +45,19 @@ function AcceptedStudentsList({
             Zamietnuť
           </Button>
 
-          <Button variant="warning" size="sm" className="ml-5 mr-2">
+          <Link
+            to={
+              "/subject/" +
+              subjectId +
+              URL_ADMIN_STUDENT_DETAIL +
+              "/" +
+              student.id
+            }
+            className="btn btn-warning btn-sm ml-5 mr-2"
+          >
             Hodnotenie
-          </Button>
+          </Link>
+
           {student.pres_status === undefined || student.pres_status === null || (
             <Link
               to={

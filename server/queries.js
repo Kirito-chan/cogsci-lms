@@ -230,7 +230,32 @@ export const updateSubjectValuation = async (
   );
 };
 
-export const getUser = async (username) => {
+export const updateUserRole = async (userId, role) => {
+  await execute("UPDATE user SET role = ? WHERE id = ?", [role, userId]);
+};
+
+export const getUsers = async (username) => {
+  const [
+    rows,
+  ] = await execute(
+    "SELECT * FROM user ORDER BY role DESC, last_name, first_name",
+    [username]
+  );
+  return rows;
+};
+
+export const getUserByIdAndSubjectId = async (userId, subjectId) => {
+  const [row] = await execute(
+    `SELECT u.*, usl.presentation_id, p.status as pres_status 
+     FROM (user_subject_lookup usl JOIN user u ON u.id = usl.user_id)
+     LEFT JOIN presentation p ON p.id = usl.presentation_id
+     WHERE u.id = ? AND usl.subject_id = ?`,
+    [userId, subjectId]
+  );
+  return row[0];
+};
+
+export const getUserByUsername = async (username) => {
   const [row] = await execute("SELECT * FROM user WHERE username = ?", [
     username,
   ]);
@@ -249,6 +274,7 @@ export const getAttendanceAndUser = async (userId, subjectId) => {
   WITH
   tab1 AS (
   SELECT a.date, 
+         a.id as attendance_id,
          u.id,
          a.status,
          CASE
@@ -269,7 +295,7 @@ export const getAttendanceAndUser = async (userId, subjectId) => {
 
   SELECT tab1.date, tab1.id, tab1.got_point, tab1.show_password_input, pw.weight 
   FROM tab1 CROSS JOIN pres_weight pw
-  ORDER BY tab1.date DESC`,
+  ORDER BY tab1.attendance_id DESC`,
     [ATTENDANCE_OPENED, userId, subjectId, subjectId]
   );
   return row;
@@ -291,7 +317,7 @@ export const getAttendanceIdForPassword = async (subjectId, password) => {
     `SELECT id FROM attendance WHERE subject_id = ? AND password like binary ? AND status = ?`,
     [subjectId, password, ATTENDANCE_OPENED]
   );
-  console.log(rows);
+
   if (rows.length > 0) return rows[0].id;
   else return false;
 };

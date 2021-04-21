@@ -46,7 +46,7 @@ function StudentHomePage() {
               </div>
             </Col>
           </Row>
-          <Row>
+          <Row className="mt-5">
             <Col md={6}>
               <Evaluation />
             </Col>

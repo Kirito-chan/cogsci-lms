@@ -19,6 +19,7 @@ import {
   URL_NOT_AUTHORIZED,
   URL_ADMIN_SETTINGS,
   URL_EMAIL,
+  URL_ADMIN_USERS,
 } from "../constants";
 import { useLocation, useParams } from "react-router";
 import {
@@ -35,10 +36,11 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const subjectIdParams = useParams().subjectId;
   const subjectName = useSelector(getCurrentSubjectName);
   const subjectId = useSelector(getCurrentSubjectId);
-  const inSubjectsPage = [
+  const inGlobalPage = [
     URL_SUBJECTS,
     URL_ADMIN_SUBJECTS,
     URL_NOT_AUTHORIZED,
+    URL_ADMIN_USERS,
   ].includes(useLocation().pathname);
 
   useEffect(() => {
@@ -73,20 +75,29 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
           >
             Predmety
           </NavLink>
+
+          <NavLink
+            to={URL_ADMIN_USERS}
+            onClick={() => dispatch(clearCurrentSubject())}
+            className="nav-link"
+          >
+            {isAdmin && "Používatelia"}
+          </NavLink>
+
           <NavDivider />
           <NavLink
             // prettier-ignore
             to={"/subject/" + subjectId + (isAdmin ? URL_HOME_ADMIN : URL_HOME_STUDENT) }
-            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {(!inSubjectsPage && subjectName) || ""}
+            {(!inGlobalPage && subjectName) || ""}
           </NavLink>
           <NavLink
             // prettier-ignore
             to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_BONUSES : URL_BONUSES) }
-            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {!inSubjectsPage && "Bonusy"}
+            {!inGlobalPage && "Bonusy"}
           </NavLink>
           <NavLink
             to={
@@ -94,29 +105,27 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
               subjectId +
               (isAdmin ? URL_ADMIN_PRESENTATIONS : URL_PRESENTATIONS)
             }
-            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {!inSubjectsPage && "Prezentácie"}
+            {!inGlobalPage && "Prezentácie"}
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_TERMS}
-            className={
-              "nav-link " + (isAdmin || inSubjectsPage ? "d-none" : "")
-            }
+            className={"nav-link " + (isAdmin || inGlobalPage ? "d-none" : "")}
           >
-            {!isAdmin && !inSubjectsPage && "Podmienky"}
+            {!isAdmin && !inGlobalPage && "Podmienky"}
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_ADMIN_SETTINGS}
-            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {isAdmin && !inSubjectsPage && "Nastavenia"}
+            {isAdmin && !inGlobalPage && "Nastavenia"}
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_EMAIL}
-            className={"nav-link " + (inSubjectsPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {isAdmin && !inSubjectsPage && "Email"}
+            {isAdmin && !inGlobalPage && "Email"}
           </NavLink>
         </Nav>
         <Nav>

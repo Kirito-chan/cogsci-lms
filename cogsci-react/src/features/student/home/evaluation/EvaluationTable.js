@@ -37,7 +37,7 @@ export default function EvaluationTable({
   const grade = getGrade(sumOfPercents, subjectValuation);
 
   return (
-    <div className="mt-5">
+    <div>
       <h2>Celkové hodnotenie</h2>
       <Table bordered striped hover size="sm" className="text-center">
         <thead>

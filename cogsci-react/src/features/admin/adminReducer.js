@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 import homeReducer from "./home/homeSlice";
 import subjectsReducer from "./subjects/subjectsSlice";
-// import bonusReducer from "./bonus/bonusSlice";
-// import presentationReducer from "./presentation/presentationSlice";
+import studentDetailReducer from "./student-detail/studentDetailSlice";
+import allUsersReducer from "./all-users/allUsersSlice";
 
 export default combineReducers({
   home: homeReducer,
   subjects: subjectsReducer,
-  //bonus: bonusReducer,
-  //presentation: presentationReducer,
+  studentDetail: studentDetailReducer,
+  allUsers: allUsersReducer,
 });

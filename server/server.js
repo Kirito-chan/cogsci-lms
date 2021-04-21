@@ -191,7 +191,7 @@ const secret = process.env.JWT_PRIVATE_KEY;
 
 app.post("/api/login", async function (req, res) {
   const { username, password } = req.body;
-  const user = await queries.getUser(username);
+  const user = await queries.getUserByUsername(username);
 
   if (user === undefined) {
     res.status(404).send(`Užívateľ s menom "${username}" neexistuje`);
@@ -224,7 +224,7 @@ app.post("/api/register", async function (req, res) {
     return;
   }
 
-  const user = await queries.getUser(username);
+  const user = await queries.getUserByUsername(username);
   const userEmail = await queries.getUserWithEmail(email);
 
   if (user) {
@@ -255,6 +255,34 @@ app.post("/api/register", async function (req, res) {
     date
   );
   res.json(id);
+});
+
+app.get(
+  "/api/admin/subject/:subjectId/user/:userId",
+  async function (req, res) {
+    const { userId, subjectId } = req.params;
+    const user = await queries.getUserByIdAndSubjectId(userId, subjectId);
+    console.log(user);
+
+    if (user === undefined) {
+      res.status(404).send(`Užívateľ s id "${userId}" neexistuje`);
+      return;
+    }
+
+    res.json(user);
+  }
+);
+
+app.get("/api/admin/user", async function (req, res) {
+  const users = await queries.getUsers();
+  res.json(users);
+});
+
+app.patch("/api/admin/user/:userId", async function (req, res) {
+  const { userId } = req.params;
+  const { role } = req.body;
+  await queries.updateUserRole(userId, role);
+  res.json(userId);
 });
 
 // attendance student

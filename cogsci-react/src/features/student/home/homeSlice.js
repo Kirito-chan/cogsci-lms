@@ -21,7 +21,12 @@ export const slice = createSlice({
   },
   reducers: {
     attendancesReceived: (state, action) => {
-      state.attendances = action.payload;
+      state.attendances = [];
+      for (const attendance of action.payload) {
+        let attendanceCopy = Object.assign({}, attendance);
+        delete attendance.password;
+        state.attendances.push(attendanceCopy);
+      }
     },
     bonusesReceived: (state, action) => {
       state.bonuses = action.payload;
@@ -258,7 +263,6 @@ export const clearAttendancePasswordError = () => (dispatch) => {
 };
 
 // Selectors
-export const getLoading = (state) => state.features.student.home.loading;
 export const getAttendance = (state) => state.features.student.home.attendances;
 export const getAttendanceErrorPassword = (state) =>
   state.features.student.home.attendanceErrorPassword;

@@ -15,12 +15,13 @@ export const URL_PRESENTATIONS = "/presentation";
 export const URL_TERMS = "/terms";
 
 export const URL_ADMIN_SUBJECTS = "/admin/subjects";
+export const URL_ADMIN_USERS = "/admin/users";
 export const URL_ADMIN_BONUSES = "/admin/bonus";
 export const URL_ADMIN_PRESENTATIONS = "/admin/presentation";
 export const URL_ADMIN_SETTINGS = "/admin/settings";
 export const URL_HOME_ADMIN = "/admin/home";
 export const URL_EMAIL = "/admin/email";
-export const URL_ADMIN_STUDENT_DETAIL = "/student";
+export const URL_ADMIN_STUDENT_DETAIL = "/admin/student";
 
 export const URL_NOT_AUTHORIZED = "/not-authorized";
 export const URL_REGISTER = "/register";
