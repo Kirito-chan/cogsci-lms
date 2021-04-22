@@ -17,11 +17,16 @@ function BonusesPageList({ bonuses, subjectId, isAdmin, currentUserId }) {
     <div>
       <Navigation />
       <h2 className="text-center mb-4">Bonusové úlohy</h2>
-      <Container className="mb-3">
+      <Container className="mb-5">
         {isAdmin && (
-          <Button variant="success" size="sm" onClick={showModalAddBonus}>
-            Pridať bonusovú úlohu
-          </Button>
+          <div>
+            <Button variant="success" size="sm" onClick={showModalAddBonus}>
+              Pridať bonusovú úlohu
+            </Button>
+            <Link className="btn btn-warning btn-sm ml-2">
+              Zobraziť celkovú tabuľku bonusov
+            </Link>
+          </div>
         )}
       </Container>
 

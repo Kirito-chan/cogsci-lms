@@ -10,7 +10,7 @@ import { Link, useHistory } from "react-router-dom";
 import {
   WINTER_SEASON,
   SUBJ_IS_ACTIVE,
-  URL_HOME_ADMIN,
+  URL_ADMIN_HOME,
 } from "../../../constants";
 import Navigation from "../../../components/Navigation";
 import AddSubjectModal from "./AddSubjectModal";
@@ -25,7 +25,7 @@ function SubjectsPageList({ subjects }) {
   const handleEnterSubjClick = (event) => {
     const subjectId = parseInt(event.target.getAttribute("subjectid"));
     dispatch(loadCurrentSubjectId(subjectId)).then(() => {
-      history.push({ pathname: `/subject/${subjectId}${URL_HOME_ADMIN}` });
+      history.push({ pathname: `/subject/${subjectId}${URL_ADMIN_HOME}` });
     });
   };
 
@@ -67,7 +67,7 @@ function SubjectsPageList({ subjects }) {
                       <td subjectid={subject.id}>
                         {
                           <Link
-                            to={`/subject/${subject.id}${URL_HOME_ADMIN}`}
+                            to={`/subject/${subject.id}${URL_ADMIN_HOME}`}
                             subjectid={subject.id}
                           >
                             {subject.name}

@@ -11,7 +11,7 @@ import {
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
-  URL_HOME_STUDENT,
+  URL_HOME,
   WINTER_SEASON,
   PENDING_FOR_SUBJ,
   ACCEPTED_TO_SUBJ,
@@ -27,7 +27,7 @@ function SubjectsPageList({ subjects, currentUserId }) {
   const handleEnterClick = (event) => {
     const subjectId = parseInt(event.target.value);
     dispatch(loadCurrentSubjectId(subjectId)).then(() => {
-      history.push({ pathname: `/subject/${subjectId}${URL_HOME_STUDENT}` });
+      history.push({ pathname: `/subject/${subjectId}${URL_HOME}` });
     });
   };
 

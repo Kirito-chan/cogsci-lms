@@ -12,16 +12,18 @@ import {
   URL_ADMIN_SETTINGS,
   URL_ADMIN_SUBJECTS,
   URL_BONUSES,
-  URL_HOME_ADMIN,
-  URL_HOME_STUDENT,
+  URL_ADMIN_HOME,
+  URL_HOME,
   URL_PRESENTATIONS,
   URL_SUBJECTS,
   URL_TERMS,
-  URL_EMAIL,
+  URL_ADMIN_EMAIL,
   URL_NOT_AUTHORIZED,
   URL_REGISTER,
   URL_ADMIN_STUDENT_DETAIL,
   URL_ADMIN_USERS,
+  URL_ADMIN_OVERALL_ATTENDANCE,
+  URL_ADMIN_OVERALL_BONUSES,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
@@ -37,6 +39,7 @@ import EmailPage from "./features/admin/email/EmailPage";
 import Register from "./features/login/Register";
 import StudentDetailPage from "./features/admin/student-detail/StudentDetailPage";
 import UsersPage from "./features/admin/all-users/UsersPage";
+import OverallAttendance from "./features/admin/overall-attendance/OverallAttendance";
 
 // prettier-ignore
 function App() {
@@ -50,17 +53,19 @@ function App() {
           <AuthRoute path={URL_NOT_AUTHORIZED} component={NotAuthorizedPage} type="not-auth" />
           
           {/* admin routes */}
-          <AuthRoute path={"/subject/:subjectId" + URL_HOME_ADMIN} component={AdminHomePage} type="admin" />
+          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_HOME} component={AdminHomePage} type="admin" />
           <AuthRoute path={URL_ADMIN_SUBJECTS} component={SubjectsPageAdmin} type="admin" />
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_SETTINGS} component={SettingsPage} type="admin" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_BONUSES} component={BonusesPage} type="admin" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_PRESENTATIONS} component={PresentationsPageAdmin} type="admin" />
-          <AuthRoute path={"/subject/:subjectId" + URL_EMAIL} component={EmailPage} type="admin" />
+          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_EMAIL} component={EmailPage} type="admin" />
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_STUDENT_DETAIL + "/:studentId"} component={StudentDetailPage} type="admin" />
           <AuthRoute path={URL_ADMIN_USERS} component={UsersPage} type="admin" />
+          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_OVERALL_ATTENDANCE} component={OverallAttendance} type="admin" />
+          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_OVERALL_BONUSES} component={OverallAttendance} type="admin" />
 
           {/* student routes */}
-          <AuthRoute path={"/subject/:subjectId" + URL_HOME_STUDENT} component={StudentHomePage} type="student"/>
+          <AuthRoute path={"/subject/:subjectId" + URL_HOME} component={StudentHomePage} type="student"/>
           <AuthRoute path={URL_SUBJECTS} component={SubjectsPage} type="student" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_BONUSES} component={BonusesPage} type="student" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_PRESENTATIONS} component={PresentationsPage} type="student" />

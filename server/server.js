@@ -175,6 +175,68 @@ app.put(
   }
 );
 
+app.get("/api/admin/subject/:subjectId/overall-bonuses", async (req, res) => {
+  const { subjectId } = req.params;
+  const students = await queries.getStudentsBySubjectId(subjectId);
+  const studentBonusesArr = [];
+  for (const student of students) {
+    const bonuses = await queries.getBonusesOfStudent(student.id, subjectId);
+    studentBonusesArr.push({ student, bonuses });
+  }
+  res.json(studentBonusesArr);
+});
+
+app.get(
+  "/api/admin/subject/:subjectId/overall-attendance",
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const students = await queries.getStudentsBySubjectId(subjectId);
+    const studentAttendancesArr = [];
+    for (const student of students) {
+      const attendances = await queries.getAttendancesOfStudent(
+        student.id,
+        subjectId
+      );
+      studentAttendancesArr.push({ student, attendances });
+    }
+    res.json(studentAttendancesArr);
+  }
+);
+
+app.put(
+  "/api/admin/subject/:subjectId/overall-attendance",
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { checkedAttendances } = req.body;
+
+    for (const checkedAttendance of checkedAttendances) {
+      const student = checkedAttendance.student;
+      const attendances = checkedAttendance.attendances;
+
+      for (const attendance of attendances) {
+        const studentId = student.id;
+        const isChecked = attendance.isChecked;
+        const attendanceId = attendance.attendanceId;
+        const hasAttendance = await queries.userHasAttendance(
+          studentId,
+          attendanceId
+        );
+
+        if (isChecked) {
+          if (!hasAttendance) {
+            await queries.insertAttendanceForUser(studentId, attendanceId);
+          }
+        } else {
+          if (hasAttendance) {
+            await queries.deleteAttendanceForUser(studentId, attendanceId);
+          }
+        }
+      }
+    }
+    res.json(subjectId);
+  }
+);
+
 app.post("/api/subject/:subjectId/sign-in", async function (req, res) {
   const { subjectId } = req.params;
   const { userId } = req.body;

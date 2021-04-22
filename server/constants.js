@@ -21,6 +21,10 @@ export const REJECTED_TO_SUBJ = 3;
 export const ATTENDANCE_CLOSED = 1; // v tabulke attendance stplec status, ci je otvorena alebo uzavreta dochadzka na dany tyzden
 export const ATTENDANCE_OPENED = 2;
 
+export const GOT_0_BONUS_POINTS = 0;
+export const GOT_1_BONUS_POINTS = 1;
+export const NOT_YET_EVALUATED_BONUS_POINTS = "nehodnotené";
+
 // ked sa hodnoti prezentacia podla roznych kriterii, tak aky je maximalny pocet bodov pre dane kriterium
 export const MAX_POINT_HEIGHT_PRES_EVALUATION = 10;
 

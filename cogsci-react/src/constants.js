@@ -1,14 +1,14 @@
 // bonuses
-export const GOT_0_BONUS_POINTS = 0;
-export const GOT_1_BONUS_POINTS = 1;
-export const NOT_YET_EVALUATED_BONUS_POINTS = "nehodnotené";
+export const GOT_0_BONUS_POINTS = 0; // stlpec valuated v tabulke announcement_comments = 0 znamena, ze dostal 0 bodov
+export const GOT_1_BONUS_POINTS = 1; // stlpec valuated v tabulke announcement_comments = 1 znamena, ze dostal 1 bod
+export const NOT_YET_EVALUATED_BONUS_POINTS = "nehodnotené"; // stlpec valuated v tabulke announcement_comments = NULL znamena, ze este nebol hodnoteny ucitelom
 export const LOGOUT_EVENT = "logout";
 
 // ked sa hodnoti prezentacia podla roznych kriterii, tak aky je maximalny pocet bodov pre dane kriterium
 export const MAX_POINT_HEIGHT_PRES_EVALUATION = 10;
 
 // URL pre router
-export const URL_HOME_STUDENT = "/home-student";
+export const URL_HOME = "/home-student";
 export const URL_SUBJECTS = "/subjects";
 export const URL_BONUSES = "/bonus";
 export const URL_PRESENTATIONS = "/presentation";
@@ -19,9 +19,11 @@ export const URL_ADMIN_USERS = "/admin/users";
 export const URL_ADMIN_BONUSES = "/admin/bonus";
 export const URL_ADMIN_PRESENTATIONS = "/admin/presentation";
 export const URL_ADMIN_SETTINGS = "/admin/settings";
-export const URL_HOME_ADMIN = "/admin/home";
-export const URL_EMAIL = "/admin/email";
+export const URL_ADMIN_HOME = "/admin/home";
+export const URL_ADMIN_EMAIL = "/admin/email";
 export const URL_ADMIN_STUDENT_DETAIL = "/admin/student";
+export const URL_ADMIN_OVERALL_ATTENDANCE = "/admin/overall-attendance";
+export const URL_ADMIN_OVERALL_BONUSES = "/admin/overall-bonuses";
 
 export const URL_NOT_AUTHORIZED = "/not-authorized";
 export const URL_REGISTER = "/register";

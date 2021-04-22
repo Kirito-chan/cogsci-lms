@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { useDispatch } from "react-redux";
 import {
-  NOT_VALUATED_BONUS_POINT,
-  ONE_BONUS_POINT,
-  ZERO_BONUS_POINTS,
+  GOT_0_BONUS_POINTS,
+  GOT_1_BONUS_POINTS,
+  NOT_YET_EVALUATED_BONUS_POINTS,
 } from "../../../constants";
 import { updateBonusValuated } from "./bonusSlice";
 import "./CommentEval.css";
@@ -14,11 +14,12 @@ function CommentEval({ bonusId, comment }) {
   const [loadingZero, setLoadingZero] = useState(false); // loading for zero points button
   const [loadingOne, setLoadingOne] = useState(false);
   // prettier-ignore
-  const [zeroPointsActive, setZeroPointsActive] = useState(comment.valuated == ZERO_BONUS_POINTS);
+  const [zeroPointsActive, setZeroPointsActive] = useState(comment.valuated == GOT_0_BONUS_POINTS);
   // prettier-ignore
-  const [onePointActive, setOnePointActive] = useState(comment.valuated == ONE_BONUS_POINT);
+  const [onePointActive, setOnePointActive] = useState(comment.valuated == GOT_1_BONUS_POINTS);
   const [notEvaluatedDisplayed, setNotEvaluatedDisplayed] = useState(
-    comment.valuated == ZERO_BONUS_POINTS || comment.valuated == ONE_BONUS_POINT
+    comment.valuated == GOT_0_BONUS_POINTS ||
+      comment.valuated == GOT_1_BONUS_POINTS
       ? "d-none"
       : "d-inline-block"
   );
@@ -37,7 +38,7 @@ function CommentEval({ bonusId, comment }) {
     setLoading(true);
     if (sameButtonActive) {
       dispatch(
-        updateBonusValuated(bonusId, comment.id, NOT_VALUATED_BONUS_POINT)
+        updateBonusValuated(bonusId, comment.id, NOT_YET_EVALUATED_BONUS_POINTS)
       ).then(() => {
         setLoading(false);
         setSameButtonActive(false);
@@ -52,14 +53,14 @@ function CommentEval({ bonusId, comment }) {
     }
   };
   const zeroPointsClicked = () => {
-    dispatch(updateBonusValuated(bonusId, comment.id, ZERO_BONUS_POINTS));
+    dispatch(updateBonusValuated(bonusId, comment.id, GOT_0_BONUS_POINTS));
     buttonClickedInTwoBtnGroup(
       zeroPointsActive,
       setZeroPointsActive,
       onePointActive,
       setOnePointActive,
       setNotEvaluatedDisplayed,
-      ZERO_BONUS_POINTS,
+      GOT_0_BONUS_POINTS,
       setLoadingZero
     );
   };
@@ -70,7 +71,7 @@ function CommentEval({ bonusId, comment }) {
       zeroPointsActive,
       setZeroPointsActive,
       setNotEvaluatedDisplayed,
-      ONE_BONUS_POINT,
+      GOT_1_BONUS_POINTS,
       setLoadingOne
     );
   };

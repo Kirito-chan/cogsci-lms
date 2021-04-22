@@ -6,7 +6,6 @@ import {
   COMMENT_WEIGHT,
   PENDING_FOR_SUBJ,
   ACCEPTED_TO_SUBJ,
-  REJECTED_TO_SUBJ,
   STUD_PRES_NEUTRAL,
   A,
   B,
@@ -14,11 +13,12 @@ import {
   D,
   E,
   Fx,
-  ATTENDANCE_CLOSED,
   ATTENDANCE_OPENED,
   MAX_POINT_HEIGHT_PRES_EVALUATION,
   IS_STUDENT,
   SUBJ_IS_ACTIVE,
+  NOT_YET_EVALUATED_BONUS_POINTS,
+  GOT_0_BONUS_POINTS,
 } from "./constants.js";
 
 // subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
@@ -234,6 +234,56 @@ export const updateUserRole = async (userId, role) => {
   await execute("UPDATE user SET role = ? WHERE id = ?", [role, userId]);
 };
 
+export const getStudentsBySubjectId = async (subjectId) => {
+  const [rows] = await execute(
+    `SELECT u.id, u.first_name, u.last_name FROM 
+     user_subject_lookup usl JOIN user u ON u.id = usl.user_id
+     WHERE usl.subject_id = ? AND u.role = ?
+     ORDER BY u.last_name, u.first_name`,
+    [subjectId, IS_STUDENT]
+  );
+  return rows;
+};
+
+export const getBonusesOfStudent = async (userId, subjectId) => {
+  const [rows] = await execute(
+    `SELECT a.id, a.created, 
+            CASE WHEN ac.evaluated IS NULL THEN ?
+                 WHEN ac.evaluated = ? THEN FALSE
+            ELSE TRUE END as got_point
+     FROM announcement_comments ac RIGHT JOIN announcement a ON a.id = ac.announcement_id AND ac.user_id = ?
+     WHERE a.subject_id = ?
+     ORDER BY a.id`,
+    [NOT_YET_EVALUATED_BONUS_POINTS, GOT_0_BONUS_POINTS, userId, subjectId]
+  );
+  return rows;
+};
+
+export const getAttendancesOfStudent = async (userId, subjectId) => {
+  const [rows] = await execute(
+    `SELECT a.id, a.date, CASE WHEN ual.user_id IS NULL THEN FALSE ELSE TRUE END as got_point
+     FROM user_attendance_lookup ual RIGHT JOIN attendance a ON a.id = ual.attendance_id AND ual.user_id = ?
+     WHERE a.subject_id = ?
+     ORDER BY a.id`,
+    [userId, subjectId]
+  );
+  return rows;
+};
+
+export const userHasAttendance = async (userId, attendanceId) => {
+  const [rows] = await execute(
+    `SELECT * FROM user_attendance_lookup ual
+     WHERE user_id = ? AND attendance_id = ? `,
+    [userId, attendanceId]
+  );
+  return rows.length > 0;
+};
+
+export const updateAttendancesOfStudent = async (userId, subjectId) => {
+  const [rows] = await execute(`UPDATE attendance SET `, [userId, subjectId]);
+  return rows;
+};
+
 export const getUsers = async (username) => {
   const [
     rows,
@@ -330,6 +380,13 @@ export const insertAttendanceForUser = async (userId, attendanceId) => {
     [userId, attendanceId]
   );
   return row.insertId;
+};
+
+export const deleteAttendanceForUser = async (userId, attendanceId) => {
+  await execute(
+    `DELETE FROM user_attendance_lookup WHERE user_id = ? AND attendance_id = ?`,
+    [userId, attendanceId]
+  );
 };
 
 export const insertAttendance = async (subjectId, date, password) => {
@@ -528,6 +585,9 @@ export const updateBonusInfo = async (
 };
 
 export const updateBonusValuated = async (commentId, valuated) => {
+  if (valuated == NOT_YET_EVALUATED_BONUS_POINTS) {
+    valuated = null;
+  }
   await execute(
     `UPDATE announcement_comments a SET a.valuated = ?
      WHERE id = ?`,

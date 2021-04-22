@@ -10,16 +10,17 @@ import {
   URL_ADMIN_SUBJECTS,
   URL_ADMIN_BONUSES,
   URL_BONUSES,
-  URL_HOME_STUDENT,
+  URL_HOME,
   URL_PRESENTATIONS,
   URL_SUBJECTS,
   URL_TERMS,
-  URL_HOME_ADMIN,
+  URL_ADMIN_HOME,
   URL_ADMIN_PRESENTATIONS,
   URL_NOT_AUTHORIZED,
   URL_ADMIN_SETTINGS,
-  URL_EMAIL,
+  URL_ADMIN_EMAIL,
   URL_ADMIN_USERS,
+  URL_ADMIN_OVERALL_ATTENDANCE,
 } from "../constants";
 import { useLocation, useParams } from "react-router";
 import {
@@ -87,7 +88,7 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
           <NavDivider />
           <NavLink
             // prettier-ignore
-            to={"/subject/" + subjectId + (isAdmin ? URL_HOME_ADMIN : URL_HOME_STUDENT) }
+            to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_HOME : URL_HOME) }
             className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
             {(!inGlobalPage && subjectName) || ""}
@@ -110,6 +111,12 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
             {!inGlobalPage && "Prezentácie"}
           </NavLink>
           <NavLink
+            to={"/subject/" + subjectId + URL_ADMIN_OVERALL_ATTENDANCE}
+            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
+          >
+            {isAdmin && !inGlobalPage && "Dochádzka"}
+          </NavLink>
+          <NavLink
             to={"/subject/" + subjectId + URL_TERMS}
             className={"nav-link " + (isAdmin || inGlobalPage ? "d-none" : "")}
           >
@@ -122,7 +129,7 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
             {isAdmin && !inGlobalPage && "Nastavenia"}
           </NavLink>
           <NavLink
-            to={"/subject/" + subjectId + URL_EMAIL}
+            to={"/subject/" + subjectId + URL_ADMIN_EMAIL}
             className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
             {isAdmin && !inGlobalPage && "Email"}

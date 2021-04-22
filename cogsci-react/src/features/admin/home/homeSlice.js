@@ -10,6 +10,8 @@ export const slice = createSlice({
   name: "home",
   initialState: {
     attendances: null,
+    overallAttendance: null, // [ {student: {}, attendance: [ {}, {}, ...] }, ...]
+    overallBonuses: null, // [ {student: {}, bonuses: [ {}, {}, ...] }, ... ]
     teacherPresentations: null, // []
     studentPresentationsNeutral: null, // []   prezentacie prijate na ucitelov feedback, este nezobrazene pre studentov
     studentPresentationsOpened: null, // []
@@ -56,6 +58,13 @@ export const slice = createSlice({
     },
     updatedAttendanceStatus: () => {},
     newAttendanceAdded: () => {},
+    studentsAttendanceReceived: (state, action) => {
+      state.overallAttendance = action.payload;
+    },
+    studentsAttendanceUpdated: () => {},
+    studentsBonusesReceived: (state, action) => {
+      state.overallAttendance = action.payload;
+    },
   },
 });
 
@@ -75,6 +84,9 @@ export const {
   attendancesReceived,
   updatedAttendanceStatus,
   newAttendanceAdded,
+  studentsAttendanceReceived,
+  studentsAttendanceUpdated,
+  studentsBonusesReceived,
 } = slice.actions;
 
 export default slice.reducer;
@@ -174,6 +186,42 @@ export const loadUserEmailsAndNames = (subjectId) => (dispatch) => {
     apiCallBegan({
       url: urlAdminSubject + "/" + subjectId + urlEmail,
       onSuccess: userEmailsAndNamesReceived.type,
+    })
+  );
+};
+
+const urlOverallAttendance = "/overall-attendance";
+
+export const loadStudentsAndAttendance = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminSubject + "/" + subjectId + urlOverallAttendance,
+      onSuccess: studentsAttendanceReceived.type,
+    })
+  );
+};
+
+export const updateStudentsAndAttendance = (subjectId, checkedAttendances) => (
+  dispatch
+) => {
+  const data = { checkedAttendances };
+  return dispatch(
+    apiCallBegan({
+      method: "put",
+      url: urlAdminSubject + "/" + subjectId + urlOverallAttendance,
+      data,
+      onSuccess: studentsAttendanceUpdated.type,
+    })
+  );
+};
+
+const urlOverallBonuses = "/overall-bonuses";
+
+export const loadStudentsAndBonuses = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlAdminSubject + "/" + subjectId + urlOverallBonuses,
+      onSuccess: studentsBonusesReceived.type,
     })
   );
 };
@@ -279,3 +327,5 @@ export const getAcceptedStudents = (state) =>
 export const getRejectedStudents = (state) =>
   state.features.admin.home.rejectedStudents;
 export const getAttendance = (state) => state.features.admin.home.attendances;
+export const getOverallAttendance = (state) =>
+  state.features.admin.home.overallAttendance;
