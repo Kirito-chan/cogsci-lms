@@ -40,6 +40,7 @@ import Register from "./features/login/Register";
 import StudentDetailPage from "./features/admin/student-detail/StudentDetailPage";
 import UsersPage from "./features/admin/all-users/UsersPage";
 import OverallAttendance from "./features/admin/overall-attendance/OverallAttendance";
+import OverallBonuses from "./features/admin/overall-bonuses/OverallBonuses";
 
 // prettier-ignore
 function App() {
@@ -62,7 +63,7 @@ function App() {
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_STUDENT_DETAIL + "/:studentId"} component={StudentDetailPage} type="admin" />
           <AuthRoute path={URL_ADMIN_USERS} component={UsersPage} type="admin" />
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_OVERALL_ATTENDANCE} component={OverallAttendance} type="admin" />
-          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_OVERALL_BONUSES} component={OverallAttendance} type="admin" />
+          <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_OVERALL_BONUSES} component={OverallBonuses} type="admin" />
 
           {/* student routes */}
           <AuthRoute path={"/subject/:subjectId" + URL_HOME} component={StudentHomePage} type="student"/>

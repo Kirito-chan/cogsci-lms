@@ -27,7 +27,9 @@ function AddSubjectModal({ showAddSubject, setShowAddSubject }) {
   const [active, setActive] = useState(SUBJ_IS_ACTIVE);
   const handleActiveType = (e) => {
     const index = e.target.selectedIndex;
-    const activeType = e.target.childNodes[index].getAttribute("activetype");
+    const activeType = e.target.childNodes[index].getAttribute(
+      "activetype"
+    );
     setActive(activeType);
   };
 
@@ -40,7 +42,9 @@ function AddSubjectModal({ showAddSubject, setShowAddSubject }) {
   const [season, setSeason] = useState(getCurrentSeason);
   const handleSeason = (e) => {
     const index = e.target.selectedIndex;
-    const seasonType = e.target.childNodes[index].getAttribute("semestertype");
+    const seasonType = e.target.childNodes[index].getAttribute(
+      "semestertype"
+    );
     setSeason(seasonType);
   };
 

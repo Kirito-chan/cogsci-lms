@@ -248,8 +248,8 @@ export const getStudentsBySubjectId = async (subjectId) => {
 export const getBonusesOfStudent = async (userId, subjectId) => {
   const [rows] = await execute(
     `SELECT a.id, a.created, 
-            CASE WHEN ac.evaluated IS NULL THEN ?
-                 WHEN ac.evaluated = ? THEN FALSE
+            CASE WHEN ac.valuated IS NULL THEN ?
+                 WHEN ac.valuated = ? THEN FALSE
             ELSE TRUE END as got_point
      FROM announcement_comments ac RIGHT JOIN announcement a ON a.id = ac.announcement_id AND ac.user_id = ?
      WHERE a.subject_id = ?
@@ -257,6 +257,16 @@ export const getBonusesOfStudent = async (userId, subjectId) => {
     [NOT_YET_EVALUATED_BONUS_POINTS, GOT_0_BONUS_POINTS, userId, subjectId]
   );
   return rows;
+};
+
+export const getBonusCommentForUser = async (userId, bonusId) => {
+  const [
+    rows,
+  ] = await execute(
+    `SELECT id FROM announcement_comments WHERE user_id = ? AND announcement_id = ?`,
+    [userId, bonusId]
+  );
+  return rows[0]?.id;
 };
 
 export const getAttendancesOfStudent = async (userId, subjectId) => {

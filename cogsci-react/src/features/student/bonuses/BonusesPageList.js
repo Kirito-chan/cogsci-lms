@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Navigation from "../../../components/Navigation";
 import BonusInfo from "../bonus/BonusInfo";
 import { Link } from "react-router-dom";
-import { URL_BONUSES } from "../../../constants";
+import { URL_ADMIN_OVERALL_BONUSES, URL_BONUSES } from "../../../constants";
 import Button from "react-bootstrap/esm/Button";
 import AddBonusModal from "./AddBonusModal";
 
@@ -23,7 +23,10 @@ function BonusesPageList({ bonuses, subjectId, isAdmin, currentUserId }) {
             <Button variant="success" size="sm" onClick={showModalAddBonus}>
               Pridať bonusovú úlohu
             </Button>
-            <Link className="btn btn-warning btn-sm ml-2">
+            <Link
+              to={"/subject/" + subjectId + URL_ADMIN_OVERALL_BONUSES}
+              className="btn btn-warning btn-sm ml-2"
+            >
               Zobraziť celkovú tabuľku bonusov
             </Link>
           </div>

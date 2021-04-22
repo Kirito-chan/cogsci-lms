@@ -21,9 +21,9 @@ function OverallAttendance() {
   });
 
   const handleChange = (e) => {
-    const studentId = e.target.getAttribute("row");
-    const attendanceId = e.target.getAttribute("col");
-    const isChecked = e.target.checked;
+    const studentId = e.currentTarget.getAttribute("row");
+    const attendanceId = e.currentTarget.getAttribute("col");
+    const isChecked = e.currentTarget.checked;
 
     setCheckedAttendances((prevState) => {
       let attendances = prevState.checkedItems.get(parseInt(studentId));

@@ -63,8 +63,9 @@ export const slice = createSlice({
     },
     studentsAttendanceUpdated: () => {},
     studentsBonusesReceived: (state, action) => {
-      state.overallAttendance = action.payload;
+      state.overallBonuses = action.payload;
     },
+    studentsBonusesUpdated: () => {},
   },
 });
 
@@ -87,6 +88,7 @@ export const {
   studentsAttendanceReceived,
   studentsAttendanceUpdated,
   studentsBonusesReceived,
+  studentsBonusesUpdated,
 } = slice.actions;
 
 export default slice.reducer;
@@ -226,6 +228,20 @@ export const loadStudentsAndBonuses = (subjectId) => (dispatch) => {
   );
 };
 
+export const updateStudentsAndBonuses = (subjectId, checkedBonuses) => (
+  dispatch
+) => {
+  const data = { checkedBonuses };
+  return dispatch(
+    apiCallBegan({
+      method: "put",
+      url: urlAdminSubject + "/" + subjectId + urlOverallBonuses,
+      data,
+      onSuccess: studentsBonusesUpdated.type,
+    })
+  );
+};
+
 const urlSendEmail = "/send_email";
 
 export const sendEmail = (fromEmail, toEmail, fromName, subject, text) => (
@@ -329,3 +345,5 @@ export const getRejectedStudents = (state) =>
 export const getAttendance = (state) => state.features.admin.home.attendances;
 export const getOverallAttendance = (state) =>
   state.features.admin.home.overallAttendance;
+export const getOverallBonuses = (state) =>
+  state.features.admin.home.overallBonuses;

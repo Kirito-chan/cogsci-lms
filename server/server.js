@@ -186,6 +186,34 @@ app.get("/api/admin/subject/:subjectId/overall-bonuses", async (req, res) => {
   res.json(studentBonusesArr);
 });
 
+app.put("/api/admin/subject/:subjectId/overall-bonuses", async (req, res) => {
+  const { subjectId } = req.params;
+  const { checkedBonuses } = req.body;
+
+  for (const checkedBonus of checkedBonuses) {
+    const student = checkedBonus.student;
+    const bonuses = checkedBonus.bonuses;
+
+    for (const bonus of bonuses) {
+      const studentId = student.id;
+      const valuated =
+        bonus.isChecked == constants.NOT_YET_EVALUATED_BONUS_POINTS
+          ? null
+          : parseInt(bonus.isChecked);
+      const bonusId = bonus.bonusId;
+
+      const commentId = await queries.getBonusCommentForUser(
+        studentId,
+        bonusId
+      );
+
+      if (valuated !== undefined)
+        await queries.updateBonusValuated(commentId, valuated);
+    }
+  }
+  res.json(subjectId);
+});
+
 app.get(
   "/api/admin/subject/:subjectId/overall-attendance",
   async (req, res) => {
