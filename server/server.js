@@ -133,6 +133,7 @@ app.patch("/api/subject/:subjectId", async function (req, res) {
 
 app.post("/api/admin/subject", async function (req, res) {
   let { name, year, season, about, userLimit, weeks, active } = req.body;
+
   if (about === undefined) about = null;
   const subjectId = await queries.insertSubject(
     name,
@@ -143,6 +144,16 @@ app.post("/api/admin/subject", async function (req, res) {
     weeks,
     active
   );
+  let newPresFolderStudents = "uploads/" + subjectId;
+  let newPresFolderTeachers = "uploads/teacher/" + subjectId;
+
+  if (!fs.existsSync(newPresFolderStudents)) {
+    fs.mkdirSync(newPresFolderStudents);
+  }
+  if (!fs.existsSync(newPresFolderTeachers)) {
+    fs.mkdirSync(newPresFolderTeachers);
+  }
+
   await queries.insertSubjectValuation(subjectId);
   res.json(subjectId);
 });
@@ -197,6 +208,8 @@ app.put("/api/admin/subject/:subjectId/overall-bonuses", async (req, res) => {
       const valuated =
         bonus.isChecked == constants.NOT_YET_EVALUATED_BONUS_POINTS
           ? null
+          : bonus.isChecked == constants.NOT_YET_COMMENTED
+          ? undefined
           : parseInt(bonus.isChecked);
       const bonusId = bonus.bonusId;
 
@@ -538,7 +551,8 @@ app.post(
 app.patch("/api/admin/presentation/:presentationId", async (req, res) => {
   const { presentationId } = req.params;
   const { status } = req.body;
-  if (status) await queries.updatePresentationStatus(presentationId, status);
+  if (status !== null || status !== undefined)
+    await queries.updatePresentationStatus(presentationId, status);
   res.json(status);
 });
 
@@ -548,7 +562,7 @@ app.delete(
     const { presentationId, subjectId } = req.params;
     const { path } = req.query;
     const editedPath = `uploads/teacher/${subjectId}/${presentationId}_${path}`;
-    await queries.deletePresentation(presentationId);
+    await queries.deleteTeacherPresentation(presentationId);
     fs.unlink(editedPath, (err) => {
       if (err) {
         console.error(err);
@@ -612,8 +626,7 @@ app.get("/api/student-presentations/:userId/:subjectId", async (req, res) => {
 app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
   const { userId, subjectId } = req.params;
   const presentation = await queries.getMyPresentation(userId, subjectId);
-  const presentationWeight = await queries.getPresentationWeight(subjectId);
-  res.json({ presentation, presentationWeight });
+  res.json(presentation);
 });
 
 app.get("/api/admin/subject/:subjectId/email", async (req, res) => {
@@ -703,6 +716,7 @@ app.post(
       error.httpStatusCode = 400;
       return next(error);
     }
+
     if (teacherPres === "true") {
       presId = await queries.insertTeacherPresentation(
         subjectId,
@@ -711,18 +725,32 @@ app.post(
         getCurrentDate()
       );
     } else {
+      const oldPres = await queries.getStudentPresentation(userId, subjectId);
+      if (oldPres) {
+        const targetUslId = oldPres.target_usl_id;
+        await queries.deleteStudentEvaluation(targetUslId);
+        await queries.deleteStudentPresentation(oldPres.id);
+        const editedPath = `uploads/${subjectId}/${oldPres.id}_${oldPres.path}`;
+        fs.unlink(editedPath, (err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+        });
+      }
       presId = await queries.insertStudentPresentation(
         path.parse(file.filename).name,
         file.filename,
         parseInt(userId)
       );
-      await queries.updatePresentation(presId, userId, subjectId);
+      await queries.updateStudentPresentation(presId, userId, subjectId);
     }
     let destFolder = "uploads";
     if (teacherPres === "true") {
       destFolder += "/teacher";
     }
     destFolder += "/" + subjectId + "/";
+
     fs.rename(
       destFolder + file.filename,
       destFolder + presId + "_" + file.filename,

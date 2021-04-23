@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -10,11 +10,7 @@ import download from "js-file-download";
 import axios from "axios";
 import { createUrlToDownloadPresentation } from "../../../constants";
 import PresStatusButtons from "./PresStatusButtons";
-import Button from "react-bootstrap/Button";
-import ModalDeletePres from "./ModalDeletePres";
-import { loadTeacherPresentations } from "../home/homeSlice";
-import { useDispatch } from "react-redux";
-import { deletePresentation } from "./presentationSlice";
+import DeleteButton from "./DeleteButton";
 
 function PresentationPageView({
   presentation,
@@ -49,20 +45,6 @@ function PresentationPageView({
         download(res.data, presentation.path);
       });
   };
-  const dispatch = useDispatch();
-  const [showOdstranit, setShowOdstranit] = useState(false);
-  const closeModalOdstranit = () => setShowOdstranit(false);
-  const showModalOdstranit = () => setShowOdstranit(true);
-
-  const handleOdstranit = () => {
-    closeModalOdstranit();
-    dispatch(
-      deletePresentation(presentation.id, presentation.path, subjectId)
-    ).then(() => {
-      dispatch(loadTeacherPresentations(currentUserId, subjectId));
-      history.push(`/subject/${subjectId}/admin/presentation`);
-    });
-  };
 
   return (
     <div>
@@ -76,18 +58,10 @@ function PresentationPageView({
                   <div className="d-flex">
                     <h2>{presentation.title}</h2>
                     <div className="ml-auto pt-1">
-                      {isAdmin && isTeacherPres && (
-                        <div>
-                          <Button
-                            size="sm"
-                            variant="outline-danger"
-                            onClick={showModalOdstranit}
-                            className="mx-2"
-                          >
-                            Odstrániť
-                          </Button>
-                        </div>
-                      )}
+                      <DeleteButton
+                        presentation={presentation}
+                        isTeacherPres={isTeacherPres}
+                      />
                     </div>
                   </div>
                   <h5>
@@ -141,12 +115,6 @@ function PresentationPageView({
           loadComments={loadComments}
         />
       </Container>
-      <ModalDeletePres
-        showOdstranit={showOdstranit}
-        closeModalOdstranit={closeModalOdstranit}
-        presentation={presentation}
-        handleOdstranit={handleOdstranit}
-      />
     </div>
   );
 }

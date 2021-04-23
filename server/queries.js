@@ -64,15 +64,18 @@ export const insertBonus = async (subjectId, title, content, urlRef, created) =>
 
 export const getBonusesOfStudent = async (userId, subjectId) => {
   const [rows] = await execute(
-    `SELECT a.id, a.created, 
-            CASE WHEN ac.id IS NULL THEN ?
-                 WHEN ac.valuated IS NULL THEN ?
-                 WHEN ac.valuated = ? THEN FALSE
-            ELSE TRUE END as got_point
-     FROM announcement_comments ac RIGHT JOIN announcement a 
-     ON a.id = ac.announcement_id AND ac.user_id = ? AND ac.announcement_comment_id IS NULL
-     WHERE a.subject_id = ? 
-     ORDER BY a.id`,
+    `SELECT a.id, a.created,
+         CASE
+         WHEN ac.id is NULL THEN ?
+          WHEN sum(ac.valuated) is NULL THEN ?
+          WHEN sum(ac.valuated) = ? THEN FALSE
+          ELSE TRUE
+        END AS got_point        
+      FROM announcement_comments ac RIGHT JOIN announcement a  
+      ON a.id = ac.announcement_id AND ac.user_id = ? AND ac.announcement_comment_id IS NULL
+      WHERE a.subject_id = ?
+      GROUP BY a.id
+      ORDER BY a.id`,
     [
       NOT_YET_COMMENTED,
       NOT_YET_EVALUATED_BONUS_POINTS,
@@ -85,10 +88,12 @@ export const getBonusesOfStudent = async (userId, subjectId) => {
 };
 
 export const getBonusCommentForUser = async (userId, bonusId) => {
-  const [
-    rows,
-  ] = await execute(
-    `SELECT id FROM announcement_comments WHERE user_id = ? AND announcement_id = ? AND announcement_comment_id IS NULL`,
+  const [rows] = await execute(
+    `SELECT id FROM announcement_comments 
+     WHERE user_id = ? AND announcement_id = ? AND announcement_comment_id IS NULL
+     ORDER BY ISNULL(valuated), valuated DESC
+     LIMIT 1
+     `,
     [userId, bonusId]
   );
   return rows[0]?.id;
@@ -287,13 +292,12 @@ export const getStudentSubjects = async (userId) => {
 
 export const getAllSubjects = async () => {
   const [rows] = await execute(
-    `SELECT s.*, count(DISTINCT usl.user_id) as count_students
+    `SELECT s.*, count(DISTINCT CASE WHEN u.role = ? THEN usl.user_id END) as count_students
      FROM subject s LEFT JOIN (user_subject_lookup usl JOIN user u ON u.id = usl.user_id) 
      ON usl.subject_id = s.id AND usl.user_id IS NOT NULL AND usl.status = ?
-     WHERE u.role = ?
      GROUP BY s.id
      ORDER BY s.status, s.year DESC`,
-    [ACCEPTED_TO_SUBJ, IS_STUDENT]
+    [IS_STUDENT, ACCEPTED_TO_SUBJ]
   );
   return rows;
 };
@@ -658,7 +662,7 @@ export const insertPresentationCriteria = async (subjectId, criteria) => {
   return row.insertId;
 };
 
-export const deletePresentation = async (id) => {
+export const deleteTeacherPresentation = async (id) => {
   await execute(`DELETE FROM teacher_presentation t WHERE t.id = ?`, [id]);
 };
 
@@ -746,7 +750,7 @@ export const getMyPresentation = async (userId, subjectId) => {
     `
   WITH
     tab1 as (
-      SELECT usl.id as usl_id, usl.presentation_id, usl.user_id, p.title, p.path
+      SELECT usl.id as usl_id, usl.presentation_id, usl.user_id, p.title, p.path, p.status
       FROM user_subject_lookup as usl JOIN presentation p
             ON p.id = usl.presentation_id
       WHERE usl.user_id = ? AND usl.subject_id = ?
@@ -772,6 +776,7 @@ export const getMyPresentation = async (userId, subjectId) => {
            title, 
            user_id,
            path,
+           status,
            ROUND(sum(points_per_category)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points
     FROM tab3)
 
@@ -826,6 +831,15 @@ export const insertTeacherPresentation = async (
   return row.insertId;
 };
 
+export const getStudentPresentation = async (userId, subjectId) => {
+  const [row] = await execute(
+    `SELECT p.id, p.path, usl.id as target_usl_id FROM user_subject_lookup usl JOIN presentation p ON p.id = usl.presentation_id 
+     WHERE usl.user_id = ? AND usl.subject_id = ?`,
+    [userId, subjectId]
+  );
+  return row[0];
+};
+
 export const insertStudentPresentation = async (title, path, ownerId) => {
   const [row] = await execute(
     `INSERT INTO presentation (title, path, status, owner_id) 
@@ -835,10 +849,21 @@ export const insertStudentPresentation = async (title, path, ownerId) => {
   return row.insertId;
 };
 
-export const updatePresentation = async (presId, userId, subjectId) => {
+export const updateStudentPresentation = async (presId, userId, subjectId) => {
   await execute(
     `UPDATE user_subject_lookup SET presentation_id = ?
      WHERE user_id = ? AND subject_id = ?`,
     [presId, userId, subjectId]
+  );
+};
+
+export const deleteStudentPresentation = async (presId) => {
+  await execute(`DELETE FROM presentation WHERE id = ?`, [presId]);
+};
+
+export const deleteStudentEvaluation = async (targetUslId) => {
+  await execute(
+    `DELETE FROM user_presentation_valuation WHERE target_usl_id = ?`,
+    [targetUslId]
   );
 };

@@ -15,7 +15,7 @@ export const slice = createSlice({
     teacherPresentations: null, // []
     studentPresentationsOpened: null, // []
     studentPresentationsClosed: null, // []
-    myPresentation: null, // { presentation: null, presentationWeight: null }, // presentation is {}
+    myPresentation: null, // { },
     subjectValuation: null, // object
     uploadedPresentation: null,
     presentationWeight: null,
@@ -44,13 +44,7 @@ export const slice = createSlice({
       state.studentPresentationsClosed = action.payload;
     },
     myPresentationReceived: (state, action) => {
-      const presentation = action.payload.presentation
-        ? action.payload.presentation
-        : {};
-      state.myPresentation = {
-        presentation,
-        presentationWeight: action.payload.presentationWeight?.weight,
-      };
+      state.myPresentation = action.payload;
     },
     subjectValuationReceived: (state, action) => {
       state.subjectValuation = action.payload;

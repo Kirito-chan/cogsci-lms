@@ -204,7 +204,7 @@ export const getPresentation = (state, presentationId, presIsOpened, presIsNeutr
   // prettier-ignore
   if (isTeacherPres) {  presentations = state.features.student.home.teacherPresentations;}
   // prettier-ignore
-  else if (isMyPres) { presentations = [state.features.student.home.myPresentation.presentation]}
+  else if (isMyPres) { presentations = [state.features.student.home.myPresentation]}
   else if (presIsNeutral) {
     presentations = state.features.admin.home.studentPresentationsNeutral;
   }

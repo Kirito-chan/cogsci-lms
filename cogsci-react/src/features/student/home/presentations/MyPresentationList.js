@@ -3,7 +3,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import formatTranslation from "../../../../components/StringUtils";
 import { Link } from "react-router-dom";
-import { URL_PRESENTATIONS } from "../../../../constants";
+import { STUD_PRES_NEUTRAL, URL_PRESENTATIONS } from "../../../../constants";
 
 function MyPresentationList({
   myPresentation,
@@ -13,13 +13,12 @@ function MyPresentationList({
   fileInputRef,
   classname,
 }) {
+  const isUploaded = Object.keys(myPresentation).length !== 0;
   return (
     <div className={classname}>
       <h3>Moja prezentácia</h3>
       <div>
-        {Object.entries(myPresentation).length !== 0 ? (
-          ""
-        ) : (
+        {isUploaded || (
           <span className="text-secondary">Neodovzdaná prezentácia</span>
         )}
 
@@ -38,16 +37,28 @@ function MyPresentationList({
           </p>
         </div>
 
-        <Form className="mt-4" onSubmit={handleUpload}>
+        <Form
+          className={
+            "mt-4 " +
+            (myPresentation.status !== STUD_PRES_NEUTRAL ? "d-none" : "d-block")
+          }
+          onSubmit={handleUpload}
+        >
           <Form.Group>
             <Form.File
               id={"presentationUpload" + myPresentation.id}
               ref={fileInputRef}
             />
           </Form.Group>
-          <Button size="sm" type="submit" variant="success">
-            Pridať prezentáciu
-          </Button>
+          {!isUploaded ? (
+            <Button size="sm" type="submit" variant="success">
+              Pridať prezentáciu
+            </Button>
+          ) : (
+            <Button size="sm" type="submit" variant="outline-danger">
+              Nahradiť prezentáciu
+            </Button>
+          )}
         </Form>
       </div>
     </div>

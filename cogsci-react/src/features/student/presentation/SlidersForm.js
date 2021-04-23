@@ -70,6 +70,12 @@ export default function SlidersForm({ evaluatedUserId }) {
     <div>
       <Form onSubmit={sendValuation}>
         <Form.Group>
+          {values && values.length === 0 && (
+            <p className="font-italic">
+              Neboli ešte vložené kritéria hodnotenia, musíte počkať kým ich
+              učiteľ vloží
+            </p>
+          )}
           {values.map((type, i) => (
             <div key={i} className="mb-4">
               <Form.Label>{type.name}</Form.Label>
@@ -89,9 +95,13 @@ export default function SlidersForm({ evaluatedUserId }) {
             </div>
           ))}
           <div className="d-flex justify-content-end">
-            <Button size="sm" type="submit" variant="success">
-              Ohodnotiť
-            </Button>
+            {values && values.length === 0 ? (
+              ""
+            ) : (
+              <Button size="sm" type="submit" variant="success">
+                Ohodnotiť
+              </Button>
+            )}
           </div>
         </Form.Group>
       </Form>

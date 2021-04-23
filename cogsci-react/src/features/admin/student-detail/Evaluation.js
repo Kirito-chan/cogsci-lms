@@ -49,7 +49,7 @@ export default function Evaluation({ student }) {
       myPresentation
     ) || (
       <EvaluationTable
-        presentation={myPresentation.presentation}
+        presentation={myPresentation}
         presentationWeight={presentationWeight}
         attendanceWeight={attendanceWeight}
         commentsWeight={commentsWeight}

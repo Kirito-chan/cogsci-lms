@@ -7,6 +7,7 @@ import {
   getMyPresentation,
   uploadPresentation,
   loadStudentPresentationsOpened,
+  getPresentationWeight,
 } from "../homeSlice";
 import { useParams } from "react-router";
 import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
@@ -15,6 +16,7 @@ function MyPresentation() {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
   const myPresentation = useSelector(getMyPresentation);
+  const presentationWeight = useSelector(getPresentationWeight);
   const { subjectId } = useParams();
   const fileInputRef = useRef(null);
 
@@ -23,10 +25,12 @@ function MyPresentation() {
     const file = fileInputRef.current.files[0];
     dispatch(uploadPresentation(file, subjectId, currentUserId, false)).then(
       (res) => {
-        const userId = res.payload.userId;
-        const subjectId = res.payload.subjectId;
-        dispatch(loadMyPresentation(userId, subjectId));
-        dispatch(loadStudentPresentationsOpened(userId, subjectId));
+        if (res) {
+          const userId = res.payload.userId;
+          const subjectId = res.payload.subjectId;
+          dispatch(loadMyPresentation(userId, subjectId));
+          dispatch(loadStudentPresentationsOpened(userId, subjectId));
+        }
       }
     );
   };
@@ -39,8 +43,8 @@ function MyPresentation() {
   return (
     showLoaderIfAnyNull(myPresentation) || (
       <MyPresentationList
-        myPresentation={myPresentation.presentation}
-        presentationWeight={myPresentation.presentationWeight}
+        myPresentation={myPresentation}
+        presentationWeight={presentationWeight}
         subjectId={subjectId}
         currentUserId={currentUserId}
         handleUpload={handleUpload}

@@ -4,12 +4,14 @@ import { useParams } from "react-router";
 import { getCurrentUserId } from "../../../app/currentUserSlice";
 import {
   getMyPresentation,
+  getPresentationWeight,
   getStudentPresentationsClosed,
   getStudentPresentationsOpened,
   getTeacherPresentations,
   loadMyPresentation,
   loadStudentPresentationsClosed,
   loadStudentPresentationsOpened,
+  loadSubjectWeight,
   loadTeacherPresentations,
 } from "../home/homeSlice";
 import Navigation from "../../../components/Navigation";
@@ -23,6 +25,7 @@ function PresentationsPage() {
   const studentPresentationsClosed = useSelector(getStudentPresentationsClosed);
   const teacherPresentations = useSelector(getTeacherPresentations);
   const myPresentation = useSelector(getMyPresentation);
+  const presentationWeight = useSelector(getPresentationWeight);
   const currentUserId = useSelector(getCurrentUserId);
 
   useEffect(() => {
@@ -35,6 +38,7 @@ function PresentationsPage() {
       dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
       dispatch(loadTeacherPresentations(currentUserId, subjectId));
       dispatch(loadMyPresentation(currentUserId, subjectId));
+      dispatch(loadSubjectWeight(currentUserId, subjectId));
     }
   }, [currentUserId, subjectId]);
 
@@ -47,6 +51,7 @@ function PresentationsPage() {
         teacherPresentations={teacherPresentations}
         myPresentation={myPresentation}
         subjectId={subjectId}
+        presentationWeight={presentationWeight}
       />
     </div>
   );

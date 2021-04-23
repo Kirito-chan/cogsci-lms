@@ -25,14 +25,13 @@ function PresentationsPageList({
           <Col lg="4">
             {showLoaderIfAnyNull(
               studentPresentationsNeutral,
-              myPresentation,
-              myPresentation?.presentation
+              myPresentation
             ) || (
               <StudentPresentationsList
                 studentPresentations={studentPresentationsNeutral}
                 headerText="Prijaté na feedback"
                 subjectId={subjectId}
-                myPresentationId={myPresentation.presentation.id}
+                myPresentationId={myPresentation.id}
                 hideEvalDiscussion={true}
               />
             )}
@@ -41,14 +40,13 @@ function PresentationsPageList({
           <Col lg="4" className="my-4 my-lg-0">
             {showLoaderIfAnyNull(
               studentPresentationsOpened,
-              myPresentation,
-              myPresentation?.presentation
+              myPresentation
             ) || (
               <StudentPresentationsList
                 studentPresentations={studentPresentationsOpened}
                 headerText="Otvorené na hodnotenie"
                 subjectId={subjectId}
-                myPresentationId={myPresentation.presentation.id}
+                myPresentationId={myPresentation.id}
               />
             )}
           </Col>
@@ -57,15 +55,14 @@ function PresentationsPageList({
             <div>
               {showLoaderIfAnyNull(
                 studentPresentationsClosed,
-                myPresentation,
-                myPresentation?.presentation
+                myPresentation
               ) || (
                 <StudentPresentationsList
                   studentPresentations={studentPresentationsClosed}
                   headerText="Uzavreté hodnotenie"
                   hideHodnotitBtn={true}
                   subjectId={subjectId}
-                  myPresentationId={myPresentation.presentation.id}
+                  myPresentationId={myPresentation.id}
                 />
               )}
             </div>

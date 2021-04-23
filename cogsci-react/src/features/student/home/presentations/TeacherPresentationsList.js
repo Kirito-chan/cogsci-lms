@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { URL_PRESENTATIONS } from "../../../../constants";
+import DeleteButton from "../../presentation/DeleteButton";
 // import Row from "react-bootstrap/Row";
 
 import Discussion from "../Discussion";
@@ -47,6 +48,7 @@ function TeacherPresentationsList({ teacherPresentations, subjectId, h2 }) {
             queryString={"?is_opened=false&teacher=true"}
             hash={"#myNewComment"}
           />
+          {<DeleteButton presentation={presentation} isTeacherPres={true} />}
         </div>
       ))}
     </div>

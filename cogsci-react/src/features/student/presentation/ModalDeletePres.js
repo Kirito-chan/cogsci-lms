@@ -11,9 +11,11 @@ function ModalDeletePres({
   return (
     <Modal show={showOdstranit} onHide={closeModalOdstranit} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Naozaj chcete odstrániť túto prezentáciu ?</Modal.Title>
+        <Modal.Title>
+          Naozaj chcete odstrániť prezentáciu {presentation?.title} ?
+        </Modal.Title>
       </Modal.Header>
-      <Modal.Body>{presentation?.title}</Modal.Body>
+
       <Modal.Footer className="d-flex justify-content-between">
         <Button variant="secondary" onClick={closeModalOdstranit}>
           Nie

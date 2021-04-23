@@ -53,7 +53,7 @@ export default function Evaluation() {
       commentsWeight
     ) || (
       <EvaluationTable
-        presentation={myPresentation.presentation}
+        presentation={myPresentation}
         presentationWeight={presentationWeight}
         attendanceWeight={attendanceWeight}
         commentsWeight={commentsWeight}

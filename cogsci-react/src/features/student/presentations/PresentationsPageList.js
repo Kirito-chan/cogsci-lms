@@ -12,6 +12,7 @@ function PresentationsPageList({
   studentPresentationsClosed,
   teacherPresentations,
   myPresentation,
+  presentationWeight,
   subjectId,
 }) {
   return (
@@ -22,14 +23,10 @@ function PresentationsPageList({
         <h2 className="mb-3">Študentské prezentácie</h2>
         <Row className="mb-4">
           <Col lg="3">
-            {showLoaderIfAnyNull(
-              myPresentation,
-              myPresentation,
-              myPresentation?.presentation
-            ) || (
+            {showLoaderIfAnyNull(myPresentation, myPresentation) || (
               <MyPresentationList
-                myPresentation={myPresentation.presentation}
-                presentationWeight={myPresentation.presentationWeight}
+                myPresentation={myPresentation}
+                presentationWeight={presentationWeight}
                 subjectId={subjectId}
                 classname="mt-0"
               />
@@ -39,14 +36,13 @@ function PresentationsPageList({
           <Col lg="5">
             {showLoaderIfAnyNull(
               studentPresentationsOpened,
-              myPresentation,
-              myPresentation?.presentation
+              myPresentation
             ) || (
               <StudentPresentationsList
                 studentPresentations={studentPresentationsOpened}
                 headerText="Otvorené na hodnotenie"
                 subjectId={subjectId}
-                myPresentationId={myPresentation.presentation.id}
+                myPresentationId={myPresentation.id}
               />
             )}
           </Col>
@@ -55,15 +51,14 @@ function PresentationsPageList({
             <div>
               {showLoaderIfAnyNull(
                 studentPresentationsClosed,
-                myPresentation,
-                myPresentation?.presentation
+                myPresentation
               ) || (
                 <StudentPresentationsList
                   studentPresentations={studentPresentationsClosed}
                   headerText="Uzavreté hodnotenie"
                   hideHodnotitBtn={true}
                   subjectId={subjectId}
-                  myPresentationId={myPresentation.presentation.id}
+                  myPresentationId={myPresentation.id}
                 />
               )}
             </div>

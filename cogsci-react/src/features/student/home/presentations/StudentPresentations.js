@@ -31,7 +31,7 @@ function StudentPresentations() {
         <StudentPresentationsList
           studentPresentations={studentPresentations}
           subjectId={subjectId}
-          myPresentationId={myPresentation.presentation.id}
+          myPresentationId={myPresentation.id}
           headerText="Študentské prezentácie"
         />
       )}
