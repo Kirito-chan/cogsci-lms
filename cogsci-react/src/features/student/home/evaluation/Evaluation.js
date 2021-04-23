@@ -9,6 +9,10 @@ import {
   loadBonuses,
   loadSubjectValuation,
   getSubjectValuation,
+  loadSubjectWeight,
+  getPresentationWeight,
+  getAttendanceWeight,
+  getCommentsWeight,
 } from "../homeSlice";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
@@ -23,6 +27,9 @@ export default function Evaluation() {
   const attendances = useSelector(getAttendance);
   const bonuses = useSelector(getBonuses);
   const subjectValuation = useSelector(getSubjectValuation);
+  const presentationWeight = useSelector(getPresentationWeight);
+  const attendanceWeight = useSelector(getAttendanceWeight);
+  const commentsWeight = useSelector(getCommentsWeight);
   const { subjectId } = useParams();
 
   useEffect(() => {
@@ -31,6 +38,7 @@ export default function Evaluation() {
       dispatch(loadAttendance(currentUserId, subjectId));
       dispatch(loadBonuses(currentUserId, subjectId));
       dispatch(loadSubjectValuation(subjectId));
+      dispatch(loadSubjectWeight(subjectId));
     }
   }, [currentUserId, subjectId]);
 
@@ -39,11 +47,16 @@ export default function Evaluation() {
       attendances,
       bonuses,
       subjectValuation,
-      myPresentation
+      myPresentation,
+      presentationWeight,
+      attendanceWeight,
+      commentsWeight
     ) || (
       <EvaluationTable
         presentation={myPresentation.presentation}
-        presentationWeight={myPresentation.presentationWeight}
+        presentationWeight={presentationWeight}
+        attendanceWeight={attendanceWeight}
+        commentsWeight={commentsWeight}
         attendances={attendances}
         bonuses={bonuses}
         subjectValuation={subjectValuation}

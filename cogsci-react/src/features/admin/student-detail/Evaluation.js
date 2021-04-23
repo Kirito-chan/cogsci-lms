@@ -9,6 +9,10 @@ import {
   loadBonuses,
   loadSubjectValuation,
   getSubjectValuation,
+  loadSubjectWeight,
+  getPresentationWeight,
+  getAttendanceWeight,
+  getCommentsWeight,
 } from "./studentDetailSlice";
 import { useParams } from "react-router";
 import EvaluationTable from "../../student/home/evaluation/EvaluationTable";
@@ -20,6 +24,9 @@ export default function Evaluation({ student }) {
 
   const studentId = student.id;
   const myPresentation = useSelector(getMyPresentation);
+  const presentationWeight = useSelector(getPresentationWeight);
+  const attendanceWeight = useSelector(getAttendanceWeight);
+  const commentsWeight = useSelector(getCommentsWeight);
   const attendances = useSelector(getAttendance);
   const bonuses = useSelector(getBonuses);
   const subjectValuation = useSelector(getSubjectValuation);
@@ -30,6 +37,7 @@ export default function Evaluation({ student }) {
       dispatch(loadAttendance(studentId, subjectId));
       dispatch(loadBonuses(studentId, subjectId));
       dispatch(loadSubjectValuation(subjectId));
+      dispatch(loadSubjectWeight(subjectId));
     }
   }, [studentId, subjectId]);
 
@@ -42,7 +50,9 @@ export default function Evaluation({ student }) {
     ) || (
       <EvaluationTable
         presentation={myPresentation.presentation}
-        presentationWeight={myPresentation.presentationWeight}
+        presentationWeight={presentationWeight}
+        attendanceWeight={attendanceWeight}
+        commentsWeight={commentsWeight}
         attendances={attendances}
         bonuses={bonuses}
         subjectValuation={subjectValuation}

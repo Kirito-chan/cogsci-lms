@@ -101,12 +101,12 @@ function SubjectsPageList({ subjects, currentUserId }) {
                       subject.is_enrolled &&
                         subject.status === REJECTED_TO_SUBJ ? (
                         <Button
-                          variant="warning"
+                          variant="danger"
                           size="sm"
                           value={subject.id}
-                          onClick={handleSignInClick}
+                          disabled
                         >
-                          Potvrdenie zamietnuté - skúste ešteraz
+                          Potvrdenie zamietnuté
                         </Button>
                       ) : (
                         ""

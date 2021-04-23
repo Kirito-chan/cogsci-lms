@@ -9,7 +9,7 @@ import Discussion from "../home/Discussion";
 import "./Bonus.css";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import ModalEdit from "./ModalEdit";
-import ModalDelete from "./ModalDelete";
+import ModalDelete from "./ModalDeleteComment";
 
 function BonusInfo({
   headerComponent,
@@ -31,6 +31,7 @@ function BonusInfo({
 
   useEffect(() => {
     if (bonus) {
+      console.log(bonus);
       let newUrl = bonus.video_URL;
 
       if (newUrl.includes("ted") && !newUrl.includes("embed")) {

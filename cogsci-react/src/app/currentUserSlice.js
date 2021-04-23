@@ -8,6 +8,7 @@ export const slice = createSlice({
     id: null, // 346 je dobry testovaci user, 241 som ja
     name: "",
     isAdmin: null,
+    email: "",
     token: "",
     tokenError: null,
     error: "",
@@ -19,6 +20,7 @@ export const slice = createSlice({
       state.id = action.payload.user.id;
       state.name =
         action.payload.user.first_name + " " + action.payload.user.last_name;
+      state.email = action.payload.user.email;
       state.isAdmin = action.payload.user.role == IS_ADMIN;
       state.tokenError = null;
     },
@@ -26,6 +28,7 @@ export const slice = createSlice({
       state.token = "";
       state.id = null;
       state.name = "";
+      state.email = "";
     },
     tokenChecked: () => {},
     tokenRequestFailed: (state, action) => {
@@ -133,6 +136,7 @@ export const clearError = () => (dispatch) => {
 // Selectors
 export const getCurrentUserId = (state) => state.currentUser.id;
 export const getCurrentUserName = (state) => state.currentUser.name;
+export const getCurrentUserEmail = (state) => state.currentUser.email;
 export const getToken = (state) => state.currentUser.token;
 export const getError = (state) => state.currentUser.error;
 export const getTokenError = (state) => state.currentUser.tokenError;

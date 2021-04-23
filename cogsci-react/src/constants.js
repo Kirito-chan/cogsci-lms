@@ -2,6 +2,7 @@
 export const GOT_0_BONUS_POINTS = 0; // stlpec valuated v tabulke announcement_comments = 0 znamena, ze dostal 0 bodov
 export const GOT_1_BONUS_POINTS = 1; // stlpec valuated v tabulke announcement_comments = 1 znamena, ze dostal 1 bod
 export const NOT_YET_EVALUATED_BONUS_POINTS = "nehodnotené"; // stlpec valuated v tabulke announcement_comments = NULL znamena, ze este nebol hodnoteny ucitelom
+export const NOT_YET_COMMENTED = "nekomentoval";
 export const LOGOUT_EVENT = "logout";
 
 // ked sa hodnoti prezentacia podla roznych kriterii, tak aky je maximalny pocet bodov pre dane kriterium
@@ -41,10 +42,6 @@ export const WINTER_SEASON = 2; // zimny semester - stlpec season v tabulke subj
 
 export const SUBJ_IS_ACTIVE = 1;
 export const SUBJ_IS_NOT_ACTIVE = 2;
-
-export const NOT_VALUATED_BONUS_POINT = null; // stlpec valuated v tabulke announcement_comments = NULL znamena, ze este nebol hodnoteny ucitelom
-export const ZERO_BONUS_POINTS = 0; // stlpec valuated v tabulke announcement_comments = 0 znamena, ze dostal 0 bodov
-export const ONE_BONUS_POINT = 1; // stlpec valuated v tabulke announcement_comments = 1 znamena, ze dostal 1 bod
 
 export const PENDING_FOR_SUBJ = 1; // v tabulke user_subject_lookup stlpec status hovori o tom,
 export const ACCEPTED_TO_SUBJ = 2; // ci je student cakajuci, prijaty alebo zmietnuty pre prihlasenie sa na dany predmet

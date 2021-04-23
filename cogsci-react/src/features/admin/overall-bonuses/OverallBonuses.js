@@ -6,6 +6,7 @@ import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import {
   GOT_0_BONUS_POINTS,
   GOT_1_BONUS_POINTS,
+  NOT_YET_COMMENTED,
   NOT_YET_EVALUATED_BONUS_POINTS,
 } from "../../../constants";
 
@@ -84,7 +85,8 @@ function OverallBonuses() {
           bonuses.push({
             bonusId: bonus.id,
             isChecked:
-              bonus.got_point == NOT_YET_EVALUATED_BONUS_POINTS
+              bonus.got_point == NOT_YET_EVALUATED_BONUS_POINTS ||
+              bonus.got_point == NOT_YET_COMMENTED
                 ? bonus.got_point
                 : parseInt(bonus.got_point),
           });

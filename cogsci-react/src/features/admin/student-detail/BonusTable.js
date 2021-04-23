@@ -3,7 +3,11 @@ import Table from "react-bootstrap/Table";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 import formatDate from "../../../components/DateUtils";
-import { GOT_0_BONUS_POINTS, GOT_1_BONUS_POINTS } from "../../../constants";
+import {
+  GOT_0_BONUS_POINTS,
+  GOT_1_BONUS_POINTS,
+  NOT_YET_COMMENTED,
+} from "../../../constants";
 
 export default function bonusTable({ bonuses }) {
   return (
@@ -23,11 +27,14 @@ export default function bonusTable({ bonuses }) {
             <tr key={i}>
               <td>{bonuses.length - i}</td>
               <td>{formatDate(bonus.created)}</td>
+              {console.log(bonus.evaluation)}
               <td>
                 {bonus.evaluation == GOT_1_BONUS_POINTS ? (
                   <FaCheck />
                 ) : bonus.evaluation == GOT_0_BONUS_POINTS ? (
                   <FaTimes />
+                ) : bonus.evaluation == NOT_YET_COMMENTED ? (
+                  "nekomentoval"
                 ) : (
                   "nehodnotené"
                 )}

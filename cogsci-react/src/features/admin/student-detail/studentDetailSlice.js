@@ -9,6 +9,9 @@ export const slice = createSlice({
     bonuses: null, // []
     myPresentation: null, // { presentation: null, presentationWeight: null }, // presentation is {}
     subjectValuation: null, // object
+    presentationWeight: null,
+    attendanceWeight: null,
+    commentsWeight: null,
   },
   reducers: {
     studentReceived: (state, action) => {
@@ -38,6 +41,11 @@ export const slice = createSlice({
     subjectValuationReceived: (state, action) => {
       state.subjectValuation = action.payload;
     },
+    weightReceived: (state, action) => {
+      state.presentationWeight = action.payload.presentationWeight.weight;
+      state.attendanceWeight = action.payload.attendanceWeight.weight;
+      state.commentsWeight = action.payload.commentsWeight.weight;
+    },
   },
 });
 
@@ -48,6 +56,7 @@ export const {
   bonusesReceived,
   myPresentationReceived,
   subjectValuationReceived,
+  weightReceived,
 } = slice.actions;
 
 export default slice.reducer;
@@ -110,6 +119,17 @@ export const loadSubjectValuation = (subjectId) => (dispatch) => {
   );
 };
 
+const urlSubject = "/subject";
+const urlWeight = "/weight";
+export const loadSubjectWeight = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlSubject + "/" + subjectId + urlWeight,
+      onSuccess: weightReceived.type,
+    })
+  );
+};
+
 export const getStudent = (state) => state.features.admin.studentDetail.student;
 export const getAttendance = (state) =>
   state.features.admin.studentDetail.attendances;
@@ -118,3 +138,9 @@ export const getMyPresentation = (state) =>
   state.features.admin.studentDetail.myPresentation;
 export const getSubjectValuation = (state) =>
   state.features.admin.studentDetail.subjectValuation;
+export const getPresentationWeight = (state) =>
+  state.features.admin.studentDetail.presentationWeight;
+export const getAttendanceWeight = (state) =>
+  state.features.admin.studentDetail.attendanceWeight;
+export const getCommentsWeight = (state) =>
+  state.features.admin.studentDetail.commentsWeight;

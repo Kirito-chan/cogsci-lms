@@ -179,8 +179,6 @@ export const updateStudentStatus = (subjectId, userId, status) => (
   );
 };
 
-("/api/admin/subject/:subjectId/student/:userId");
-
 const urlEmail = "/email";
 
 export const loadUserEmailsAndNames = (subjectId) => (dispatch) => {

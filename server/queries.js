@@ -18,6 +18,7 @@ import {
   IS_STUDENT,
   SUBJ_IS_ACTIVE,
   NOT_YET_EVALUATED_BONUS_POINTS,
+  NOT_YET_COMMENTED,
   GOT_0_BONUS_POINTS,
 } from "./constants.js";
 
@@ -49,6 +50,153 @@ export const registerUser = async (
   return row.insertId;
 };
 
+// BONUSES
+
+// prettier-ignore
+export const insertBonus = async (subjectId, title, content, urlRef, created) => {
+  const [row] = await execute(
+    `INSERT INTO announcement (subject_id, content, title, created, updated, updated_count, video_URL)
+     VALUES (?, ?, ?, ?, ?, 0, ?)`,
+    [subjectId, content, title, created, created, urlRef]
+  );
+  return row.insertId;
+};
+
+export const getBonusesOfStudent = async (userId, subjectId) => {
+  const [rows] = await execute(
+    `SELECT a.id, a.created, 
+            CASE WHEN ac.id IS NULL THEN ?
+                 WHEN ac.valuated IS NULL THEN ?
+                 WHEN ac.valuated = ? THEN FALSE
+            ELSE TRUE END as got_point
+     FROM announcement_comments ac RIGHT JOIN announcement a 
+     ON a.id = ac.announcement_id AND ac.user_id = ? AND ac.announcement_comment_id IS NULL
+     WHERE a.subject_id = ? 
+     ORDER BY a.id`,
+    [
+      NOT_YET_COMMENTED,
+      NOT_YET_EVALUATED_BONUS_POINTS,
+      GOT_0_BONUS_POINTS,
+      userId,
+      subjectId,
+    ]
+  );
+  return rows;
+};
+
+export const getBonusCommentForUser = async (userId, bonusId) => {
+  const [
+    rows,
+  ] = await execute(
+    `SELECT id FROM announcement_comments WHERE user_id = ? AND announcement_id = ? AND announcement_comment_id IS NULL`,
+    [userId, bonusId]
+  );
+  return rows[0]?.id;
+};
+
+export const getBonusComments = async (bonusId) => {
+  const [rows] = await execute(
+    `SELECT ac.*, ac.announcement_comment_id as ref_comment_id, user.first_name, user.last_name, user.role as user_role
+     FROM announcement_comments ac JOIN user ON user.id = ac.user_id WHERE ac.announcement_id = ?`,
+    [bonusId]
+  );
+  return rows;
+};
+// prettier-ignore
+export const insertBonusComment = async (bonusId, userId, content, date, refCommentId) => {
+    const [row] = await execute(
+      `INSERT INTO announcement_comments (user_id, announcement_id, content, date, announcement_comment_id)
+       VALUES (?, ?, ?, ?, ?)`,
+      [userId, bonusId, content, date, refCommentId]
+    );
+    return row.insertId;
+};
+
+export const getBonus = async (bonusId) => {
+  const [row] = await execute("SELECT * FROM announcement WHERE id = ?", [
+    bonusId,
+  ]);
+  return row[0];
+};
+
+export const getBonuses = async (userId, subjectId) => {
+  const [rows] = await execute(
+    `
+  WITH
+  tab1 AS (
+  SELECT a.*,
+         c.user_id,
+         CASE
+         WHEN c.id is NULL THEN ?
+          WHEN sum(c.valuated) is NULL THEN ?
+          WHEN sum(c.valuated) = ? THEN '0'
+          ELSE '1'
+        END AS evaluation,
+        count(c.user_id) as num_of_comments         
+  FROM announcement AS a LEFT JOIN announcement_comments AS c
+  ON a.id = c.announcement_id AND c.user_id = ? AND c.announcement_comment_id IS NULL
+  WHERE a.subject_id = ?
+  GROUP BY a.id),
+
+  tab2 AS (
+    SELECT c.announcement_id as id, 
+           count(*) as num_all_comments 
+           FROM announcement_comments AS c
+           WHERE c.announcement_comment_id IS NULL
+    GROUP BY c.announcement_id
+  )
+
+  SELECT tab1.*, tab2.num_all_comments
+  FROM tab1 LEFT JOIN tab2 USING(id)
+  ORDER BY tab1.id DESC`,
+    [
+      NOT_YET_COMMENTED,
+      NOT_YET_EVALUATED_BONUS_POINTS,
+      GOT_0_BONUS_POINTS,
+      userId,
+      subjectId,
+      subjectId,
+    ]
+  );
+  return rows;
+};
+
+export const updateBonusInfo = async (
+  id,
+  title,
+  content,
+  videoURL,
+  date,
+  isFocusingURL
+) => {
+  await execute(
+    `UPDATE announcement a SET a.title = ?, a.content = ?, a.video_URL = ?, 
+                               a.updated = ?, a.updated_count = updated_count + 1,
+                               a.is_focusing_URL = ?
+     WHERE id = ?`,
+    [title, content, videoURL, date, isFocusingURL ? true : false, id]
+  );
+};
+
+export const updateBonusValuated = async (commentId, valuated) => {
+  if (valuated == NOT_YET_EVALUATED_BONUS_POINTS) {
+    valuated = null;
+  }
+  await execute(
+    `UPDATE announcement_comments a SET a.valuated = ?
+     WHERE id = ?`,
+    [valuated, commentId]
+  );
+};
+
+export const deleteBonus = async (id) => {
+  await execute(`DELETE FROM announcement a WHERE a.id = ?`, [id]);
+};
+
+export const deleteComment = async (commentId) => {
+  await execute(`DELETE FROM announcement_comments WHERE id = ?`, [commentId]);
+};
+
 // admin loading students
 
 export const getStudents = async (subjectId, status) => {
@@ -56,9 +204,9 @@ export const getStudents = async (subjectId, status) => {
     `SELECT u.*, usl.presentation_id, p.status as pres_status FROM 
      (user_subject_lookup usl JOIN user u ON u.id = usl.user_id)
      LEFT JOIN presentation p ON p.id = usl.presentation_id
-     WHERE usl.subject_id = ? AND usl.status = ? 
+     WHERE usl.subject_id = ? AND usl.status = ? AND u.role = ?
      ORDER BY u.last_name, u.first_name`,
-    [subjectId, status]
+    [subjectId, status, IS_STUDENT]
   );
   return rows;
 };
@@ -77,16 +225,6 @@ export const insertNewUserToSubject = async (userId, subjectId) => {
     `INSERT INTO user_subject_lookup (user_id, subject_id, status)
      VALUES (?, ?, ?)`,
     [userId, subjectId, PENDING_FOR_SUBJ]
-  );
-  return row.insertId;
-};
-
-// prettier-ignore
-export const insertBonus = async (subjectId, title, content, urlRef, created) => {
-  const [row] = await execute(
-    `INSERT INTO announcement (subject_id, content, title, created, updated, updated_count, video_URL)
-     VALUES (?, ?, ?, ?, ?, 0, ?)`,
-    [subjectId, content, title, created, created, urlRef]
   );
   return row.insertId;
 };
@@ -150,10 +288,12 @@ export const getStudentSubjects = async (userId) => {
 export const getAllSubjects = async () => {
   const [rows] = await execute(
     `SELECT s.*, count(DISTINCT usl.user_id) as count_students
-     FROM subject s LEFT JOIN user_subject_lookup usl ON usl.subject_id = s.id AND usl.user_id is not NULL AND usl.status = ?
+     FROM subject s LEFT JOIN (user_subject_lookup usl JOIN user u ON u.id = usl.user_id) 
+     ON usl.subject_id = s.id AND usl.user_id IS NOT NULL AND usl.status = ?
+     WHERE u.role = ?
      GROUP BY s.id
      ORDER BY s.status, s.year DESC`,
-    [ACCEPTED_TO_SUBJ]
+    [ACCEPTED_TO_SUBJ, IS_STUDENT]
   );
   return rows;
 };
@@ -243,30 +383,6 @@ export const getStudentsBySubjectId = async (subjectId) => {
     [subjectId, IS_STUDENT]
   );
   return rows;
-};
-
-export const getBonusesOfStudent = async (userId, subjectId) => {
-  const [rows] = await execute(
-    `SELECT a.id, a.created, 
-            CASE WHEN ac.valuated IS NULL THEN ?
-                 WHEN ac.valuated = ? THEN FALSE
-            ELSE TRUE END as got_point
-     FROM announcement_comments ac RIGHT JOIN announcement a ON a.id = ac.announcement_id AND ac.user_id = ?
-     WHERE a.subject_id = ?
-     ORDER BY a.id`,
-    [NOT_YET_EVALUATED_BONUS_POINTS, GOT_0_BONUS_POINTS, userId, subjectId]
-  );
-  return rows;
-};
-
-export const getBonusCommentForUser = async (userId, bonusId) => {
-  const [
-    rows,
-  ] = await execute(
-    `SELECT id FROM announcement_comments WHERE user_id = ? AND announcement_id = ?`,
-    [userId, bonusId]
-  );
-  return rows[0]?.id;
 };
 
 export const getAttendancesOfStudent = async (userId, subjectId) => {
@@ -417,25 +533,6 @@ export const updateAttendanceStatus = async (id, status) => {
   return rows;
 };
 
-// bonus comments
-export const getBonusComments = async (bonusId) => {
-  const [rows] = await execute(
-    `SELECT ac.*, ac.announcement_comment_id as ref_comment_id, user.first_name, user.last_name, user.role as user_role
-     FROM announcement_comments ac JOIN user ON user.id = ac.user_id WHERE ac.announcement_id = ?`,
-    [bonusId]
-  );
-  return rows;
-};
-// prettier-ignore
-export const insertBonusComment = async (bonusId, userId, content, date, refCommentId) => {
-    const [row] = await execute(
-      `INSERT INTO announcement_comments (user_id, announcement_id, content, date, announcement_comment_id)
-       VALUES (?, ?, ?, ?, ?)`,
-      [userId, bonusId, content, date, refCommentId]
-    );
-    return row.insertId;
-};
-
 // presentation comments
 export const getPresentationComments = async (
   presentationId,
@@ -479,8 +576,9 @@ export const getUserEmailsAndNames = async (subjectId) => {
   const [rows] = await execute(
     `SELECT u.id, u.first_name, u.last_name, u.email FROM user u JOIN user_subject_lookup usl 
          ON u.id = usl.user_id AND usl.subject_id = ? AND usl.status = ? 
+         WHERE u.role = ?
          ORDER BY u.first_name, u.last_name `,
-    [subjectId, ACCEPTED_TO_SUBJ]
+    [subjectId, ACCEPTED_TO_SUBJ, IS_STUDENT]
   );
   return rows;
 };
@@ -529,84 +627,6 @@ export const insertPresentationValuation = async (
     [whoseUslId, targetUslId, pvpId, points]
   );
   return row.insertId;
-};
-
-// bonuses
-
-export const getBonus = async (bonusId) => {
-  const [row] = await execute("SELECT * FROM announcement WHERE id = ?", [
-    bonusId,
-  ]);
-  return row[0];
-};
-
-export const getBonuses = async (userId, subjectId) => {
-  const [row] = await execute(
-    `
-  WITH
-  tab1 AS (
-  SELECT a.*,
-         c.user_id,
-         CASE
-          WHEN sum(c.valuated) is NULL THEN 'nehodnotené'
-          WHEN sum(c.valuated) = 0 THEN '0'
-          ELSE '1'
-        END AS evaluation,
-        count(c.user_id) as num_of_comments         
-  FROM announcement AS a LEFT JOIN announcement_comments AS c
-  ON a.id = c.announcement_id AND c.user_id = ?
-  WHERE a.subject_id = ?
-  GROUP BY a.id),
-
-  tab2 AS (
-    SELECT c.announcement_id as id, 
-           count(*) as num_all_comments 
-           FROM announcement_comments AS c
-    GROUP BY c.announcement_id
-  ),
-
-  pres_weight as (
-    SELECT val_comment as weight FROM subject s WHERE s.id = ?
-   )
-
-  SELECT tab1.*, tab2.num_all_comments, pw.weight
-  FROM (tab1 LEFT JOIN tab2 USING(id)) CROSS JOIN pres_weight pw
-  ORDER BY tab1.id DESC`,
-    [userId, subjectId, subjectId]
-  );
-  return row;
-};
-
-export const updateBonusInfo = async (
-  id,
-  title,
-  content,
-  videoURL,
-  date,
-  isFocusingURL
-) => {
-  await execute(
-    `UPDATE announcement a SET a.title = ?, a.content = ?, a.video_URL = ?, 
-                               a.updated = ?, a.updated_count = updated_count + 1,
-                               a.is_focusing_URL = ?
-     WHERE id = ?`,
-    [title, content, videoURL, date, isFocusingURL ? true : false, id]
-  );
-};
-
-export const updateBonusValuated = async (commentId, valuated) => {
-  if (valuated == NOT_YET_EVALUATED_BONUS_POINTS) {
-    valuated = null;
-  }
-  await execute(
-    `UPDATE announcement_comments a SET a.valuated = ?
-     WHERE id = ?`,
-    [valuated, commentId]
-  );
-};
-
-export const deleteBonus = async (id) => {
-  await execute(`DELETE FROM announcement a WHERE a.id = ?`, [id]);
 };
 
 // presentations
@@ -695,6 +715,26 @@ export const getPresentationWeight = async (subjectId) => {
   const [row] = await execute(
     `
       SELECT val_presentation as weight FROM subject s WHERE s.id = ?
+    `,
+    [subjectId]
+  );
+  return row[0];
+};
+
+export const getAttendanceWeight = async (subjectId) => {
+  const [row] = await execute(
+    `
+      SELECT val_attendance as weight FROM subject s WHERE s.id = ?
+    `,
+    [subjectId]
+  );
+  return row[0];
+};
+
+export const getCommentsWeight = async (subjectId) => {
+  const [row] = await execute(
+    `
+      SELECT val_comment as weight FROM subject s WHERE s.id = ?
     `,
     [subjectId]
   );

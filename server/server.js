@@ -37,8 +37,6 @@ app.use(cors());
 // parse requests of content-type - application/json
 app.use(express.json());
 
-/* ... */
-
 app.post("/api/send_email", function (req, res) {
   res.set("Content-Type", "application/json");
 
@@ -352,7 +350,6 @@ app.get(
   async function (req, res) {
     const { userId, subjectId } = req.params;
     const user = await queries.getUserByIdAndSubjectId(userId, subjectId);
-    console.log(user);
 
     if (user === undefined) {
       res.status(404).send(`Užívateľ s id "${userId}" neexistuje`);
@@ -481,6 +478,12 @@ app.patch("/api/admin/bonus/:bonusId/comment/:commentId", async (req, res) => {
   if (valuated !== undefined)
     await queries.updateBonusValuated(commentId, valuated);
   res.json(valuated);
+});
+
+app.delete("/api/admin/comment/:commentId", async (req, res) => {
+  const { commentId } = req.params;
+  await queries.deleteComment(commentId);
+  res.json(commentId);
 });
 
 // presentation comments
@@ -730,6 +733,18 @@ app.post(
     res.json({ subjectId, userId });
   }
 );
+
+app.get("/api/subject/:subjectId/weight", async (req, res) => {
+  const { subjectId } = req.params;
+  const presentationWeight = await queries.getPresentationWeight(subjectId);
+  const attendanceWeight = await queries.getAttendanceWeight(subjectId);
+  const commentsWeight = await queries.getCommentsWeight(subjectId);
+  res.json({
+    presentationWeight,
+    attendanceWeight,
+    commentsWeight,
+  });
+});
 
 // get valuation of a certain subject - finds info about given subject e.g. weight of attendance, bonuses, presentation
 app.get("/api/subject-valuation/:subjectId", async (req, res) => {

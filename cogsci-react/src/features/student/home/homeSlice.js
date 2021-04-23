@@ -18,6 +18,9 @@ export const slice = createSlice({
     myPresentation: null, // { presentation: null, presentationWeight: null }, // presentation is {}
     subjectValuation: null, // object
     uploadedPresentation: null,
+    presentationWeight: null,
+    attendanceWeight: null,
+    commentsWeight: null,
   },
   reducers: {
     attendancesReceived: (state, action) => {
@@ -63,6 +66,11 @@ export const slice = createSlice({
     attendancePasswordErrorCleared: (state) => {
       state.attendanceErrorPassword = "";
     },
+    weightReceived: (state, action) => {
+      state.presentationWeight = action.payload.presentationWeight.weight;
+      state.attendanceWeight = action.payload.attendanceWeight.weight;
+      state.commentsWeight = action.payload.commentsWeight.weight;
+    },
   },
 });
 
@@ -79,6 +87,7 @@ export const {
   passwordForAttendanceAdded,
   attendancePasswordErrorCleared,
   passwordForAttendanceFailed,
+  weightReceived,
 } = slice.actions;
 
 export default slice.reducer;
@@ -135,6 +144,16 @@ export const loadAttendance = (userId, subjectId) => (dispatch) => {
     apiCallBegan({
       url: urlAttendance + "/" + userId + "/" + subjectId,
       onSuccess: attendancesReceived.type,
+    })
+  );
+};
+
+const urlWeight = "/weight";
+export const loadSubjectWeight = (subjectId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlSubject + "/" + subjectId + urlWeight,
+      onSuccess: weightReceived.type,
     })
   );
 };
@@ -277,3 +296,9 @@ export const getMyPresentation = (state) =>
   state.features.student.home.myPresentation;
 export const getSubjectValuation = (state) =>
   state.features.student.home.subjectValuation;
+export const getPresentationWeight = (state) =>
+  state.features.student.home.presentationWeight;
+export const getAttendanceWeight = (state) =>
+  state.features.student.home.attendanceWeight;
+export const getCommentsWeight = (state) =>
+  state.features.student.home.commentsWeight;

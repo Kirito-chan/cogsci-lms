@@ -3,13 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
 import { getCurrentUserId, getIsAdmin } from "../../../app/currentUserSlice";
 import BonusPageView from "./BonusPageView";
-import { getBonus, getComments, loadBonus, loadComments } from "./bonusSlice";
+import { getBonus, getComments, loadComments } from "./bonusSlice";
 import { HashLink } from "react-router-hash-link";
 import createOrderedCommentsMap from "./../../../components/ArrayUtils";
 import {
   cursorFocus,
   scrollWithOffset,
 } from "./../../../components/ScrollUtils";
+import { loadBonuses } from "../home/homeSlice";
 
 function BonusPage() {
   const dispatch = useDispatch();
@@ -32,8 +33,9 @@ function BonusPage() {
   }, [bonus]);
 
   useEffect(() => {
-    if (currentUserId && subjectId)
-      dispatch(loadBonus(currentUserId, subjectId));
+    if (currentUserId && subjectId) {
+      dispatch(loadBonuses(currentUserId, subjectId));
+    }
   }, [currentUserId, subjectId]);
 
   useEffect(() => {
@@ -82,7 +84,6 @@ function BonusPage() {
 
       <BonusPageView
         bonus={bonus}
-        bonusOrderId={bonus.bonusOrderId}
         subjectId={subjectId}
         comments={comments}
         currentUserId={currentUserId}

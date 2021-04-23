@@ -9,6 +9,7 @@ import Navigation from "./../../../components/Navigation";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { insertComment, loadComments } from "./bonusSlice";
+import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 
 function BonusPageView({
   bonus,
@@ -24,21 +25,23 @@ function BonusPageView({
     <div className="pb-5">
       <Navigation />
       <Container className="pb-5">
-        <BonusInfo
-          headerComponent={
-            <h2 className="d-inline">
-              {bonus?.orderNumber > 0 && (
-                <span>
-                  Bonusová úloha č. {bonus?.orderNumber}: {bonus?.title}
-                </span>
-              )}
-            </h2>
-          }
-          subjectId={subjectId}
-          bonus={bonus}
-          isAdmin={isAdmin}
-          currentUserId={currentUserId}
-        />
+        {showLoaderIfAnyNull(bonus) || (
+          <BonusInfo
+            headerComponent={
+              <h2 className="d-inline">
+                {bonus?.orderNumber > 0 && (
+                  <span>
+                    Bonusová úloha č. {bonus.orderNumber}: {bonus.title}
+                  </span>
+                )}
+              </h2>
+            }
+            subjectId={subjectId}
+            bonus={bonus}
+            isAdmin={isAdmin}
+            currentUserId={currentUserId}
+          />
+        )}
 
         <CommentsList
           comments={comments}

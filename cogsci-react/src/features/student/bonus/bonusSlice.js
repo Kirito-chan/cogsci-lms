@@ -23,6 +23,7 @@ export const slice = createSlice({
     },
     commentInserted: () => {},
     commentsRequestFailed: () => {},
+    commentDeleted: () => {},
   },
 });
 
@@ -37,6 +38,7 @@ export const {
   commentsReceived,
   commentsRequestFailed,
   commentInserted,
+  commentDeleted,
 } = slice.actions;
 
 export default slice.reducer;
@@ -120,11 +122,25 @@ export const insertComment = (userId, bonusId, content, refCommentId) => (
   );
 };
 
+const urlAdminComment = "/admin/comment";
+
+export const deleteComment = (commentId) => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      method: "delete",
+      url: urlAdminComment + "/" + commentId,
+      onSuccess: commentDeleted.type,
+    })
+  );
+};
+
 export const getBonus = (state, bonusId) => {
   const bonuses = state.features.student.home.bonuses;
+  if (bonuses === null || bonuses === undefined) return null;
   const bonusOrderNumber =
     bonuses?.length - bonuses?.findIndex((bonusik) => bonusik.id == bonusId);
   const bonus = bonuses?.filter((bonusik) => bonusik.id == bonusId)[0];
+
   return { ...bonus, orderNumber: bonusOrderNumber };
 };
 

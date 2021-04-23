@@ -8,11 +8,14 @@ import {
 
 function Presentation({ student }) {
   const { subjectId } = useParams();
+  const noPresentation =
+    student.pres_status === undefined || student.pres_status === null;
 
   return (
     <div>
       <h2>Prezentácia</h2>
-      {student.pres_status === undefined || student.pres_status === null || (
+      {noPresentation && <p>Žiadna</p>}
+      {noPresentation || (
         <Link
           to={
             "/subject/" +

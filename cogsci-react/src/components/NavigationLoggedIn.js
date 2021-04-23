@@ -80,9 +80,9 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
           <NavLink
             to={URL_ADMIN_USERS}
             onClick={() => dispatch(clearCurrentSubject())}
-            className="nav-link"
+            className={"nav-link " + (!isAdmin ? "d-none" : "")}
           >
-            {isAdmin && "Používatelia"}
+            Používatelia
           </NavLink>
 
           <NavDivider />
@@ -91,14 +91,14 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
             to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_HOME : URL_HOME) }
             className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {(!inGlobalPage && subjectName) || ""}
+            {subjectName}
           </NavLink>
           <NavLink
             // prettier-ignore
             to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_BONUSES : URL_BONUSES) }
             className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {!inGlobalPage && "Bonusy"}
+            Bonusy
           </NavLink>
           <NavLink
             to={
@@ -108,31 +108,31 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
             }
             className={"nav-link " + (inGlobalPage ? "d-none" : "")}
           >
-            {!inGlobalPage && "Prezentácie"}
+            Prezentácie
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_ADMIN_OVERALL_ATTENDANCE}
-            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage || !isAdmin ? "d-none" : "")}
           >
-            {isAdmin && !inGlobalPage && "Dochádzka"}
+            Dochádzka
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_TERMS}
             className={"nav-link " + (isAdmin || inGlobalPage ? "d-none" : "")}
           >
-            {!isAdmin && !inGlobalPage && "Podmienky"}
+            Podmienky
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_ADMIN_SETTINGS}
-            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage || !isAdmin ? "d-none" : "")}
           >
-            {isAdmin && !inGlobalPage && "Nastavenia"}
+            Nastavenia
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_ADMIN_EMAIL}
-            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
+            className={"nav-link " + (inGlobalPage || !isAdmin ? "d-none" : "")}
           >
-            {isAdmin && !inGlobalPage && "Email"}
+            Email
           </NavLink>
         </Nav>
         <Nav>

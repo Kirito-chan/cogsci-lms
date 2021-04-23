@@ -10,6 +10,7 @@ function BonusesList({ bonuses, subjectId }) {
   return (
     <div className="mt-5">
       <h2>Bonusové úlohy</h2>
+      {bonuses.length === 0 && <p>Žiadne</p>}
 
       {bonuses.map((bonus, i) => (
         <article key={bonus.id}>

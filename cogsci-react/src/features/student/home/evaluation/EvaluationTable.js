@@ -5,6 +5,8 @@ import getGrade from "../../../../components/Math";
 export default function EvaluationTable({
   presentation,
   presentationWeight,
+  attendanceWeight,
+  commentsWeight,
   attendances,
   bonuses,
   subjectValuation,
@@ -13,14 +15,13 @@ export default function EvaluationTable({
   // prettier-ignore
   const earnedAttendancePoints = attendances.filter((it) => it.got_point).length || 0;
   const maxAttendancePoints = attendances.length || 0;
-  const attendanceWeight = attendances[0]?.weight || 0;
   const earnedBonusPoints =
     bonuses.filter((it) => it.evaluation == 1).length || 0;
   const maxBonusPoints = bonuses.length || 0;
-  const bonusWeight = bonuses[0]?.weight || 0;
   const bonusPointsFromWeight =
-    Number(((earnedBonusPoints / maxBonusPoints) * bonusWeight).toFixed(2)) ||
-    0;
+    Number(
+      ((earnedBonusPoints / maxBonusPoints) * commentsWeight).toFixed(2)
+    ) || 0;
   // prettier-ignore
   const attendancePointsFromWeight = Number(
     ((earnedAttendancePoints / maxAttendancePoints) * attendanceWeight).toFixed(2)
@@ -73,7 +74,7 @@ export default function EvaluationTable({
               {earnedBonusPoints} z {maxBonusPoints}
             </td>
             <td>{bonusPointsFromWeight}</td>
-            <td>{bonusWeight}</td>
+            <td>{commentsWeight}</td>
           </tr>
 
           <tr>

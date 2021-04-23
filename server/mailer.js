@@ -6,11 +6,13 @@ const mailjetAPI = mailjet.connect(
 );
 
 const sendEmail = (messageInfo) => {
+  const toEmails = messageInfo.toEmail.map((email) => ({ Email: email }));
+
   return mailjetAPI.post("send", { version: "v3.1" }).request({
     Messages: [
       {
         From: { Email: messageInfo.fromEmail, Name: messageInfo.fromName },
-        To: [{ Email: messageInfo.toEmail }],
+        To: toEmails,
         Subject: messageInfo.subject,
         TextPart: messageInfo.text,
       },
