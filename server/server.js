@@ -767,6 +767,7 @@ app.get("/api/subject/:subjectId/weight", async (req, res) => {
   const presentationWeight = await queries.getPresentationWeight(subjectId);
   const attendanceWeight = await queries.getAttendanceWeight(subjectId);
   const commentsWeight = await queries.getCommentsWeight(subjectId);
+
   res.json({
     presentationWeight,
     attendanceWeight,

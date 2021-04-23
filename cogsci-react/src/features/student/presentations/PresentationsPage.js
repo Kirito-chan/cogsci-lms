@@ -38,7 +38,7 @@ function PresentationsPage() {
       dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
       dispatch(loadTeacherPresentations(currentUserId, subjectId));
       dispatch(loadMyPresentation(currentUserId, subjectId));
-      dispatch(loadSubjectWeight(currentUserId, subjectId));
+      dispatch(loadSubjectWeight(subjectId));
     }
   }, [currentUserId, subjectId]);
 

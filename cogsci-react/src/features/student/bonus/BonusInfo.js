@@ -105,6 +105,7 @@ function BonusInfo({
                 evaluation={bonus.evaluation}
                 redirectTo={`/subject/${subjectId}${URL_BONUSES}/${bonus.id}`}
                 hash="#myNewComment"
+                inBonusesInfo={true}
               />
             </Col>
 

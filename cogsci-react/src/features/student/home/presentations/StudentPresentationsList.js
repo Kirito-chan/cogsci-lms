@@ -14,7 +14,7 @@ function StudentPresentationsList({
   hideEvalDiscussion,
 }) {
   return (
-    <div>
+    <div className={hideHodnotitBtn ? "mt-3 mt-lg-0" : ""}>
       <h3>{headerText}</h3>
 
       {studentPresentations.length == 0 && (
