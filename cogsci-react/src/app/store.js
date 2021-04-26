@@ -1,17 +1,14 @@
 import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
-import currentUserReducer from "./currentUserSlice";
+import appReducer from "./rootReducer";
 import api from "./middleware/api";
-import featuresReducer from "./features";
 
 const customizedMiddleware = getDefaultMiddleware({
   serializableCheck: false,
 });
 
-export default configureStore({
-  reducer: {
-    features: featuresReducer,
-    currentUser: currentUserReducer,
-  },
-
+const store = configureStore({
+  reducer: appReducer,
   middleware: [...customizedMiddleware, api],
 });
+
+export default store;

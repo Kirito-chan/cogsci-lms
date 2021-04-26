@@ -33,6 +33,7 @@ export const slice = createSlice({
     },
     subjectStatusChanged: () => {},
     subjectUpdated: () => {},
+    subjectsLoaded: () => {},
   },
 });
 
@@ -46,6 +47,7 @@ export const {
   subjectInserted,
   subjectStatusChanged,
   subjectUpdated,
+  subjectsLoaded,
 } = slice.actions;
 
 export default slice.reducer;
@@ -152,6 +154,9 @@ export const loadCurrentSubjectId = (subjectId) => (dispatch) => {
 
 export const clearCurrentSubject = () => (dispatch) => {
   dispatch({ type: clearedCurrentSubject.type });
+};
+export const loadSubjectsAndClear = () => (dispatch) => {
+  dispatch({ type: subjectsLoaded.type });
 };
 
 export const getSubjects = (state) => state.features.admin.subjects.subjects;

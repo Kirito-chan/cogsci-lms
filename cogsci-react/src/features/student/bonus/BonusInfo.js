@@ -31,7 +31,6 @@ function BonusInfo({
 
   useEffect(() => {
     if (bonus) {
-      console.log(bonus);
       let newUrl = bonus.video_URL;
 
       if (newUrl.includes("ted") && !newUrl.includes("embed")) {

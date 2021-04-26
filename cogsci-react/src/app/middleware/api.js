@@ -21,9 +21,9 @@ const api = ({ dispatch }) => (next) => async (action) => {
   try {
     response = await axios.request({
       baseURL: process.env.REACT_APP_API_URL,
-      url: url,
-      method: method,
-      data: data,
+      url,
+      method,
+      data,
       headers,
     });
     // General

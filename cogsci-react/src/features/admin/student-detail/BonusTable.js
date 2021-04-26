@@ -27,7 +27,7 @@ export default function bonusTable({ bonuses }) {
             <tr key={i}>
               <td>{bonuses.length - i}</td>
               <td>{formatDate(bonus.created)}</td>
-              {console.log(bonus.evaluation)}
+
               <td>
                 {bonus.evaluation == GOT_1_BONUS_POINTS ? (
                   <FaCheck />

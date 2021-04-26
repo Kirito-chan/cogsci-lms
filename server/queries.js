@@ -20,6 +20,8 @@ import {
   NOT_YET_EVALUATED_BONUS_POINTS,
   NOT_YET_COMMENTED,
   GOT_0_BONUS_POINTS,
+  ADMIN_FOR_SUBJ,
+  IS_ADMIN,
 } from "./constants.js";
 
 // subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
@@ -347,6 +349,17 @@ export const updateSubjectStatus = async (subjectId, status) => {
     status,
     subjectId,
   ]);
+};
+
+export const getSubjectsWhereUserIsNotIn = async (userId) => {
+  const [rows] = await execute(
+    `
+  SELECT DISTINCT usl.subject_id as id FROM user u JOIN user_subject_lookup usl 
+  WHERE ? NOT IN (SELECT user_id FROM user_subject_lookup usl2 WHERE usl2.subject_id = usl.subject_id)
+  `,
+    [userId]
+  );
+  return rows;
 };
 
 export const getSubjectValuation = async (subjectId) => {
@@ -815,6 +828,23 @@ export const getTeacherPresentations = async (userId, subjectId) => {
     [userId, subjectId]
   );
   return row;
+};
+
+export const getAllTeachersIds = async () => {
+  const [rows] = await execute(`SELECT id FROM user WHERE role = ?`, [
+    IS_ADMIN,
+  ]);
+  return rows;
+};
+
+// aby mohli aj oni hodnotit prezentacie druhych studentov zo svojich uctov
+export const insertTeacherToUSL = async (teacherId, subjectId) => {
+  const [row] = await execute(
+    `INSERT INTO user_subject_lookup (user_id, subject_id, status) 
+    VALUES(?, ?, ?)`,
+    [teacherId, subjectId, ADMIN_FOR_SUBJ]
+  );
+  return row.insertId;
 };
 
 export const insertTeacherPresentation = async (

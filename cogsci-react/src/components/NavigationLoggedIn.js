@@ -4,7 +4,6 @@ import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { FaBrain, FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { clearToken } from "../app/currentUserSlice";
 import {
   LOGOUT_EVENT,
   URL_ADMIN_SUBJECTS,
@@ -31,6 +30,7 @@ import {
 } from "../features/student/subjects/subjectsSlice";
 import { NavLink } from "react-router-dom";
 import NavDivider from "./NavDivider";
+import { resetState } from "../app/apiConstants";
 
 function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const dispatch = useDispatch();
@@ -49,10 +49,9 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
   }, [subjectIdParams]);
 
   const handleDropdown = (event) => {
-    if (event == LOGOUT_EVENT) {
+    if (event === LOGOUT_EVENT) {
       localStorage.clear();
-      dispatch(clearToken());
-      window.location.reload();
+      dispatch(resetState());
     }
   };
 

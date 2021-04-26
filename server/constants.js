@@ -17,6 +17,9 @@ export const COMMENT_WEIGHT = 30; // val_comment v subject tabulke
 export const PENDING_FOR_SUBJ = 1; // v tabulke user_subject_lookup stlpec status hovori o tom,
 export const ACCEPTED_TO_SUBJ = 2; // ci je student cakajuci, prijaty alebo zmietnuty pre prihlasenie sa na dany predmet
 export const REJECTED_TO_SUBJ = 3;
+export const ADMIN_FOR_SUBJ = 4; // aby sa odlisil admin/ucitel od ostatnych studentov v tabulke user_subject_lookup
+// kedze tam maju byt aj ucitelia, aby vedeli hodnotit zo svojho uctu prezentacie studentov
+// kedze v tabulke user_presentation_valuation treba usl_id pre hodnotenie prezentacie
 
 export const ATTENDANCE_CLOSED = 1; // v tabulke attendance stplec status, ci je otvorena alebo uzavreta dochadzka na dany tyzden
 export const ATTENDANCE_OPENED = 2;

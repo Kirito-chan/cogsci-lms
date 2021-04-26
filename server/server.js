@@ -144,6 +144,10 @@ app.post("/api/admin/subject", async function (req, res) {
     weeks,
     active
   );
+  const teachersIds = await queries.getAllTeachersIds();
+  for (const teacher of teachersIds) {
+    await queries.insertTeacherToUSL(teacher.id, subjectId);
+  }
   let newPresFolderStudents = "uploads/" + subjectId;
   let newPresFolderTeachers = "uploads/teacher/" + subjectId;
 
@@ -382,6 +386,12 @@ app.patch("/api/admin/user/:userId", async function (req, res) {
   const { userId } = req.params;
   const { role } = req.body;
   await queries.updateUserRole(userId, role);
+  if (role == constants.IS_ADMIN) {
+    const subjects = await queries.getSubjectsWhereUserIsNotIn(userId);
+    for (const subject of subjects) {
+      await queries.insertTeacherToUSL(userId, subject.id);
+    }
+  }
   res.json(userId);
 });
 
@@ -642,9 +652,16 @@ app.post(
     const { subjectId, presentationId } = req.params;
     const { userWhoEvaluatesId, evaluatedUserId } = req.query;
     const { values } = req.body;
+    console.log(subjectId);
+    console.log(presentationId);
+    console.log(userWhoEvaluatesId);
+    console.log(evaluatedUserId);
+    console.log(values);
 
     const whoseUslId = await queries.getUslId(subjectId, userWhoEvaluatesId);
     const targetUslId = await queries.getUslId(subjectId, evaluatedUserId);
+    console.log(whoseUslId);
+    console.log(targetUslId);
 
     for (const element of values) {
       const pvpId = await queries.getPvpId(subjectId, element.name);

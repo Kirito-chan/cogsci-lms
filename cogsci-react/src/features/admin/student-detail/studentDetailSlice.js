@@ -1,5 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apiCallBegan } from "../../../app/apiConstants";
+import {
+  apiCallBegan /*studentDetailCleared*/,
+} from "../../../app/apiConstants";
+//import { subjectsLoaded } from "../subjects/subjectsSlice";
+//const subjectsLoaded = createAction("subjectsLoaded");
 
 export const slice = createSlice({
   name: "studentDetail",
@@ -47,6 +51,12 @@ export const slice = createSlice({
       state.commentsWeight = action.payload.commentsWeight.weight;
     },
   },
+  // extraReducers: (builder) => {
+  //   builder.addCase(studentDetailCleared, (state) => {
+  //     console.log(state.student.first_name);
+  //     //return { ...this.initialState };
+  //   });
+  // },
 });
 
 export const {
