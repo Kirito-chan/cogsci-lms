@@ -9,6 +9,7 @@ import {
   getCurrentSubjectId,
 } from "./subjectsSlice";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { resetState } from "../../../app/actions";
 
 function SubjectsPage() {
   const dispatch = useDispatch();
@@ -21,8 +22,14 @@ function SubjectsPage() {
   }, []);
 
   useEffect(() => {
-    if (currentUserId) dispatch(loadSubjects(currentUserId));
+    if (currentUserId) {
+      dispatch(loadSubjects(currentUserId));
+    }
   }, [currentUserId]);
+
+  useEffect(() => {
+    dispatch(resetState());
+  }, []);
 
   useEffect(() => {
     dispatch(clearCurrentSubject);

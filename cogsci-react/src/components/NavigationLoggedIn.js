@@ -5,7 +5,6 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import { FaBrain, FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  LOGOUT_EVENT,
   URL_ADMIN_SUBJECTS,
   URL_ADMIN_BONUSES,
   URL_BONUSES,
@@ -20,6 +19,7 @@ import {
   URL_ADMIN_EMAIL,
   URL_ADMIN_USERS,
   URL_ADMIN_OVERALL_ATTENDANCE,
+  USER_LOGOUT,
 } from "../constants";
 import { useLocation, useParams } from "react-router";
 import {
@@ -30,7 +30,7 @@ import {
 } from "../features/student/subjects/subjectsSlice";
 import { NavLink } from "react-router-dom";
 import NavDivider from "./NavDivider";
-import { resetState } from "../app/apiConstants";
+import { resetState } from "../app/actions";
 
 function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const dispatch = useDispatch();
@@ -49,7 +49,7 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
   }, [subjectIdParams]);
 
   const handleDropdown = (event) => {
-    if (event === LOGOUT_EVENT) {
+    if (event === USER_LOGOUT) {
       localStorage.clear();
       dispatch(resetState());
     }
@@ -147,7 +147,7 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
             <NavDropdown.Item eventKey="changePassword">
               Zmeniť heslo
             </NavDropdown.Item>
-            <NavDropdown.Item eventKey="logout">Odhlásiť</NavDropdown.Item>
+            <NavDropdown.Item eventKey={USER_LOGOUT}>Odhlásiť</NavDropdown.Item>
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>

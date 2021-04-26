@@ -8,7 +8,7 @@ import {
   getCurrentSubjectId,
 } from "./subjectsSlice";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
-import { studentDetailCleared } from "../../../app/apiConstants";
+import { resetState } from "../../../app/actions";
 
 function SubjectsPage() {
   const dispatch = useDispatch();
@@ -17,8 +17,9 @@ function SubjectsPage() {
 
   useEffect(() => {
     document.title = "Predmety · Kognitívne vedy";
-    dispatch(loadSubjects());
-    dispatch(studentDetailCleared());
+    dispatch(resetState()).then(() => {
+      dispatch(loadSubjects());
+    });
   }, []);
 
   useEffect(() => {

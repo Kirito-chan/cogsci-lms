@@ -5,13 +5,16 @@ import UsersList from "./UsersList";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import Navigation from "../../../components/Navigation";
 import { IS_ADMIN, IS_STUDENT } from "../../../constants";
+import { resetState } from "../../../app/actions";
 
 function UsersPage() {
   const dispatch = useDispatch();
   const users = useSelector(getUsers);
 
   useEffect(() => {
-    dispatch(loadUsers());
+    dispatch(resetState()).then(() => {
+      dispatch(loadUsers());
+    });
   }, []);
 
   const handleMakeAdmin = (e) => {

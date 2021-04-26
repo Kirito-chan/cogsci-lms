@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  apiCallBegan /*studentDetailCleared*/,
-} from "../../../app/apiConstants";
+import { apiCallBegan /*studentDetailCleared*/ } from "../../../app/actions";
 //import { subjectsLoaded } from "../subjects/subjectsSlice";
 //const subjectsLoaded = createAction("subjectsLoaded");
 

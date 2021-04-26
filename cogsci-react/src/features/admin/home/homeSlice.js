@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apiCallBegan } from "../../../app/apiConstants";
+import { apiCallBegan } from "../../../app/actions";
 import {
   STUD_PRES_CLOSED,
   STUD_PRES_OPENED,

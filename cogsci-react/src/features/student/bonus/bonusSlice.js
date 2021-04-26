@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apiCallBegan } from "../../../app/apiConstants";
+import { apiCallBegan } from "../../../app/actions";
 import { loadBonuses } from "../home/homeSlice";
 
 export const slice = createSlice({

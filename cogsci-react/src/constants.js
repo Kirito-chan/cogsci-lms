@@ -3,7 +3,8 @@ export const GOT_0_BONUS_POINTS = 0; // stlpec valuated v tabulke announcement_c
 export const GOT_1_BONUS_POINTS = 1; // stlpec valuated v tabulke announcement_comments = 1 znamena, ze dostal 1 bod
 export const NOT_YET_EVALUATED_BONUS_POINTS = "nehodnotené"; // stlpec valuated v tabulke announcement_comments = NULL znamena, ze este nebol hodnoteny ucitelom
 export const NOT_YET_COMMENTED = "nekomentoval";
-export const LOGOUT_EVENT = "logout";
+export const RESET_STATE = "RESET_STATE";
+export const USER_LOGOUT = "USER_LOGOUT";
 
 // ked sa hodnoti prezentacia podla roznych kriterii, tak aky je maximalny pocet bodov pre dane kriterium
 export const MAX_POINT_HEIGHT_PRES_EVALUATION = 10;

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apiCallBegan } from "../app/apiConstants";
+import { apiCallBegan } from "./actions";
 import { IS_ADMIN } from "../constants";
 
 export const slice = createSlice({
