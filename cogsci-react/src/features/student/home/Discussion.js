@@ -15,6 +15,7 @@ function Discussion({
   queryString,
   inBonusesInfo,
   hodnotitElement,
+  isTeacherPres,
 }) {
   const isAdmin = useSelector(getIsAdmin);
   const num_of_all_comments = data?.num_all_comments;
@@ -39,6 +40,18 @@ function Discussion({
     md1 = 4;
     sm1 = 4;
     xs1 = 5;
+  }
+  if (isTeacherPres) {
+    xl1 = 8;
+    xl2 = 2;
+    lg1 = 8;
+    lg2 = 2;
+    md1 = 9;
+    md2 = 3;
+    sm1 = 9;
+    sm2 = 2;
+    xs1 = 8;
+    xs2 = 1;
   }
 
   return (

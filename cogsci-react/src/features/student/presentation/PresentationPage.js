@@ -25,6 +25,12 @@ import {
 } from "./../../../components/ScrollUtils";
 import createOrderedCommentsMap from "./../../../components/ArrayUtils";
 import { loadStudentPresentationsNeutral } from "../../admin/home/homeSlice";
+import {
+  loadMyPresentation as loadMyPresentationAdmin,
+  getMyPresentation as getMyPresentationAdmin,
+  getPresentationWeight,
+  loadSubjectWeight,
+} from "../../admin/student-detail/studentDetailSlice";
 
 function PresentationPage() {
   const dispatch = useDispatch();
@@ -41,6 +47,8 @@ function PresentationPage() {
     new URLSearchParams(location.search).get("is_my") == "true"
   );
   const isAdmin = useSelector(getIsAdmin);
+  const presentationPoints = useSelector(getMyPresentationAdmin);
+  const presentationWeight = useSelector(getPresentationWeight);
 
   const currentUserId = useSelector(getCurrentUserId);
   const comments = useSelector(getComments);
@@ -75,12 +83,21 @@ function PresentationPage() {
   }, [presentationId]);
 
   useEffect(() => {
-    dispatch(loadStudentPresentationsNeutral(currentUserId, subjectId));
-    dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
-    dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
-    dispatch(loadTeacherPresentations(currentUserId, subjectId));
-    dispatch(loadMyPresentation(currentUserId, subjectId));
+    if (currentUserId && subjectId) {
+      dispatch(loadStudentPresentationsNeutral(currentUserId, subjectId));
+      dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
+      dispatch(loadStudentPresentationsClosed(currentUserId, subjectId));
+      dispatch(loadTeacherPresentations(currentUserId, subjectId));
+      dispatch(loadMyPresentation(currentUserId, subjectId));
+    }
   }, [currentUserId, subjectId]);
+
+  useEffect(() => {
+    if (presentation && presentation.user_id && isAdmin) {
+      dispatch(loadMyPresentationAdmin(presentation.user_id, subjectId));
+      dispatch(loadSubjectWeight(subjectId));
+    }
+  }, [presentation, isAdmin]);
 
   useEffect(() => {
     if (comments) {
@@ -118,6 +135,7 @@ function PresentationPage() {
       document.getElementById("scrollDownToSlider").click();
     }
   }, [valuationTypes]);
+  console.log(presentationWeight);
 
   return (
     <div>
@@ -151,6 +169,8 @@ function PresentationPage() {
         setScrollElementIndex={setScrollElementIndex}
         isAdmin={isAdmin}
         history={history}
+        presentationPoints={presentationPoints}
+        presentationWeight={presentationWeight}
       />
     </div>
   );

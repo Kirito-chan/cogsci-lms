@@ -652,16 +652,16 @@ app.post(
     const { subjectId, presentationId } = req.params;
     const { userWhoEvaluatesId, evaluatedUserId } = req.query;
     const { values } = req.body;
-    console.log(subjectId);
-    console.log(presentationId);
-    console.log(userWhoEvaluatesId);
-    console.log(evaluatedUserId);
-    console.log(values);
+    // console.log(subjectId);
+    // console.log(presentationId);
+    // console.log(userWhoEvaluatesId);
+    // console.log(evaluatedUserId);
+    // console.log(values);
 
     const whoseUslId = await queries.getUslId(subjectId, userWhoEvaluatesId);
     const targetUslId = await queries.getUslId(subjectId, evaluatedUserId);
-    console.log(whoseUslId);
-    console.log(targetUslId);
+    // console.log(whoseUslId);
+    // console.log(targetUslId);
 
     for (const element of values) {
       const pvpId = await queries.getPvpId(subjectId, element.name);
@@ -672,16 +672,6 @@ app.post(
         element.value
       );
     }
-
-    // await Promise.all(values.map(async (element) => {
-    //   const pvpId = await queries.getPvpId(subjectId, element.name);
-    //   await queries.insertPresentationValuation(
-    //     whoseUslId,
-    //     targetUslId,
-    //     pvpId,
-    //     element.value
-    //   );
-    // }));
 
     res.json(presentationId);
   }

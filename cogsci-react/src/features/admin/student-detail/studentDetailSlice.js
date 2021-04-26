@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { apiCallBegan /*studentDetailCleared*/ } from "../../../app/actions";
-//import { subjectsLoaded } from "../subjects/subjectsSlice";
-//const subjectsLoaded = createAction("subjectsLoaded");
+import { apiCallBegan } from "../../../app/actions";
 
 export const slice = createSlice({
   name: "studentDetail",
@@ -32,29 +30,18 @@ export const slice = createSlice({
       state.bonuses = action.payload;
     },
     myPresentationReceived: (state, action) => {
-      const presentation = action.payload.presentation
-        ? action.payload.presentation
-        : {};
-      state.myPresentation = {
-        presentation,
-        presentationWeight: action.payload.presentationWeight?.weight,
-      };
+      state.myPresentation = action.payload;
     },
     subjectValuationReceived: (state, action) => {
       state.subjectValuation = action.payload;
     },
     weightReceived: (state, action) => {
       state.presentationWeight = action.payload.presentationWeight.weight;
+
       state.attendanceWeight = action.payload.attendanceWeight.weight;
       state.commentsWeight = action.payload.commentsWeight.weight;
     },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(studentDetailCleared, (state) => {
-  //     console.log(state.student.first_name);
-  //     //return { ...this.initialState };
-  //   });
-  // },
 });
 
 export const {

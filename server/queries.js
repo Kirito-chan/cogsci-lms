@@ -208,7 +208,7 @@ export const deleteComment = async (commentId) => {
 
 export const getStudents = async (subjectId, status) => {
   const [rows] = await execute(
-    `SELECT u.*, usl.presentation_id, p.status as pres_status FROM 
+    `SELECT u.id, u.first_name, u.last_name, u.username, u.email, u.role, usl.presentation_id, p.status as pres_status FROM 
      (user_subject_lookup usl JOIN user u ON u.id = usl.user_id)
      LEFT JOIN presentation p ON p.id = usl.presentation_id
      WHERE usl.subject_id = ? AND usl.status = ? AND u.role = ?
@@ -439,7 +439,7 @@ export const getUsers = async (username) => {
 
 export const getUserByIdAndSubjectId = async (userId, subjectId) => {
   const [row] = await execute(
-    `SELECT u.*, usl.presentation_id, p.status as pres_status 
+    `SELECT u.id, u.first_name, u.last_name, u.email, u.username, usl.presentation_id, p.status as pres_status 
      FROM (user_subject_lookup usl JOIN user u ON u.id = usl.user_id)
      LEFT JOIN presentation p ON p.id = usl.presentation_id
      WHERE u.id = ? AND usl.subject_id = ?`,

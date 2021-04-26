@@ -1,10 +1,11 @@
 import React from "react";
+import Container from "react-bootstrap/esm/Container";
+import Col from "react-bootstrap/esm/Col";
+import Row from "react-bootstrap/esm/Row";
 import { Link } from "react-router-dom";
 import { URL_PRESENTATIONS } from "../../../../constants";
-import DeleteButton from "../../presentation/DeleteButton";
-// import Row from "react-bootstrap/Row";
-
 import Discussion from "../Discussion";
+import DeleteButton from "../../presentation/DeleteButton";
 
 function TeacherPresentationsList({ teacherPresentations, subjectId, h2 }) {
   return (
@@ -21,34 +22,49 @@ function TeacherPresentationsList({ teacherPresentations, subjectId, h2 }) {
 
       {teacherPresentations.map((presentation, i) => (
         <div key={presentation.id}>
-          <Link
-            to={
-              "/subject/" +
-              subjectId +
-              URL_PRESENTATIONS +
-              "/" +
-              presentation.id +
-              "?is_opened=false&teacher=true"
-            }
-            className="pl-0 nav-link"
-          >
-            {teacherPresentations.length - i}. {presentation.title}
-          </Link>
-
-          <Discussion
-            data={presentation}
-            classAttribute="d-inline-block mr-3"
-            redirectTo={
-              "/subject/" +
-              subjectId +
-              URL_PRESENTATIONS +
-              "/" +
-              presentation.id
-            }
-            queryString={"?is_opened=false&teacher=true"}
-            hash={"#myNewComment"}
-          />
-          {<DeleteButton presentation={presentation} isTeacherPres={true} />}
+          <Container fluid>
+            <Row>
+              <Col xs="auto">
+                <Link
+                  to={
+                    "/subject/" +
+                    subjectId +
+                    URL_PRESENTATIONS +
+                    "/" +
+                    presentation.id +
+                    "?is_opened=false&teacher=true"
+                  }
+                  className="pl-0 nav-link"
+                >
+                  {teacherPresentations.length - i}. {presentation.title}
+                </Link>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs="auto" className="mr-md-4 mr-sm-4 mr-lg-0 mr-2">
+                <Discussion
+                  data={presentation}
+                  classAttribute="d-inline-block mr-3"
+                  redirectTo={
+                    "/subject/" +
+                    subjectId +
+                    URL_PRESENTATIONS +
+                    "/" +
+                    presentation.id
+                  }
+                  queryString={"?is_opened=false&teacher=true"}
+                  hash={"#myNewComment"}
+                  isTeacherPres={true}
+                />
+              </Col>
+              <Col xs={1}>
+                <DeleteButton
+                  presentation={presentation}
+                  isTeacherPres={true}
+                />
+              </Col>
+            </Row>
+          </Container>
         </div>
       ))}
     </div>

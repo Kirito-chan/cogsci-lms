@@ -15,6 +15,7 @@ import {
   //updateHasEvaluatedToTrue,
 } from "../home/homeSlice";
 import { MAX_POINT_HEIGHT_PRES_EVALUATION } from "../../../constants";
+import { loadMyPresentation } from "../../admin/student-detail/studentDetailSlice";
 
 export default function SlidersForm({ evaluatedUserId }) {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ export default function SlidersForm({ evaluatedUserId }) {
       )
     ).then(() => {
       dispatch(loadStudentPresentationsOpened(currentUserId, subjectId));
+      dispatch(loadMyPresentation(evaluatedUserId, subjectId));
     });
   };
 

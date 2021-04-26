@@ -5,12 +5,18 @@ import Col from "react-bootstrap/Col";
 import Navigation from "../../../components/Navigation";
 import CommentsList from "../bonus/CommentsList";
 import PresentationEvaluation from "./PresentationEvaluation";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import formatTranslation, {
+  showLoaderIfAnyNull,
+} from "../../../components/StringUtils";
 import download from "js-file-download";
 import axios from "axios";
-import { createUrlToDownloadPresentation } from "../../../constants";
+import {
+  createUrlToDownloadPresentation,
+  URL_ADMIN_STUDENT_DETAIL,
+} from "../../../constants";
 import PresStatusButtons from "./PresStatusButtons";
 import DeleteButton from "./DeleteButton";
+import { Link } from "react-router-dom";
 
 function PresentationPageView({
   presentation,
@@ -26,6 +32,8 @@ function PresentationPageView({
   loadComments,
   isAdmin,
   history,
+  presentationPoints,
+  presentationWeight,
 }) {
   const handleDownload = (e) => {
     e.preventDefault();
@@ -65,7 +73,24 @@ function PresentationPageView({
                     </div>
                   </div>
                   <h5>
-                    {presentation.first_name} {presentation.last_name}
+                    {isAdmin && !isTeacherPres ? (
+                      <Link
+                        to={
+                          "/subject/" +
+                          subjectId +
+                          URL_ADMIN_STUDENT_DETAIL +
+                          "/" +
+                          presentation.user_id
+                        }
+                        className="nav-link pl-0"
+                      >
+                        {presentation.first_name} {presentation.last_name}
+                      </Link>
+                    ) : (
+                      <p>
+                        {presentation.first_name} {presentation.last_name}
+                      </p>
+                    )}
                   </h5>
                 </Col>
               </Row>
@@ -83,6 +108,22 @@ function PresentationPageView({
                   </a>
                 </Col>
               </Row>
+              {!isAdmin ||
+                isTeacherPres ||
+                showLoaderIfAnyNull(presentationPoints, presentationWeight) || (
+                  <Row>
+                    <Col>
+                      <p>
+                        <b>Hodnotenie:</b>{" "}
+                        {presentationPoints.points
+                          ? presentationPoints.points
+                          : 0}{" "}
+                        z {presentationWeight}{" "}
+                        {formatTranslation(presentationWeight, "bod")}
+                      </p>
+                    </Col>
+                  </Row>
+                )}
             </div>
             {isAdmin && !isTeacherPres && (
               <PresStatusButtons
