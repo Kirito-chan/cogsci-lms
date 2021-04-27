@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "./LoginRegistration.css";
-import { getCustomError, loadUserAndToken } from "../../app/currentUserSlice";
+import {
+  getCustomError,
+  loadUserAndTokenWithLogin,
+} from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoginView from "./LoginView";
 import { useHistory } from "react-router";
@@ -15,7 +18,7 @@ function Login({ registerMessage }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(loadUserAndToken(username, password)).then(() => {
+    dispatch(loadUserAndTokenWithLogin(username, password)).then(() => {
       if (registerMessage) history.push("/");
     });
   };

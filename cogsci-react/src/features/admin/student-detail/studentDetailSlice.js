@@ -75,7 +75,7 @@ const urlAttendance = "/attendance";
 export const loadAttendance = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlAttendance + "/" + userId + "/" + subjectId,
+      url: urlSubject + "/" + subjectId + urlAttendance + "/?userId=" + userId,
       onSuccess: attendancesReceived.type,
     })
   );
@@ -97,7 +97,8 @@ const urlMyPresentation = "/my-presentation";
 export const loadMyPresentation = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlMyPresentation + "/" + userId + "/" + subjectId,
+      url:
+        urlSubject + "/" + subjectId + urlMyPresentation + "/?userId=" + userId,
       onSuccess: myPresentationReceived.type,
     })
   );
@@ -108,7 +109,7 @@ const urlSubjectValuation = "/subject-valuation";
 export const loadSubjectValuation = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlSubjectValuation + "/" + subjectId,
+      url: urlSubject + "/" + subjectId + urlSubjectValuation,
       onSuccess: subjectValuationReceived.type,
     })
   );

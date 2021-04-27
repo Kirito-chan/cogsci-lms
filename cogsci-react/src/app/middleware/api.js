@@ -1,5 +1,6 @@
 import axios from "axios";
 import * as actions from "../actions";
+import { getTokenHeaders } from "../currentUserSlice";
 
 const api = ({ dispatch }) => (next) => async (action) => {
   if (action.type !== actions.apiCallBegan.type) return next(action);
@@ -16,6 +17,11 @@ const api = ({ dispatch }) => (next) => async (action) => {
 
   if (onStart) dispatch({ type: onStart });
 
+  let newHeaders = headers;
+  if (!headers) {
+    newHeaders = getTokenHeaders();
+  }
+
   next(action);
   let response = null;
   try {
@@ -24,7 +30,7 @@ const api = ({ dispatch }) => (next) => async (action) => {
       url,
       method,
       data,
-      headers,
+      headers: newHeaders,
     });
     // General
     dispatch(actions.apiCallSuccess(response.data));

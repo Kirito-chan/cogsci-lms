@@ -24,7 +24,7 @@ function TeacherPresentationsList({ teacherPresentations, subjectId, h2 }) {
         <div key={presentation.id}>
           <Container fluid>
             <Row>
-              <Col xs="auto">
+              <Col xs="auto" className="pl-0">
                 <Link
                   to={
                     "/subject/" +
@@ -41,7 +41,7 @@ function TeacherPresentationsList({ teacherPresentations, subjectId, h2 }) {
               </Col>
             </Row>
             <Row>
-              <Col xs="auto" className="mr-md-4 mr-sm-4 mr-lg-0 mr-2">
+              <Col xs="auto" className="mr-md-4 mr-sm-4 mr-lg-0 mr-2 pl-0">
                 <Discussion
                   data={presentation}
                   classAttribute="d-inline-block mr-3"

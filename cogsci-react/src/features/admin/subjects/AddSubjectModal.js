@@ -25,13 +25,7 @@ function AddSubjectModal({ showAddSubject, setShowAddSubject }) {
   const handleSubjectName = (e) => setSubjectName(e.target.value);
 
   const [active, setActive] = useState(SUBJ_IS_ACTIVE);
-  const handleActiveType = (e) => {
-    const index = e.target.selectedIndex;
-    const activeType = e.target.childNodes[index].getAttribute(
-      "activetype"
-    );
-    setActive(activeType);
-  };
+  const handleActiveType = (e) => setActive(e.target.value);
 
   const [aboutSubject, setAboutSubject] = useState("");
   const handleAboutSubject = (e) => setAboutSubject(e.target.value);
@@ -40,13 +34,7 @@ function AddSubjectModal({ showAddSubject, setShowAddSubject }) {
   const handleUserLimit = (e) => setUserLimit(e.target.value);
 
   const [season, setSeason] = useState(getCurrentSeason);
-  const handleSeason = (e) => {
-    const index = e.target.selectedIndex;
-    const seasonType = e.target.childNodes[index].getAttribute(
-      "semestertype"
-    );
-    setSeason(seasonType);
-  };
+  const handleSeason = (e) => setSeason(e.target.value);
 
   const [year, setYear] = useState(getCurrentSchoolYear);
   const handleYear = (e) => setYear(e.target.value);
@@ -112,8 +100,8 @@ function AddSubjectModal({ showAddSubject, setShowAddSubject }) {
             </Form.Label>
             <Col sm="9">
               <Form.Control as="select" onChange={handleActiveType}>
-                <option activetype={SUBJ_IS_ACTIVE}>Aktívny</option>
-                <option activetype={SUBJ_IS_NOT_ACTIVE}>Neaktívny</option>
+                <option value={SUBJ_IS_ACTIVE}>Aktívny</option>
+                <option value={SUBJ_IS_NOT_ACTIVE}>Neaktívny</option>
               </Form.Control>
             </Col>
           </Form.Group>

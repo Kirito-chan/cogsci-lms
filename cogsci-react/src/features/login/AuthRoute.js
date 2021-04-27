@@ -6,12 +6,11 @@ import {
   checkToken,
   getTokenError,
   getCurrentUserId,
-  loadUserAndToken,
   getIsAdmin,
+  loadUserAndTokenWithToken,
 } from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import jwt from "jwt-decode";
 import { URL_ADMIN_SUBJECTS, URL_SUBJECTS } from "../../constants";
 
 const AuthRoute = (props) => {
@@ -37,8 +36,7 @@ const AuthRoute = (props) => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!currentUserId && token) {
-      const user = jwt(token);
-      dispatch(loadUserAndToken(user.username, user.password));
+      dispatch(loadUserAndTokenWithToken());
     }
   }, [currentUserId]);
 

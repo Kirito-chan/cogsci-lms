@@ -455,9 +455,23 @@ export const getUserByUsername = async (username) => {
   return row[0];
 };
 
+export const getAttendedCoursesOfUser = async (userId) => {
+  const [rows] = await execute(
+    `SELECT subject_id FROM user_subject_lookup usl
+     WHERE user_id = ? AND subject_id IS NOT NULL`,
+    [userId]
+  );
+  return rows;
+};
+
 export const getUserWithEmail = async (email) => {
   const [row] = await execute("SELECT * FROM user WHERE email = ?", [email]);
   return row[0]?.email;
+};
+
+export const getUserById = async (id) => {
+  const [row] = await execute("SELECT * FROM user WHERE id = ?", [id]);
+  return row[0];
 };
 
 // attendance

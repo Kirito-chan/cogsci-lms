@@ -4,6 +4,7 @@ import cors from "cors";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import withAuth from "./middleware/auth.js";
+import { getToken } from "./middleware/auth.js";
 import dotenv from "dotenv";
 import multer from "multer";
 import path from "path";
@@ -11,33 +12,19 @@ import fs from "fs";
 import bcrypt from "bcrypt";
 import * as constants from "./constants.js";
 import * as mailer from "./mailer.js";
+import isAdminAuth from "./middleware/isAdminAuth.js";
+import { convertDateToSQLFormat, getCurrentDate } from "./DateUtils.js";
 
 dotenv.config();
 
 const app = express();
-
-const getCurrentDate = () => {
-  return (
-    new Date().toISOString().slice(0, 10) +
-    " " +
-    new Date().toLocaleTimeString("en-GB")
-  );
-};
-
-const convertDateToSQLFormat = (date) => {
-  return (
-    new Date(date).toISOString().slice(0, 10) +
-    " " +
-    new Date(date).toLocaleTimeString("en-GB")
-  );
-};
 
 app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(express.json());
 
-app.post("/api/send_email", function (req, res) {
+app.post("/api/admin/send-email", isAdminAuth, function (req, res) {
   res.set("Content-Type", "application/json");
 
   const { toEmail, fromEmail, fromName, subject, text } = req.body;
@@ -55,23 +42,18 @@ app.post("/api/send_email", function (req, res) {
   res.send('{"message":"Email sent."}');
 });
 
-app.post("/api/admin/subject/:subjectId/bonus", async function (req, res) {
-  const { title, content, urlRef } = req.body;
-  const { subjectId } = req.params;
-  const created = getCurrentDate();
-  //prettier-ignore
-  const bonusId = await queries.insertBonus(subjectId, title, content, urlRef, created);
-  res.json(bonusId);
-});
-
-const isCorrectPassword = (typedPassword, salt, DBpassword) => {
-  const password = `${typedPassword}{${salt}}`;
-  const hashedPassword = crypto
-    .createHash("sha512")
-    .update(password)
-    .digest("base64");
-  return hashedPassword === DBpassword;
-};
+app.post(
+  "/api/admin/subject/:subjectId/bonus",
+  isAdminAuth,
+  async function (req, res) {
+    const { title, content, urlRef } = req.body;
+    const { subjectId } = req.params;
+    const created = getCurrentDate();
+    //prettier-ignore
+    const bonusId = await queries.insertBonus(subjectId, title, content, urlRef, created);
+    res.json(bonusId);
+  }
+);
 
 // subjects student
 app.get("/api/subject", async function (req, res) {
@@ -81,42 +63,46 @@ app.get("/api/subject", async function (req, res) {
 });
 
 // subjects admin
-app.get("/api/admin/subject", async function (req, res) {
+app.get("/api/admin/subject", isAdminAuth, async function (req, res) {
   const rows = await queries.getAllSubjects();
   res.json(rows);
 });
 
 // subjects admin
-app.put("/api/admin/subject/:subjectId", async function (req, res) {
-  const { subjectId } = req.params;
-  const {
-    name,
-    year,
-    season,
-    about,
-    userLimit,
-    weeks,
-    active,
-    subjectValPres,
-    subjectValAttendance,
-    subjectValComment,
-  } = req.body;
+app.put(
+  "/api/admin/subject/:subjectId",
+  isAdminAuth,
+  async function (req, res) {
+    const { subjectId } = req.params;
+    const {
+      name,
+      year,
+      season,
+      about,
+      userLimit,
+      weeks,
+      active,
+      subjectValPres,
+      subjectValAttendance,
+      subjectValComment,
+    } = req.body;
 
-  await queries.updateSubject(
-    subjectId,
-    name,
-    year,
-    season,
-    about,
-    userLimit,
-    weeks,
-    active,
-    subjectValPres,
-    subjectValAttendance,
-    subjectValComment
-  );
-  res.json(subjectId);
-});
+    await queries.updateSubject(
+      subjectId,
+      name,
+      year,
+      season,
+      about,
+      userLimit,
+      weeks,
+      active,
+      subjectValPres,
+      subjectValAttendance,
+      subjectValComment
+    );
+    res.json(subjectId);
+  }
+);
 
 app.get("/api/subject/:subjectId", async function (req, res) {
   const { subjectId } = req.params;
@@ -131,7 +117,7 @@ app.patch("/api/subject/:subjectId", async function (req, res) {
   res.json(status);
 });
 
-app.post("/api/admin/subject", async function (req, res) {
+app.post("/api/admin/subject", isAdminAuth, async function (req, res) {
   let { name, year, season, about, userLimit, weeks, active } = req.body;
 
   if (about === undefined) about = null;
@@ -164,73 +150,87 @@ app.post("/api/admin/subject", async function (req, res) {
 
 // admin loading students
 
-app.get("/api/admin/subject/:subjectId/students", async function (req, res) {
-  const { status } = req.query;
-  const { subjectId } = req.params;
-  let rows = null;
-  if (status === "pending") {
-    rows = await queries.getStudents(subjectId, constants.PENDING_FOR_SUBJ);
-  } else if (status === "accepted") {
-    rows = await queries.getStudents(subjectId, constants.ACCEPTED_TO_SUBJ);
-  } else {
-    rows = await queries.getStudents(subjectId, constants.REJECTED_TO_SUBJ);
-  }
-  res.json(rows);
-});
-
-app.put(
-  "/api/admin/subject/:subjectId/student/:userId",
+app.get(
+  "/api/admin/subject/:subjectId/student",
+  isAdminAuth,
   async function (req, res) {
-    const { subjectId, userId } = req.params;
-    const { status } = req.body;
-    await queries.updateUserStatus(subjectId, userId, status);
-    res.json(userId);
+    const { status } = req.query;
+    const { subjectId } = req.params;
+    let rows = null;
+    if (status === "pending") {
+      rows = await queries.getStudents(subjectId, constants.PENDING_FOR_SUBJ);
+    } else if (status === "accepted") {
+      rows = await queries.getStudents(subjectId, constants.ACCEPTED_TO_SUBJ);
+    } else {
+      rows = await queries.getStudents(subjectId, constants.REJECTED_TO_SUBJ);
+    }
+    res.json(rows);
   }
 );
 
-app.get("/api/admin/subject/:subjectId/overall-bonuses", async (req, res) => {
-  const { subjectId } = req.params;
-  const students = await queries.getStudentsBySubjectId(subjectId);
-  const studentBonusesArr = [];
-  for (const student of students) {
-    const bonuses = await queries.getBonusesOfStudent(student.id, subjectId);
-    studentBonusesArr.push({ student, bonuses });
+app.put(
+  "/api/admin/subject/:subjectId/student/:studentId",
+  isAdminAuth,
+  async function (req, res) {
+    const { subjectId, studentId } = req.params;
+    const { status } = req.body;
+    await queries.updateUserStatus(subjectId, studentId, status);
+    res.json(studentId);
   }
-  res.json(studentBonusesArr);
-});
+);
 
-app.put("/api/admin/subject/:subjectId/overall-bonuses", async (req, res) => {
-  const { subjectId } = req.params;
-  const { checkedBonuses } = req.body;
-
-  for (const checkedBonus of checkedBonuses) {
-    const student = checkedBonus.student;
-    const bonuses = checkedBonus.bonuses;
-
-    for (const bonus of bonuses) {
-      const studentId = student.id;
-      const valuated =
-        bonus.isChecked == constants.NOT_YET_EVALUATED_BONUS_POINTS
-          ? null
-          : bonus.isChecked == constants.NOT_YET_COMMENTED
-          ? undefined
-          : parseInt(bonus.isChecked);
-      const bonusId = bonus.bonusId;
-
-      const commentId = await queries.getBonusCommentForUser(
-        studentId,
-        bonusId
-      );
-
-      if (valuated !== undefined)
-        await queries.updateBonusValuated(commentId, valuated);
+app.get(
+  "/api/admin/subject/:subjectId/overall-bonuses",
+  isAdminAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const students = await queries.getStudentsBySubjectId(subjectId);
+    const studentBonusesArr = [];
+    for (const student of students) {
+      const bonuses = await queries.getBonusesOfStudent(student.id, subjectId);
+      studentBonusesArr.push({ student, bonuses });
     }
+    res.json(studentBonusesArr);
   }
-  res.json(subjectId);
-});
+);
+
+app.put(
+  "/api/admin/subject/:subjectId/overall-bonuses",
+  isAdminAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { checkedBonuses } = req.body;
+
+    for (const checkedBonus of checkedBonuses) {
+      const student = checkedBonus.student;
+      const bonuses = checkedBonus.bonuses;
+
+      for (const bonus of bonuses) {
+        const studentId = student.id;
+        const valuated =
+          bonus.isChecked == constants.NOT_YET_EVALUATED_BONUS_POINTS
+            ? null
+            : bonus.isChecked == constants.NOT_YET_COMMENTED
+            ? undefined
+            : parseInt(bonus.isChecked);
+        const bonusId = bonus.bonusId;
+
+        const commentId = await queries.getBonusCommentForUser(
+          studentId,
+          bonusId
+        );
+
+        if (valuated !== undefined)
+          await queries.updateBonusValuated(commentId, valuated);
+      }
+    }
+    res.json(subjectId);
+  }
+);
 
 app.get(
   "/api/admin/subject/:subjectId/overall-attendance",
+  isAdminAuth,
   async (req, res) => {
     const { subjectId } = req.params;
     const students = await queries.getStudentsBySubjectId(subjectId);
@@ -248,6 +248,7 @@ app.get(
 
 app.put(
   "/api/admin/subject/:subjectId/overall-attendance",
+  isAdminAuth,
   async (req, res) => {
     const { subjectId } = req.params;
     const { checkedAttendances } = req.body;
@@ -287,13 +288,11 @@ app.post("/api/subject/:subjectId/sign-in", async function (req, res) {
   res.json(id);
 });
 
-app.post("/api/checkToken", withAuth, function (req, res) {
+app.post("/api/check-token", withAuth, function (req, res) {
   res.sendStatus(200);
 });
 
-// POST route to login a user
-const secret = process.env.JWT_PRIVATE_KEY;
-
+// login a user
 app.post("/api/login", async function (req, res) {
   const { username, password } = req.body;
   const user = await queries.getUserByUsername(username);
@@ -305,13 +304,36 @@ app.post("/api/login", async function (req, res) {
 
   if (isCorrectPassword(password, user.salt, user.password)) {
     // Issue token
-    const payload = { username, password };
-    const token = jwt.sign(payload, secret, { expiresIn: "1h" });
-
+    const signedInCourses = await queries.getAttendedCoursesOfUser(user.id);
+    const isAdmin = user.role == constants.IS_ADMIN;
+    const payload = { id: user.id, isAdmin, signedInCourses };
+    const token = jwt.sign(payload, process.env.JWT_PRIVATE_KEY, {
+      expiresIn: "1h",
+    });
     res.json({ token, user });
   } else {
     res.status(401).send("Nesprávne heslo");
   }
+});
+
+app.get("/api/get-token", async function (req, res) {
+  const token = getToken(req);
+  const decodedToken = jwt.decode(token);
+  const userId = decodedToken.id;
+  const user = await queries.getUserById(userId);
+  if (user === undefined) {
+    res.status(404).send(`Užívateľ s id = ${userId} neexistuje`);
+    return;
+  }
+  const partialUserInfo = {
+    id: user.id,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+    role: user.role,
+  };
+
+  res.json({ token, user: partialUserInfo });
 });
 
 // POST route to register a user
@@ -364,6 +386,7 @@ app.post("/api/register", async function (req, res) {
 
 app.get(
   "/api/admin/subject/:subjectId/user/:userId",
+  isAdminAuth,
   async function (req, res) {
     const { userId, subjectId } = req.params;
     const user = await queries.getUserByIdAndSubjectId(userId, subjectId);
@@ -377,12 +400,12 @@ app.get(
   }
 );
 
-app.get("/api/admin/user", async function (req, res) {
+app.get("/api/admin/user", isAdminAuth, async function (req, res) {
   const users = await queries.getUsers();
   res.json(users);
 });
 
-app.patch("/api/admin/user/:userId", async function (req, res) {
+app.patch("/api/admin/user/:userId", isAdminAuth, async function (req, res) {
   const { userId } = req.params;
   const { role } = req.body;
   await queries.updateUserRole(userId, role);
@@ -396,8 +419,9 @@ app.patch("/api/admin/user/:userId", async function (req, res) {
 });
 
 // attendance student
-app.get("/api/attendance/:userId/:subjectId", async (req, res) => {
-  const { userId, subjectId } = req.params;
+app.get("/api/subject/:subjectId/attendance", async (req, res) => {
+  const { subjectId } = req.params;
+  const { userId } = req.query;
   const rows = await queries.getAttendanceAndUser(userId, subjectId);
   res.json(rows);
 });
@@ -422,26 +446,35 @@ app.post("/api/subject/:subjectId/attendance", async (req, res) => {
 
 // get attendance admin
 
-app.get("/api/admin/subject/:subjectId/attendance", async (req, res) => {
-  const { subjectId } = req.params;
-  const rows = await queries.getAttendance(subjectId);
-  res.json(rows);
-});
+app.get(
+  "/api/admin/subject/:subjectId/attendance",
+  isAdminAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const rows = await queries.getAttendance(subjectId);
+    res.json(rows);
+  }
+);
 
-app.post("/api/admin/subject/:subjectId/attendance", async (req, res) => {
-  const { subjectId } = req.params;
-  const { date, password } = req.body;
+app.post(
+  "/api/admin/subject/:subjectId/attendance",
+  isAdminAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { date, password } = req.body;
 
-  const id = await queries.insertAttendance(
-    subjectId,
-    convertDateToSQLFormat(date),
-    password
-  );
-  res.json(id);
-});
+    const id = await queries.insertAttendance(
+      subjectId,
+      convertDateToSQLFormat(date),
+      password
+    );
+    res.json(id);
+  }
+);
 
 app.patch(
   "/api/admin/subject/:subjectId/attendance/:attendanceId",
+  isAdminAuth,
   async (req, res) => {
     const { attendanceId } = req.params;
     const { status } = req.body;
@@ -457,7 +490,7 @@ app.get("/api/bonus", async (req, res) => {
   res.json(rows);
 });
 
-app.put("/api/admin/bonus/:bonusId", async (req, res) => {
+app.put("/api/admin/bonus/:bonusId", isAdminAuth, async (req, res) => {
   const { bonusId } = req.params;
   const { title, content, videoURL, isFocusingURL } = req.body;
   // prettier-ignore
@@ -473,7 +506,7 @@ app.put("/api/admin/bonus/:bonusId", async (req, res) => {
   res.json({ bonusId });
 });
 
-app.delete("/api/admin/bonus/:bonusId", async (req, res) => {
+app.delete("/api/admin/bonus/:bonusId", isAdminAuth, async (req, res) => {
   const { bonusId } = req.params;
   await queries.deleteBonus(bonusId);
   res.json(bonusId);
@@ -495,13 +528,17 @@ app.post("/api/bonus/:bonusId/comment", async (req, res) => {
   res.json(id);
 });
 
-app.patch("/api/admin/bonus/:bonusId/comment/:commentId", async (req, res) => {
-  const { commentId } = req.params;
-  const { valuated } = req.body;
-  if (valuated !== undefined)
-    await queries.updateBonusValuated(commentId, valuated);
-  res.json(valuated);
-});
+app.patch(
+  "/api/admin/bonus/:bonusId/comment/:commentId",
+  isAdminAuth,
+  async (req, res) => {
+    const { commentId } = req.params;
+    const { valuated } = req.body;
+    if (valuated !== undefined)
+      await queries.updateBonusValuated(commentId, valuated);
+    res.json(valuated);
+  }
+);
 
 app.delete("/api/admin/comment/:commentId", async (req, res) => {
   const { commentId } = req.params;
@@ -558,16 +595,21 @@ app.post(
   }
 );
 
-app.patch("/api/admin/presentation/:presentationId", async (req, res) => {
-  const { presentationId } = req.params;
-  const { status } = req.body;
-  if (status !== null || status !== undefined)
-    await queries.updatePresentationStatus(presentationId, status);
-  res.json(status);
-});
+app.patch(
+  "/api/admin/presentation/:presentationId",
+  isAdminAuth,
+  async (req, res) => {
+    const { presentationId } = req.params;
+    const { status } = req.body;
+    if (status !== null || status !== undefined)
+      await queries.updatePresentationStatus(presentationId, status);
+    res.json(status);
+  }
+);
 
 app.delete(
   "/api/admin/subject/:subjectId/presentation/:presentationId",
+  isAdminAuth,
   async (req, res) => {
     const { presentationId, subjectId } = req.params;
     const { path } = req.query;
@@ -585,6 +627,7 @@ app.delete(
 
 app.post(
   "/api/admin/subject/:subjectId/settings/presentation-criteria",
+  isAdminAuth,
   async (req, res) => {
     const { subjectId } = req.params;
     const { criteria } = req.body;
@@ -607,6 +650,8 @@ app.post(
   }
 );
 
+/////////////////////////////////////////////////////////
+
 // presentation valuation types
 app.get("/api/presentation/valuation-types", async (req, res) => {
   const { subjectId } = req.query;
@@ -615,35 +660,36 @@ app.get("/api/presentation/valuation-types", async (req, res) => {
 });
 
 // get teacher's presentations
-app.get("/api/teacher-presentations/:userId/:subjectId", async (req, res) => {
-  //
-  // /api/teacher-presentation/           // /api/teacher-presentation/?user_id=241&subject_id=18
-  // /api/teacher-presentation/:id
-  const { userId, subjectId } = req.params;
+app.get("/api/teacher-presentation", async (req, res) => {
+  const { userId, subjectId } = req.query;
   const row = await queries.getTeacherPresentations(userId, subjectId);
   res.json(row);
 });
 
 // get student's presentations
-app.get("/api/student-presentations/:userId/:subjectId", async (req, res) => {
-  const { userId, subjectId } = req.params;
-  const { status } = req.query;
+app.get("/api/student-presentation", async (req, res) => {
+  const { userId, subjectId, status } = req.query;
   const rows = await queries.getStudentPresentations(userId, subjectId, status);
   res.json(rows);
 });
 
 // get my presentation - title and points
-app.get("/api/my-presentation/:userId/:subjectId", async (req, res) => {
-  const { userId, subjectId } = req.params;
+app.get("/api/subject/:subjectId/my-presentation", async (req, res) => {
+  const { subjectId } = req.params;
+  const { userId } = req.query;
   const presentation = await queries.getMyPresentation(userId, subjectId);
   res.json(presentation);
 });
 
-app.get("/api/admin/subject/:subjectId/email", async (req, res) => {
-  const { subjectId } = req.params;
-  const rows = await queries.getUserEmailsAndNames(subjectId);
-  res.json(rows);
-});
+app.get(
+  "/api/admin/subject/:subjectId/email",
+  isAdminAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const rows = await queries.getUserEmailsAndNames(subjectId);
+    res.json(rows);
+  }
+);
 
 // insert evaluation of a presentation that is taken from Sliders form
 app.post(
@@ -652,16 +698,9 @@ app.post(
     const { subjectId, presentationId } = req.params;
     const { userWhoEvaluatesId, evaluatedUserId } = req.query;
     const { values } = req.body;
-    // console.log(subjectId);
-    // console.log(presentationId);
-    // console.log(userWhoEvaluatesId);
-    // console.log(evaluatedUserId);
-    // console.log(values);
 
     const whoseUslId = await queries.getUslId(subjectId, userWhoEvaluatesId);
     const targetUslId = await queries.getUslId(subjectId, evaluatedUserId);
-    // console.log(whoseUslId);
-    // console.log(targetUslId);
 
     for (const element of values) {
       const pvpId = await queries.getPvpId(subjectId, element.name);
@@ -783,13 +822,13 @@ app.get("/api/subject/:subjectId/weight", async (req, res) => {
 });
 
 // get valuation of a certain subject - finds info about given subject e.g. weight of attendance, bonuses, presentation
-app.get("/api/subject-valuation/:subjectId", async (req, res) => {
+app.get("/api/subject/:subjectId/subject-valuation", async (req, res) => {
   const { subjectId } = req.params;
   const row = await queries.getSubjectValuation(subjectId);
   res.json(row);
 });
 
-app.put("/api/subject-valuation/:subjectId", async (req, res) => {
+app.put("/api/subject/:subjectId/subject-valuation", async (req, res) => {
   const { subjectId } = req.params;
   const { gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx } = req.body;
   if (
@@ -814,6 +853,15 @@ app.put("/api/subject-valuation/:subjectId", async (req, res) => {
     res.sendStatus(415);
   }
 });
+
+const isCorrectPassword = (typedPassword, salt, DBpassword) => {
+  const password = `${typedPassword}{${salt}}`;
+  const hashedPassword = crypto
+    .createHash("sha512")
+    .update(password)
+    .digest("base64");
+  return hashedPassword === DBpassword;
+};
 
 // set port, listen for requests
 const PORT = process.env.SERVER_PORT;

@@ -134,7 +134,7 @@ export const updateAttendanceStatus = (subjectId, attendanceId, status) => (
   );
 };
 
-const urlStudents = "/students";
+const urlStudents = "/student";
 
 export const loadPendingStudents = (subjectId) => (dispatch) => {
   return dispatch(
@@ -148,7 +148,8 @@ export const loadPendingStudents = (subjectId) => (dispatch) => {
 export const loadAcceptedStudents = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlAdminSubject + "/" + subjectId + "/students/?status=accepted",
+      url:
+        urlAdminSubject + "/" + subjectId + urlStudents + "/?status=accepted",
       onSuccess: acceptedStudentsReceived.type,
     })
   );
@@ -157,22 +158,21 @@ export const loadAcceptedStudents = (subjectId) => (dispatch) => {
 export const loadRejectedStudents = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlAdminSubject + "/" + subjectId + "/students/?status=rejected",
+      url:
+        urlAdminSubject + "/" + subjectId + urlStudents + "/?status=rejected",
       onSuccess: rejectedStudentsReceived.type,
     })
   );
 };
 
-const urlStudent = "/student";
-
-export const updateStudentStatus = (subjectId, userId, status) => (
+export const updateStudentStatus = (subjectId, studentId, status) => (
   dispatch
 ) => {
   const data = { status };
   return dispatch(
     apiCallBegan({
       method: "put",
-      url: urlAdminSubject + "/" + subjectId + urlStudent + "/" + userId,
+      url: urlAdminSubject + "/" + subjectId + urlStudents + "/" + studentId,
       data,
       onSuccess: updatedStudentStatus.type,
     })
@@ -240,7 +240,7 @@ export const updateStudentsAndBonuses = (subjectId, checkedBonuses) => (
   );
 };
 
-const urlSendEmail = "/send_email";
+const urlAdminSendEmail = "/admin/send-email";
 
 export const sendEmail = (fromEmail, toEmail, fromName, subject, text) => (
   dispatch
@@ -248,7 +248,7 @@ export const sendEmail = (fromEmail, toEmail, fromName, subject, text) => (
   const data = { toEmail, fromEmail, fromName, subject, text };
   return dispatch(
     apiCallBegan({
-      url: urlSendEmail,
+      url: urlAdminSendEmail,
       method: "post",
       data,
       onSuccess: emailSent.type,
@@ -273,18 +273,23 @@ export const insertBonus = (subjectId, title, content, urlRef) => (
   );
 };
 
-const urlTeacherPresentations = "/teacher-presentations";
+const urlTeacherPresentations = "/teacher-presentation";
 
 export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlTeacherPresentations + "/" + userId + "/" + subjectId,
+      url:
+        urlTeacherPresentations +
+        "/?userId=" +
+        userId +
+        "&subjectId=" +
+        subjectId,
       onSuccess: teacherPresentationsReceived.type,
     })
   );
 };
 
-const urlStudentPresentations = "/student-presentations";
+const urlStudentPresentations = "/student-presentation";
 
 export const loadStudentPresentationsNeutral = (userId, subjectId) => (
   dispatch
@@ -292,7 +297,7 @@ export const loadStudentPresentationsNeutral = (userId, subjectId) => (
   return dispatch(
     apiCallBegan({
       // prettier-ignore
-      url: urlStudentPresentations + "/" + userId + "/" + subjectId + "/?status=" + STUD_PRES_NEUTRAL,
+      url: urlStudentPresentations + "/?status=" + STUD_PRES_NEUTRAL + "&userId=" + userId + "&subjectId=" + subjectId,
       onSuccess: studentPresentationsNeutralReceived.type,
     })
   );
@@ -304,7 +309,7 @@ export const loadStudentPresentationsOpened = (userId, subjectId) => (
   return dispatch(
     apiCallBegan({
       // prettier-ignore
-      url: urlStudentPresentations + "/" + userId + "/" + subjectId + "/?status=" + STUD_PRES_OPENED,
+      url: urlStudentPresentations + "/?status=" + STUD_PRES_OPENED + "&userId=" + userId + "&subjectId=" + subjectId,
       onSuccess: studentPresentationsOpenedReceived.type,
     })
   );
@@ -317,7 +322,7 @@ export const loadStudentPresentationsClosed = (userId, subjectId) => (
     apiCallBegan({
       // prettier-ignore
       url:
-        urlStudentPresentations + "/" + userId + "/" + subjectId + "/?status=" + STUD_PRES_CLOSED,
+        urlStudentPresentations + "/?status=" + STUD_PRES_CLOSED + "&userId=" + userId + "&subjectId=" + subjectId,
       onSuccess: studentPresentationsClosedReceived.type,
     })
   );

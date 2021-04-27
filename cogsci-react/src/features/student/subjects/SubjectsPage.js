@@ -3,7 +3,7 @@ import SubjectsPageList from "./SubjectsPageList";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getCurrentUserId,
-  loadUserAndToken,
+  loadUserAndTokenWithToken,
 } from "../../../app/currentUserSlice";
 import {
   loadSubjects,
@@ -13,7 +13,6 @@ import {
 } from "./subjectsSlice";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import { resetState } from "../../../app/actions";
-import jwt from "jwt-decode";
 
 function SubjectsPage() {
   const dispatch = useDispatch();
@@ -33,9 +32,7 @@ function SubjectsPage() {
 
   useEffect(() => {
     dispatch(resetState()).then(() => {
-      const token = localStorage.getItem("token");
-      const user = jwt(token);
-      dispatch(loadUserAndToken(user.username, user.password));
+      dispatch(loadUserAndTokenWithToken());
     });
   }, []);
 

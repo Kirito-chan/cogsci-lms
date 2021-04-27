@@ -9,7 +9,7 @@ import Discussion from "../home/Discussion";
 import "./Bonus.css";
 import { showLoaderIfAnyNull } from "../../../components/StringUtils";
 import ModalEdit from "./ModalEdit";
-import ModalDelete from "./ModalDeleteComment";
+import ModalDelete from "./ModalDelete";
 
 function BonusInfo({
   headerComponent,

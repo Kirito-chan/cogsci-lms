@@ -3,7 +3,11 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import formatTranslation from "../../../../components/StringUtils";
 import { Link } from "react-router-dom";
-import { STUD_PRES_NEUTRAL, URL_PRESENTATIONS } from "../../../../constants";
+import {
+  STUD_PRES_CLOSED,
+  STUD_PRES_OPENED,
+  URL_PRESENTATIONS,
+} from "../../../../constants";
 
 function MyPresentationList({
   myPresentation,
@@ -40,7 +44,10 @@ function MyPresentationList({
         <Form
           className={
             "mt-4 " +
-            (myPresentation.status !== STUD_PRES_NEUTRAL ? "d-none" : "d-block")
+            (myPresentation.status === STUD_PRES_OPENED ||
+            myPresentation.status === STUD_PRES_CLOSED
+              ? "d-none"
+              : "d-block")
           }
           onSubmit={handleUpload}
         >

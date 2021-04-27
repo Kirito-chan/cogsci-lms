@@ -136,7 +136,7 @@ export const addPasswordForAttendance = (userId, subjectId, password) => (
 export const loadAttendance = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlAttendance + "/" + userId + "/" + subjectId,
+      url: urlSubject + "/" + subjectId + urlAttendance + "/?userId=" + userId,
       onSuccess: attendancesReceived.type,
     })
   );
@@ -163,18 +163,23 @@ export const loadBonuses = (userId, subjectId) => (dispatch) => {
   );
 };
 
-const urlTeacherPresentations = "/teacher-presentations";
+const urlTeacherPresentations = "/teacher-presentation";
 
 export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlTeacherPresentations + "/" + userId + "/" + subjectId,
+      url:
+        urlTeacherPresentations +
+        "/?userId=" +
+        userId +
+        "&subjectId=" +
+        subjectId,
       onSuccess: teacherPresentationsReceived.type,
     })
   );
 };
 
-const urlStudentPresentations = "/student-presentations";
+const urlStudentPresentations = "/student-presentation";
 
 export const loadStudentPresentationsOpened = (userId, subjectId) => (
   dispatch
@@ -182,7 +187,7 @@ export const loadStudentPresentationsOpened = (userId, subjectId) => (
   return dispatch(
     apiCallBegan({
       // prettier-ignore
-      url: urlStudentPresentations + "/" + userId + "/" + subjectId + "/?status=" + STUD_PRES_OPENED,
+      url: urlStudentPresentations + "/?status=" + STUD_PRES_OPENED + "&userId=" + userId + "&subjectId=" + subjectId,
       onSuccess: studentPresentationsOpenedReceived.type,
     })
   );
@@ -195,7 +200,7 @@ export const loadStudentPresentationsClosed = (userId, subjectId) => (
     apiCallBegan({
       // prettier-ignore
       url:
-        urlStudentPresentations + "/" + userId + "/" + subjectId + "/?status=" + STUD_PRES_CLOSED,
+        urlStudentPresentations + "/?status=" + STUD_PRES_CLOSED + "&userId=" + userId + "&subjectId=" + subjectId,
       onSuccess: studentPresentationsClosedReceived.type,
     })
   );
@@ -206,7 +211,8 @@ const urlMyPresentation = "/my-presentation";
 export const loadMyPresentation = (userId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlMyPresentation + "/" + userId + "/" + subjectId,
+      url:
+        urlSubject + "/" + subjectId + urlMyPresentation + "/?userId=" + userId,
       onSuccess: myPresentationReceived.type,
     })
   );
@@ -217,7 +223,7 @@ const urlSubjectValuation = "/subject-valuation";
 export const loadSubjectValuation = (subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlSubjectValuation + "/" + subjectId,
+      url: urlSubject + "/" + subjectId + urlSubjectValuation,
       onSuccess: subjectValuationReceived.type,
     })
   );

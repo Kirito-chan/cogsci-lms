@@ -31,7 +31,11 @@ export const slice = createSlice({
       state.email = "";
     },
     tokenChecked: () => {},
-    tokenRequestFailed: (state, action) => {
+    tokenRequestFromLoginFailed: (state, action) => {
+      state.error = action.payload.message;
+      state.errorCustomMessage = action.payload.customMessage;
+    },
+    tokenRequestFromTokenFailed: (state, action) => {
       state.error = action.payload.message;
       state.errorCustomMessage = action.payload.customMessage;
     },
@@ -54,7 +58,8 @@ export const {
   tokenUserReceived,
   tokenCleared,
   tokenChecked,
-  tokenRequestFailed,
+  tokenRequestFromLoginFailed,
+  tokenRequestFromTokenFailed,
   checkTokenFailed,
   userRegistered,
   userRegisterFailed,
@@ -63,31 +68,46 @@ export const {
 
 export default slice.reducer;
 
-const urlToken = "/login";
+const urlTokenWithLogin = "/login";
 
-export const loadUserAndToken = (username, password) => (dispatch) => {
+export const loadUserAndTokenWithLogin = (username, password) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlToken,
+      url: urlTokenWithLogin,
       onSuccess: tokenUserReceived.type,
       method: "post",
       data: {
         username,
         password,
       },
-      onError: tokenRequestFailed.type,
+      onError: tokenRequestFromLoginFailed.type,
     })
   );
 };
 
-const urlCheckedToken = "/checkToken";
+const urlToken = "/get-token";
+
+export const loadUserAndTokenWithToken = () => (dispatch) => {
+  return dispatch(
+    apiCallBegan({
+      url: urlToken,
+      onSuccess: tokenUserReceived.type,
+      onError: tokenRequestFromTokenFailed.type,
+    })
+  );
+};
+
+const urlCheckedToken = "/check-token";
 
 export const checkToken = (token) => (dispatch) => {
+  const headers = getHeaderToken(token);
+
   return dispatch(
     apiCallBegan({
       url: urlCheckedToken,
       onSuccess: tokenChecked.type,
       method: "post",
+      headers,
       data: {
         token,
       },
@@ -131,6 +151,15 @@ export const registerNewUser = (
 
 export const clearError = () => (dispatch) => {
   dispatch({ type: errorCleared.type });
+};
+
+export const getHeaderToken = (token) => {
+  return { Authorization: `Bearer ${token}` };
+};
+
+export const getTokenHeaders = () => {
+  const token = localStorage.getItem("token");
+  return getHeaderToken(token);
 };
 
 // Selectors
