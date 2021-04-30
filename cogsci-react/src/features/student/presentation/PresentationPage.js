@@ -76,11 +76,12 @@ function PresentationPage() {
   }, [presentation]);
 
   useEffect(() => {
-    if (presentationId) {
-      if (isTeacherPres) dispatch(loadTeacherComments(presentationId));
-      else dispatch(loadStudentComments(presentationId));
+    if (presentationId && subjectId) {
+      if (isTeacherPres)
+        dispatch(loadTeacherComments(presentationId, subjectId));
+      else dispatch(loadStudentComments(presentationId, subjectId));
     }
-  }, [presentationId]);
+  }, [presentationId, subjectId]);
 
   useEffect(() => {
     if (currentUserId && subjectId) {

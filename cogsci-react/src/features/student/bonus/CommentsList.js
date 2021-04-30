@@ -38,14 +38,14 @@ function CommentsList({
   const handleAddComment = (event) => {
     const refCommentId = event.target.getAttribute("refcomment");
     const content = event.target.getAttribute("content");
-    dispatch(insertComment(currentUserId, id, content, refCommentId)).then(
-      () => {
-        dispatch(loadBonuses(currentUserId, subjectId));
-        dispatch(loadComments(id)).then(() => {
-          setMyCommentClass(-1);
-        });
-      }
-    );
+    dispatch(
+      insertComment(currentUserId, id, content, refCommentId, subjectId)
+    ).then(() => {
+      dispatch(loadBonuses(currentUserId, subjectId));
+      dispatch(loadComments(id, subjectId)).then(() => {
+        setMyCommentClass(-1);
+      });
+    });
   };
 
   const handleCancel = () => {

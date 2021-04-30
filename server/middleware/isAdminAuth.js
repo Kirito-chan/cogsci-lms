@@ -1,6 +1,4 @@
-// middleware.js
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import { getToken } from "./auth.js";
 
 const isAdminAuth = function (req, res, next) {

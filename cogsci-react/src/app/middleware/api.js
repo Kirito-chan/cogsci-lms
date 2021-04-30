@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as actions from "../actions";
-import { getTokenHeaders } from "../currentUserSlice";
+import { authErrorReceived, getTokenHeaders } from "../currentUserSlice";
 
 const api = ({ dispatch }) => (next) => async (action) => {
   if (action.type !== actions.apiCallBegan.type) return next(action);
@@ -39,6 +39,8 @@ const api = ({ dispatch }) => (next) => async (action) => {
   } catch (error) {
     // General
     dispatch(actions.apiCallFailed(error.message));
+    dispatch({ type: authErrorReceived.type, payload: error.response?.data });
+
     // Specific
     if (onError) {
       const customMessage = error.response?.data || "";

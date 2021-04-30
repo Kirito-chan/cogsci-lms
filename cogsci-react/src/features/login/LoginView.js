@@ -2,6 +2,8 @@ import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Navigation from "../../components/Navigation";
+import { Link } from "react-router-dom";
+import { URL_FORGOTTEN_PASSWORD } from "../../constants";
 
 function LoginView({
   error,
@@ -42,6 +44,7 @@ function LoginView({
             isInvalid={Boolean(error.includes("heslo"))}
             autoComplete="current-password"
           />
+          <Link to={URL_FORGOTTEN_PASSWORD}>Zabudli ste heslo?</Link>
           <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
         </Form.Group>
 

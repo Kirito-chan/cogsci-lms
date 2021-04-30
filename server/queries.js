@@ -457,16 +457,25 @@ export const getUserByUsername = async (username) => {
 
 export const getAttendedCoursesOfUser = async (userId) => {
   const [rows] = await execute(
-    `SELECT subject_id FROM user_subject_lookup usl
+    `SELECT subject_id as id FROM user_subject_lookup usl
      WHERE user_id = ? AND subject_id IS NOT NULL`,
     [userId]
   );
   return rows;
 };
 
-export const getUserWithEmail = async (email) => {
-  const [row] = await execute("SELECT * FROM user WHERE email = ?", [email]);
-  return row[0]?.email;
+export const getUserByEmail = async (email) => {
+  const [row] = await execute("SELECT id, email FROM user WHERE email = ?", [
+    email,
+  ]);
+  return row[0];
+};
+
+export const updateUserResetPassword = async (token, expires, id) => {
+  await execute(
+    "UPDATE user SET reset_password_token = ?, reset_password_expires = ? WHERE id = ?",
+    [token, expires, id]
+  );
 };
 
 export const getUserById = async (id) => {

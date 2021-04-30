@@ -8,10 +8,16 @@ import {
   getCurrentUserId,
   getIsAdmin,
   loadUserAndTokenWithToken,
+  getAuthError,
 } from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { URL_ADMIN_SUBJECTS, URL_SUBJECTS } from "../../constants";
+import {
+  URL_ADMIN_SUBJECTS,
+  URL_NOT_AUTHORIZED,
+  URL_SUBJECTS,
+} from "../../constants";
+import { resetState } from "../../app/actions";
 
 const AuthRoute = (props) => {
   const [component, setComponent] = useState(<div></div>);
@@ -21,6 +27,7 @@ const AuthRoute = (props) => {
   const isAdmin = useSelector(getIsAdmin);
   let token = useSelector(getToken);
   const tokenError = useSelector(getTokenError);
+  const authError = useSelector(getAuthError);
 
   if (!token) {
     token = localStorage.getItem("token");
@@ -29,6 +36,7 @@ const AuthRoute = (props) => {
   const clearTokens = () => {
     localStorage.clear();
     dispatch(clearToken());
+    dispatch(resetState());
   };
 
   // stara sa o to, aby pri refreshnuti stranky sa vzdy nacital token, userId a userName do Reduxu
@@ -39,6 +47,12 @@ const AuthRoute = (props) => {
       dispatch(loadUserAndTokenWithToken());
     }
   }, [currentUserId]);
+
+  useEffect(() => {
+    if (authError) {
+      history.push(URL_NOT_AUTHORIZED);
+    }
+  }, [authError]);
 
   useEffect(() => {
     if (token) {
@@ -65,7 +79,6 @@ const AuthRoute = (props) => {
       } else {
         clearTokens();
         setComponent(<Redirect to="/login" />);
-        window.location.reload();
       }
     } else {
       if (props.type === "login") {

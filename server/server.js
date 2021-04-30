@@ -13,6 +13,7 @@ import bcrypt from "bcrypt";
 import * as constants from "./constants.js";
 import * as mailer from "./mailer.js";
 import isAdminAuth from "./middleware/isAdminAuth.js";
+import isEnrolledInSubjectAuth from "./middleware/isEnrolledInSubjectAuth.js";
 import { convertDateToSQLFormat, getCurrentDate } from "./DateUtils.js";
 
 dotenv.config();
@@ -24,11 +25,57 @@ app.use(cors());
 // parse requests of content-type - application/json
 app.use(express.json());
 
-app.post("/api/admin/send-email", isAdminAuth, function (req, res) {
+app.post("/api/admin/send-email", isAdminAuth, async function (req, res) {
   res.set("Content-Type", "application/json");
 
   const { toEmail, fromEmail, fromName, subject, text } = req.body;
 
+  const messageInfo = {
+    toEmail,
+    fromEmail,
+    fromName,
+    subject,
+    text,
+  };
+
+  mailer.sendOne(messageInfo);
+
+  res.send('{"message":"Email sent."}');
+});
+
+app.put("/api/forgotten-password/send-email", async function (req, res) {
+  const { email } = req.body;
+  const fromName = "Admin KV";
+  const subject = "Obnovenie hesla";
+  const fromEmail = constants.FROM_EMAIL_RESET_PASSWORD;
+
+  const user = await queries.getUserByEmail(email);
+  if (user == null) {
+    console.error("Email not in DB");
+    res.status(403).send("Email not in DB");
+    return;
+  }
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha512")
+    .update(token)
+    .digest("base64");
+  const expires = convertDateToSQLFormat(new Date().addHours(1));
+
+  console.log(user);
+  console.log(token);
+  console.log(expires);
+
+  await queries.updateUserResetPassword(hashedToken, expires, user.id);
+  const text = constants.getEmailTextForResetPassword(
+    process.env.CLIENT_URL,
+    token,
+    user.id
+  );
+
+  const toEmail = [];
+  toEmail.push(email);
   const messageInfo = {
     toEmail,
     fromEmail,
@@ -104,18 +151,26 @@ app.put(
   }
 );
 
-app.get("/api/subject/:subjectId", async function (req, res) {
-  const { subjectId } = req.params;
-  const row = await queries.getSubject(subjectId);
-  res.json(row);
-});
+app.get(
+  "/api/subject/:subjectId",
+  isEnrolledInSubjectAuth,
+  async function (req, res) {
+    const { subjectId } = req.params;
+    const row = await queries.getSubject(subjectId);
+    res.json(row);
+  }
+);
 
-app.patch("/api/subject/:subjectId", async function (req, res) {
-  const { subjectId } = req.params;
-  const { status } = req.body;
-  await queries.updateSubjectStatus(subjectId, status);
-  res.json(status);
-});
+app.patch(
+  "/api/admin/subject/:subjectId",
+  isAdminAuth,
+  async function (req, res) {
+    const { subjectId } = req.params;
+    const { status } = req.body;
+    await queries.updateSubjectStatus(subjectId, status);
+    res.json(status);
+  }
+);
 
 app.post("/api/admin/subject", isAdminAuth, async function (req, res) {
   let { name, year, season, about, userLimit, weeks, active } = req.body;
@@ -281,6 +336,7 @@ app.put(
   }
 );
 
+// treba osetrit aby student mohol poziadat o pristup iba do aktivneho predmetu
 app.post("/api/subject/:subjectId/sign-in", async function (req, res) {
   const { subjectId } = req.params;
   const { userId } = req.body;
@@ -304,9 +360,9 @@ app.post("/api/login", async function (req, res) {
 
   if (isCorrectPassword(password, user.salt, user.password)) {
     // Issue token
-    const signedInCourses = await queries.getAttendedCoursesOfUser(user.id);
+    const enrolledCourses = await queries.getAttendedCoursesOfUser(user.id);
     const isAdmin = user.role == constants.IS_ADMIN;
-    const payload = { id: user.id, isAdmin, signedInCourses };
+    const payload = { id: user.id, isAdmin, enrolledCourses };
     const token = jwt.sign(payload, process.env.JWT_PRIVATE_KEY, {
       expiresIn: "1h",
     });
@@ -352,7 +408,7 @@ app.post("/api/register", async function (req, res) {
   }
 
   const user = await queries.getUserByUsername(username);
-  const userEmail = await queries.getUserWithEmail(email);
+  const userEmail = await queries.getUserByEmail(email)?.email;
 
   if (user) {
     res.status(409).send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
@@ -419,30 +475,38 @@ app.patch("/api/admin/user/:userId", isAdminAuth, async function (req, res) {
 });
 
 // attendance student
-app.get("/api/subject/:subjectId/attendance", async (req, res) => {
-  const { subjectId } = req.params;
-  const { userId } = req.query;
-  const rows = await queries.getAttendanceAndUser(userId, subjectId);
-  res.json(rows);
-});
-
-app.post("/api/subject/:subjectId/attendance", async (req, res) => {
-  const { subjectId } = req.params;
-  const { userId } = req.query;
-  const { password } = req.body;
-
-  const attendanceId = await queries.getAttendanceIdForPassword(
-    subjectId,
-    password
-  );
-
-  if (attendanceId) {
-    const id = await queries.insertAttendanceForUser(userId, attendanceId);
-    res.json(id);
-    return;
+app.get(
+  "/api/subject/:subjectId/attendance",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { userId } = req.query;
+    const rows = await queries.getAttendanceAndUser(userId, subjectId);
+    res.json(rows);
   }
-  res.status(401).send("Nesprávne heslo");
-});
+);
+
+app.post(
+  "/api/subject/:subjectId/attendance",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { userId } = req.query;
+    const { password } = req.body;
+
+    const attendanceId = await queries.getAttendanceIdForPassword(
+      subjectId,
+      password
+    );
+
+    if (attendanceId) {
+      const id = await queries.insertAttendanceForUser(userId, attendanceId);
+      res.json(id);
+      return;
+    }
+    res.status(401).send("Nesprávne heslo");
+  }
+);
 
 // get attendance admin
 
@@ -484,7 +548,7 @@ app.patch(
 );
 
 // Bonuses
-app.get("/api/bonus", async (req, res) => {
+app.get("/api/bonus", isEnrolledInSubjectAuth, async (req, res) => {
   const { userId, subjectId } = req.query;
   const rows = await queries.getBonuses(userId, subjectId);
   res.json(rows);
@@ -513,13 +577,13 @@ app.delete("/api/admin/bonus/:bonusId", isAdminAuth, async (req, res) => {
 });
 
 // bonus comments
-app.get("/api/bonus/:bonusId/comment", async (req, res) => {
+app.get("/api/subject/:subjectId/bonus/:bonusId/comment", async (req, res) => {
   const { bonusId } = req.params;
   const rows = await queries.getBonusComments(bonusId);
   res.json(rows);
 });
 
-app.post("/api/bonus/:bonusId/comment", async (req, res) => {
+app.post("/api/subject/:subjectId/bonus/:bonusId/comment", async (req, res) => {
   const { bonusId } = req.params;
   const { userId, content, refCommentId } = req.body;
   const date = getCurrentDate();
@@ -540,7 +604,7 @@ app.patch(
   }
 );
 
-app.delete("/api/admin/comment/:commentId", async (req, res) => {
+app.delete("/api/admin/comment/:commentId", isAdminAuth, async (req, res) => {
   const { commentId } = req.params;
   await queries.deleteComment(commentId);
   res.json(commentId);
@@ -548,7 +612,8 @@ app.delete("/api/admin/comment/:commentId", async (req, res) => {
 
 // presentation comments
 app.get(
-  "/api/presentation/:presentationId/student/comment",
+  "/api/subject/:subjectId/presentation/:presentationId/student/comment",
+  isEnrolledInSubjectAuth,
   async (req, res) => {
     const { presentationId } = req.params;
     const rows = await queries.getPresentationComments(
@@ -560,7 +625,8 @@ app.get(
 );
 
 app.get(
-  "/api/presentation/:presentationId/teacher/comment",
+  "/api/subject/:subjectId/presentation/:presentationId/teacher/comment",
+  isEnrolledInSubjectAuth,
   async (req, res) => {
     const { presentationId } = req.params;
     const rows = await queries.getPresentationComments(
@@ -572,7 +638,8 @@ app.get(
 );
 
 app.post(
-  "/api/presentation/:presentationId/teacher/comment",
+  "/api/subject/:subjectId/presentation/:presentationId/teacher/comment",
+  isEnrolledInSubjectAuth,
   async (req, res) => {
     const { presentationId } = req.params;
     const { userId, content, refCommentId } = req.body;
@@ -584,7 +651,8 @@ app.post(
 );
 
 app.post(
-  "/api/presentation/:presentationId/student/comment",
+  "/api/subject/:subjectId/presentation/:presentationId/student/comment",
+  isEnrolledInSubjectAuth,
   async (req, res) => {
     const { presentationId } = req.params;
     const { userId, content, refCommentId } = req.body;
@@ -650,36 +718,54 @@ app.post(
   }
 );
 
-/////////////////////////////////////////////////////////
-
 // presentation valuation types
-app.get("/api/presentation/valuation-types", async (req, res) => {
-  const { subjectId } = req.query;
-  const rows = await queries.getPresentationValuationTypes(subjectId);
-  res.json(rows);
-});
+app.get(
+  "/api/presentation/valuation-types",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { subjectId } = req.query;
+    const rows = await queries.getPresentationValuationTypes(subjectId);
+    res.json(rows);
+  }
+);
 
 // get teacher's presentations
-app.get("/api/teacher-presentation", async (req, res) => {
-  const { userId, subjectId } = req.query;
-  const row = await queries.getTeacherPresentations(userId, subjectId);
-  res.json(row);
-});
+app.get(
+  "/api/teacher-presentation",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { userId, subjectId } = req.query;
+    const row = await queries.getTeacherPresentations(userId, subjectId);
+    res.json(row);
+  }
+);
 
 // get student's presentations
-app.get("/api/student-presentation", async (req, res) => {
-  const { userId, subjectId, status } = req.query;
-  const rows = await queries.getStudentPresentations(userId, subjectId, status);
-  res.json(rows);
-});
+app.get(
+  "/api/student-presentation",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { userId, subjectId, status } = req.query;
+    const rows = await queries.getStudentPresentations(
+      userId,
+      subjectId,
+      status
+    );
+    res.json(rows);
+  }
+);
 
 // get my presentation - title and points
-app.get("/api/subject/:subjectId/my-presentation", async (req, res) => {
-  const { subjectId } = req.params;
-  const { userId } = req.query;
-  const presentation = await queries.getMyPresentation(userId, subjectId);
-  res.json(presentation);
-});
+app.get(
+  "/api/subject/:subjectId/my-presentation",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { userId } = req.query;
+    const presentation = await queries.getMyPresentation(userId, subjectId);
+    res.json(presentation);
+  }
+);
 
 app.get(
   "/api/admin/subject/:subjectId/email",
@@ -690,10 +776,11 @@ app.get(
     res.json(rows);
   }
 );
-
+// TREBA ESTE OVERIT ci values maju v sebe len hodnotu medzi <0, 10>
 // insert evaluation of a presentation that is taken from Sliders form
 app.post(
   "/api/subject/:subjectId/presentation/:presentationId/evaluation",
+  isEnrolledInSubjectAuth,
   async (req, res) => {
     const { subjectId, presentationId } = req.params;
     const { userWhoEvaluatesId, evaluatedUserId } = req.query;
@@ -719,6 +806,7 @@ app.post(
 // download presentation
 app.get(
   "/api/subject/:subjectId/presentation/:presentationId/download",
+  isEnrolledInSubjectAuth,
   (req, res) => {
     const { presentationId, subjectId } = req.params;
     const { filename, teacherPres } = req.query;
@@ -750,6 +838,7 @@ let upload = multer({ storage: storage });
 
 app.post(
   "/api/subject/:subjectId/presentation/upload",
+  isEnrolledInSubjectAuth,
   upload.single("file"),
   async (req, res, next) => {
     const { subjectId } = req.params;
@@ -808,51 +897,63 @@ app.post(
   }
 );
 
-app.get("/api/subject/:subjectId/weight", async (req, res) => {
-  const { subjectId } = req.params;
-  const presentationWeight = await queries.getPresentationWeight(subjectId);
-  const attendanceWeight = await queries.getAttendanceWeight(subjectId);
-  const commentsWeight = await queries.getCommentsWeight(subjectId);
+app.get(
+  "/api/subject/:subjectId/weight",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const presentationWeight = await queries.getPresentationWeight(subjectId);
+    const attendanceWeight = await queries.getAttendanceWeight(subjectId);
+    const commentsWeight = await queries.getCommentsWeight(subjectId);
 
-  res.json({
-    presentationWeight,
-    attendanceWeight,
-    commentsWeight,
-  });
-});
+    res.json({
+      presentationWeight,
+      attendanceWeight,
+      commentsWeight,
+    });
+  }
+);
 
 // get valuation of a certain subject - finds info about given subject e.g. weight of attendance, bonuses, presentation
-app.get("/api/subject/:subjectId/subject-valuation", async (req, res) => {
-  const { subjectId } = req.params;
-  const row = await queries.getSubjectValuation(subjectId);
-  res.json(row);
-});
-
-app.put("/api/subject/:subjectId/subject-valuation", async (req, res) => {
-  const { subjectId } = req.params;
-  const { gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx } = req.body;
-  if (
-    !isNaN(gradeA) &&
-    !isNaN(gradeB) &&
-    !isNaN(gradeC) &&
-    !isNaN(gradeD) &&
-    !isNaN(gradeE) &&
-    !isNaN(gradeFx)
-  ) {
-    await queries.updateSubjectValuation(
-      subjectId,
-      gradeA,
-      gradeB,
-      gradeC,
-      gradeD,
-      gradeE,
-      gradeFx
-    );
-    res.json(subjectId);
-  } else {
-    res.sendStatus(415);
+app.get(
+  "/api/subject/:subjectId/subject-valuation",
+  isEnrolledInSubjectAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const row = await queries.getSubjectValuation(subjectId);
+    res.json(row);
   }
-});
+);
+
+app.put(
+  "/api/admin/subject/:subjectId/subject-valuation",
+  isAdminAuth,
+  async (req, res) => {
+    const { subjectId } = req.params;
+    const { gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx } = req.body;
+    if (
+      !isNaN(gradeA) &&
+      !isNaN(gradeB) &&
+      !isNaN(gradeC) &&
+      !isNaN(gradeD) &&
+      !isNaN(gradeE) &&
+      !isNaN(gradeFx)
+    ) {
+      await queries.updateSubjectValuation(
+        subjectId,
+        gradeA,
+        gradeB,
+        gradeC,
+        gradeD,
+        gradeE,
+        gradeFx
+      );
+      res.json(subjectId);
+    } else {
+      res.sendStatus(415);
+    }
+  }
+);
 
 const isCorrectPassword = (typedPassword, salt, DBpassword) => {
   const password = `${typedPassword}{${salt}}`;

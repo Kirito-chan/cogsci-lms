@@ -39,7 +39,7 @@ function BonusPage() {
   }, [currentUserId, subjectId]);
 
   useEffect(() => {
-    if (bonusId) dispatch(loadComments(bonusId));
+    if (bonusId) dispatch(loadComments(bonusId, subjectId));
   }, [bonusId]);
 
   useEffect(() => {

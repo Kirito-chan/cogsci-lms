@@ -243,7 +243,7 @@ export const updateSubjectValuation = (
     apiCallBegan({
       method: "put",
       data,
-      url: urlSubjectValuation + "/" + subjectId,
+      url: urlAdmin + urlSubject + "/" + subjectId + urlSubjectValuation,
       onSuccess: subjectValuationReceived.type,
     })
   );

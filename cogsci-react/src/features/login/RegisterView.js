@@ -36,7 +36,7 @@ function RegisterView({
         <Row>
           <Col></Col>
           <Col md="9">
-            <Form className="nic" onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
               <Form.Group>
                 <TextInputRegistration
                   title="Meno"
@@ -83,16 +83,6 @@ function RegisterView({
                   setContent={setEmail}
                   clearError={clearError}
                 />
-                {/* <Form.Label>Prihlasovacie meno</Form.Label>
-          <Form.Control
-            required
-            type="text"
-            placeholder="Username"
-            onChange={(e) => setUsername(e.target.value)}
-            isInvalid={Boolean(error.includes("meno"))}
-            autoComplete="username"
-          />
-          <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback> */}
               </Form.Group>
               <div className="text-center">
                 <Button variant="success" type="submit">

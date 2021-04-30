@@ -29,6 +29,7 @@ export const URL_ADMIN_OVERALL_BONUSES = "/admin/overall-bonuses";
 
 export const URL_NOT_AUTHORIZED = "/not-authorized";
 export const URL_REGISTER = "/register";
+export const URL_FORGOTTEN_PASSWORD = "/forgotten-password";
 
 // konstanty z databazy
 export const IS_STUDENT = 1; // rola pouzivatela, ktora ja v tabulke user v stlpci role

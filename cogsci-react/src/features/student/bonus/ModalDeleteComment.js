@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useDispatch } from "react-redux";
 import { deleteComment, loadComments } from "./bonusSlice";
+import { useParams } from "react-router";
 
 function ModalDeleteComment({
   showOdstranit,
@@ -13,11 +14,12 @@ function ModalDeleteComment({
 }) {
   const closeModalOdstranit = () => setShowOdstranit(false);
   const dispatch = useDispatch();
+  const { subjectId } = useParams();
 
   const handleOdstranit = () => {
     closeModalOdstranit();
     dispatch(deleteComment(commentId)).then(() => {
-      dispatch(loadComments(bonusId));
+      dispatch(loadComments(bonusId, subjectId));
     });
   };
 

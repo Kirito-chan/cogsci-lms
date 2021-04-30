@@ -125,12 +125,21 @@ export const updatePresentationStatus = (presentationId, status) => (
     })
   );
 };
-
+const urlSubject = "/subject";
 // nacita komentare ktore patria ku prezentacii ucitela, cize nenacitava komentare, ktore ucitel napisal
-export const loadTeacherComments = (presentationId) => (dispatch) => {
+export const loadTeacherComments = (presentationId, subjectId) => (
+  dispatch
+) => {
   return dispatch(
     apiCallBegan({
-      url: urlPresentation + "/" + presentationId + "/teacher/comment",
+      url:
+        urlSubject +
+        "/" +
+        subjectId +
+        urlPresentation +
+        "/" +
+        presentationId +
+        "/teacher/comment",
       onStart: commentsRequested.type,
       onSuccess: commentsReceived.type,
       onError: commentsRequestFailed.type,
@@ -138,10 +147,19 @@ export const loadTeacherComments = (presentationId) => (dispatch) => {
   );
 };
 // nacita komentare ktore patria ku prezentacii studenta, cize nenacitava komentare, ktore student napisal
-export const loadStudentComments = (presentationId) => (dispatch) => {
+export const loadStudentComments = (presentationId, subjectId) => (
+  dispatch
+) => {
   return dispatch(
     apiCallBegan({
-      url: urlPresentation + "/" + presentationId + "/student/comment",
+      url:
+        urlSubject +
+        "/" +
+        subjectId +
+        urlPresentation +
+        "/" +
+        presentationId +
+        "/student/comment",
       onStart: commentsRequested.type,
       onSuccess: commentsReceived.type,
       onError: commentsRequestFailed.type,
@@ -153,7 +171,8 @@ export const insertTeacherComment = (
   userId,
   presentationId,
   content,
-  refCommentId
+  refCommentId,
+  subjectId
 ) => (dispatch) => {
   const data = { userId, content, refCommentId };
 
@@ -161,7 +180,14 @@ export const insertTeacherComment = (
     apiCallBegan({
       data,
       method: "post",
-      url: urlPresentation + "/" + presentationId + "/teacher/comment",
+      url:
+        urlSubject +
+        "/" +
+        subjectId +
+        urlPresentation +
+        "/" +
+        presentationId +
+        "/teacher/comment",
       onSuccess: commentInserted.type,
     })
   );
@@ -171,7 +197,8 @@ export const insertStudentComment = (
   userId,
   presentationId,
   content,
-  refCommentId
+  refCommentId,
+  subjectId
 ) => (dispatch) => {
   const data = { userId, content, refCommentId };
 
@@ -179,7 +206,14 @@ export const insertStudentComment = (
     apiCallBegan({
       data,
       method: "post",
-      url: urlPresentation + "/" + presentationId + "/student/comment",
+      url:
+        urlSubject +
+        "/" +
+        subjectId +
+        urlPresentation +
+        "/" +
+        presentationId +
+        "/student/comment",
       onSuccess: commentInserted.type,
     })
   );

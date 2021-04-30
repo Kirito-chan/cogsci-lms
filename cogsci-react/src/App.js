@@ -24,6 +24,7 @@ import {
   URL_ADMIN_USERS,
   URL_ADMIN_OVERALL_ATTENDANCE,
   URL_ADMIN_OVERALL_BONUSES,
+  URL_FORGOTTEN_PASSWORD,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
@@ -41,6 +42,7 @@ import StudentDetailPage from "./features/admin/student-detail/StudentDetailPage
 import UsersPage from "./features/admin/all-users/UsersPage";
 import OverallAttendance from "./features/admin/overall-attendance/OverallAttendance";
 import OverallBonuses from "./features/admin/overall-bonuses/OverallBonuses";
+import ForgottenPasswordPage from "./features/login/ForgottenPasswordPage";
 
 // prettier-ignore
 function App() {
@@ -76,6 +78,7 @@ function App() {
           <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="both" />
           <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} component={PresentationPage} type="both" />
           <AuthRoute path={URL_REGISTER} component={Register} type="register" />
+          <AuthRoute path={URL_FORGOTTEN_PASSWORD} component={ForgottenPasswordPage} type="register" />
           
           {/* defaultna route, ak nematchne nic: /login, ak je neprihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />

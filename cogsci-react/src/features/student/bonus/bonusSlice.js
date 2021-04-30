@@ -49,6 +49,8 @@ export const loadBonus = (userId, subjectId) => (dispatch) => {
   return dispatch(loadBonuses(userId, subjectId));
 };
 
+const urlSubject = "/subject";
+
 const urlBonusAdmin = "/admin/bonus";
 
 export const updateBonusValuated = (bonusId, commentId, valuated) => (
@@ -96,10 +98,10 @@ export const deleteBonus = (bonusId) => (dispatch) => {
 
 const urlBonus = "/bonus";
 
-export const loadComments = (bonusId) => (dispatch) => {
+export const loadComments = (bonusId, subjectId) => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlBonus + "/" + bonusId + "/comment",
+      url: urlSubject + "/" + subjectId + urlBonus + "/" + bonusId + "/comment",
       onStart: commentsRequested.type,
       onSuccess: commentsReceived.type,
       onError: commentsRequestFailed.type,
@@ -107,16 +109,20 @@ export const loadComments = (bonusId) => (dispatch) => {
   );
 };
 
-export const insertComment = (userId, bonusId, content, refCommentId) => (
-  dispatch
-) => {
+export const insertComment = (
+  userId,
+  bonusId,
+  content,
+  refCommentId,
+  subjectId
+) => (dispatch) => {
   const data = { userId, content, refCommentId };
 
   return dispatch(
     apiCallBegan({
       data,
       method: "post",
-      url: urlBonus + "/" + bonusId + "/comment",
+      url: urlSubject + "/" + subjectId + urlBonus + "/" + bonusId + "/comment",
       onSuccess: commentInserted.type,
     })
   );

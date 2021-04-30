@@ -14,7 +14,7 @@ const sendEmail = (messageInfo) => {
         From: { Email: messageInfo.fromEmail, Name: messageInfo.fromName },
         To: toEmails,
         Subject: messageInfo.subject,
-        TextPart: messageInfo.text,
+        HtmlPart: messageInfo.text,
       },
     ],
   });

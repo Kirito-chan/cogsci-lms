@@ -54,14 +54,14 @@ export default slice.reducer;
 
 // Action Creators
 
-const urlSubjects = "/admin/subject";
+const urlAdminSubject = "/admin/subject";
 
 // prettier-ignore
 
 export const loadSubjects = () => (dispatch) => {
   return dispatch(
     apiCallBegan({
-      url: urlSubjects,
+      url: urlAdminSubject,
       onStart: subjectsRequested.type,
       onSuccess: subjectsReceived.type,
       onError: subjectsRequestFailed.type,
@@ -92,7 +92,7 @@ export const insertSubject = (
   const data = { name, year, season, about, userLimit, weeks, active };
   return dispatch(
     apiCallBegan({
-      url: urlSubjects,
+      url: urlAdminSubject,
       method: "post",
       data,
       onSuccess: subjectInserted.type,
@@ -128,7 +128,7 @@ export const updateSubject = (
 
   return dispatch(
     apiCallBegan({
-      url: urlSubjects + "/" + subjectId,
+      url: urlAdminSubject + "/" + subjectId,
       method: "put",
       data,
       onSuccess: subjectUpdated.type,
@@ -140,7 +140,7 @@ export const updateSubjectStatus = (subjectId, status) => (dispatch) => {
   const data = { status };
   return dispatch(
     apiCallBegan({
-      url: urlSubject + "/" + subjectId,
+      url: urlAdminSubject + "/" + subjectId,
       method: "patch",
       data,
       onSuccess: subjectStatusChanged.type,
