@@ -30,6 +30,8 @@ export const URL_ADMIN_OVERALL_BONUSES = "/admin/overall-bonuses";
 export const URL_NOT_AUTHORIZED = "/not-authorized";
 export const URL_REGISTER = "/register";
 export const URL_FORGOTTEN_PASSWORD = "/forgotten-password";
+export const URL_RESETED_PASSWORD = "/reseted-password";
+export const URL_LOGIN = "/login";
 
 // konstanty z databazy
 export const IS_STUDENT = 1; // rola pouzivatela, ktora ja v tabulke user v stlpci role
@@ -51,6 +53,10 @@ export const REJECTED_TO_SUBJ = 3;
 
 export const ATTENDANCE_CLOSED = 1; // v tabulke attendance stlpec status hovori o tom, ci je pre dany tyzden otvorena abo zatvorena dochadzka
 export const ATTENDANCE_OPENED = 2;
+
+export const MINIMAL_PASSWORD_LENGTH = 6;
+export const DIFFERENT_PASSWORD_ERROR = "Heslá sa nezhodujú !";
+export const SHORT_PASSWORD_ERROR = `Heslo musí mať aspoň ${MINIMAL_PASSWORD_LENGTH} znakov !`;
 
 // URL na API
 export const createUrlToDownloadPresentation = (

@@ -5,7 +5,7 @@ import Navigation from "../../components/Navigation";
 import Login from "./Login";
 import RegisterView from "./RegisterView";
 
-function Register() {
+function RegisterPage() {
   const dispatch = useDispatch();
   const error = useSelector(getCustomError);
   const [registerSuccessMessage, setRegisterSuccessMessage] = useState();
@@ -60,4 +60,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default RegisterPage;

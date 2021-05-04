@@ -25,6 +25,8 @@ import {
   URL_ADMIN_OVERALL_ATTENDANCE,
   URL_ADMIN_OVERALL_BONUSES,
   URL_FORGOTTEN_PASSWORD,
+  URL_RESETED_PASSWORD,
+  URL_LOGIN,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
@@ -37,12 +39,13 @@ import AdminHomePage from "./features/admin/home/AdminHomePage";
 import PresentationsPageAdmin from "./features/admin/presentations/PresentationsPage";
 import SettingsPage from "./features/admin/settings/SettingsPage";
 import EmailPage from "./features/admin/email/EmailPage";
-import Register from "./features/login/Register";
+import RegisterPage from "./features/login/RegisterPage";
 import StudentDetailPage from "./features/admin/student-detail/StudentDetailPage";
 import UsersPage from "./features/admin/all-users/UsersPage";
 import OverallAttendance from "./features/admin/overall-attendance/OverallAttendance";
 import OverallBonuses from "./features/admin/overall-bonuses/OverallBonuses";
 import ForgottenPasswordPage from "./features/login/ForgottenPasswordPage";
+import ResetedPasswordPage from "./features/login/ResetedPasswordPage";
 
 // prettier-ignore
 function App() {
@@ -52,7 +55,7 @@ function App() {
         <ScrollToTop />
         <Switch>
           <AuthRoute exact path="/" component={Login} type="login" />
-          <AuthRoute path="/login" component={Login} type="login" />
+          <AuthRoute path={URL_LOGIN} component={Login} type="login" />
           <AuthRoute path={URL_NOT_AUTHORIZED} component={NotAuthorizedPage} type="not-auth" />
           
           {/* admin routes */}
@@ -77,8 +80,9 @@ function App() {
           {/* student and admin common routes */}        
           <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="both" />
           <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} component={PresentationPage} type="both" />
-          <AuthRoute path={URL_REGISTER} component={Register} type="register" />
+          <AuthRoute path={URL_REGISTER} component={RegisterPage} type="register" />
           <AuthRoute path={URL_FORGOTTEN_PASSWORD} component={ForgottenPasswordPage} type="register" />
+          <AuthRoute path={URL_RESETED_PASSWORD + "/:userId/:token"} component={ResetedPasswordPage} type="register" />
           
           {/* defaultna route, ak nematchne nic: /login, ak je neprihlaseny, /subjects ak je prihlaseny */}
           <AuthRoute component={Login} type="login" />

@@ -5,7 +5,12 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-function ForgottenPasswordView({ handleSubmit, setEmail }) {
+function ForgottenPasswordView({
+  handleSubmit,
+  setEmail,
+  successMessage,
+  errorMessage,
+}) {
   return (
     <Container>
       <Row>
@@ -23,6 +28,8 @@ function ForgottenPasswordView({ handleSubmit, setEmail }) {
                 />
               </Col>
             </Form.Group>
+            <p className="text-success">{successMessage}</p>
+            <p className="text-danger">{errorMessage}</p>
 
             <Row>
               <Col className="text-center">

@@ -43,6 +43,7 @@ app.post("/api/admin/send-email", isAdminAuth, async function (req, res) {
   res.send('{"message":"Email sent."}');
 });
 
+// forgotten and reseted password endpoints
 app.put("/api/forgotten-password/send-email", async function (req, res) {
   const { email } = req.body;
   const fromName = "Admin KV";
@@ -52,7 +53,7 @@ app.put("/api/forgotten-password/send-email", async function (req, res) {
   const user = await queries.getUserByEmail(email);
   if (user == null) {
     console.error("Email not in DB");
-    res.status(403).send("Email not in DB");
+    res.status(403).send("Zadaný email neexistuje");
     return;
   }
 
@@ -63,15 +64,11 @@ app.put("/api/forgotten-password/send-email", async function (req, res) {
     .digest("base64");
   const expires = convertDateToSQLFormat(new Date().addHours(1));
 
-  console.log(user);
-  console.log(token);
-  console.log(expires);
-
   await queries.updateUserResetPassword(hashedToken, expires, user.id);
   const text = constants.getEmailTextForResetPassword(
     process.env.CLIENT_URL,
-    token,
-    user.id
+    user.id,
+    token
   );
 
   const toEmail = [];
@@ -87,6 +84,74 @@ app.put("/api/forgotten-password/send-email", async function (req, res) {
   mailer.sendOne(messageInfo);
 
   res.send('{"message":"Email sent."}');
+});
+
+app.get("/api/reseted-password/check-expiration", async function (req, res) {
+  const { userId, token } = req.query;
+
+  const hashedTokenUrl = crypto
+    .createHash("sha512")
+    .update(token)
+    .digest("base64");
+
+  const currentDate = getCurrentDate();
+
+  const user = await queries.checkUserResetPasswordToken(
+    userId,
+    hashedTokenUrl,
+    currentDate
+  );
+
+  if (user == undefined) {
+    res.status(403).send("Token je neplatný alebo expiroval");
+    return;
+  }
+
+  res.json({
+    username: user.username,
+    firstName: user.first_name,
+    lastName: user.last_name,
+  });
+});
+
+app.patch("/api/reseted-password/change-password", async function (req, res) {
+  const { userId, token } = req.query;
+  const { password } = req.body;
+
+  const hashedTokenUrl = crypto
+    .createHash("sha512")
+    .update(token)
+    .digest("base64");
+
+  const currentDate = getCurrentDate();
+
+  const user = await queries.checkUserResetPasswordToken(
+    userId,
+    hashedTokenUrl,
+    currentDate
+  );
+
+  if (user == undefined) {
+    console.log("nerovnaju sa2");
+    res.status(403).send("Token is invalid or has already expired.");
+    return;
+  }
+
+  const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
+  const passwordAndSalt = `${password}{${salt}}`;
+  const hashedPassword = crypto
+    .createHash("sha512")
+    .update(passwordAndSalt)
+    .digest("base64");
+
+  await queries.updateUserPasswordAndTokens(
+    userId,
+    hashedPassword,
+    salt,
+    currentDate
+  );
+
+  res.json(userId);
 });
 
 app.post(

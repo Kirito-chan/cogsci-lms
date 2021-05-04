@@ -483,6 +483,36 @@ export const getUserById = async (id) => {
   return row[0];
 };
 
+export const checkUserResetPasswordToken = async (
+  userId,
+  hashedToken,
+  currentDate
+) => {
+  const [row] = await execute(
+    `
+  SELECT username, first_name, last_name 
+  FROM user 
+  WHERE id = ? AND reset_password_token = ? AND reset_password_expires >= ? `,
+    [userId, hashedToken, currentDate]
+  );
+  return row[0];
+};
+
+export const updateUserPasswordAndTokens = async (
+  userId,
+  password,
+  salt,
+  currentDate
+) => {
+  const [row] = await execute(
+    `
+  UPDATE user SET password = ?, salt = ?, reset_password_token = '', reset_password_expires = ? 
+  WHERE id = ?`,
+    [password, salt, currentDate, userId]
+  );
+  return row[0];
+};
+
 // attendance
 export const getAttendanceAndUser = async (userId, subjectId) => {
   const [row] = await execute(

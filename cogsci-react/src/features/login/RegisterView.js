@@ -6,6 +6,11 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import { TextInputRegistration } from "../../components/FormComponents";
 import { clearError } from "../../app/currentUserSlice";
+import {
+  DIFFERENT_PASSWORD_ERROR,
+  SHORT_PASSWORD_ERROR,
+  MINIMAL_PASSWORD_LENGTH,
+} from "../../constants";
 
 function RegisterView({
   setFirstName,
@@ -20,8 +25,6 @@ function RegisterView({
   handleSubmit,
   error,
 }) {
-  const differentPasswordError = "Heslá sa nezhodujú !";
-  const shortPasswordError = "Heslo musí mať aspoň 6 znakov !";
   const emailError = "Zadali ste email v nesprávnom formáte !";
 
   const isValidEmail = (email) => {
@@ -62,15 +65,16 @@ function RegisterView({
                   type="password"
                   autoComplete="new-password"
                   setContent={setPassword}
-                  isInvalid={password?.length < 6}
-                  error={shortPasswordError}
+                  isInvalid={password?.length < MINIMAL_PASSWORD_LENGTH}
+                  error={SHORT_PASSWORD_ERROR}
                 />
+
                 <TextInputRegistration
                   title="Zopakujte heslo"
                   type="password"
-                  isInvalid={password !== passwordAgain}
-                  error={differentPasswordError}
                   setContent={setPasswordAgain}
+                  isInvalid={password !== passwordAgain}
+                  error={DIFFERENT_PASSWORD_ERROR}
                 />
                 <TextInputRegistration
                   title="Email"

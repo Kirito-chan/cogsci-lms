@@ -8,12 +8,13 @@ import {
   getCurrentUserId,
   getIsAdmin,
   loadUserAndTokenWithToken,
-  getAuthError,
+  getAnyError,
 } from "../../app/currentUserSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
   URL_ADMIN_SUBJECTS,
+  URL_LOGIN,
   URL_NOT_AUTHORIZED,
   URL_SUBJECTS,
 } from "../../constants";
@@ -27,7 +28,7 @@ const AuthRoute = (props) => {
   const isAdmin = useSelector(getIsAdmin);
   let token = useSelector(getToken);
   const tokenError = useSelector(getTokenError);
-  const authError = useSelector(getAuthError);
+  const authError = useSelector(getAnyError);
 
   if (!token) {
     token = localStorage.getItem("token");
@@ -50,7 +51,7 @@ const AuthRoute = (props) => {
 
   useEffect(() => {
     if (authError) {
-      history.push(URL_NOT_AUTHORIZED);
+      if (authError.includes("token")) history.push(URL_NOT_AUTHORIZED);
     }
   }, [authError]);
 
@@ -69,7 +70,8 @@ const AuthRoute = (props) => {
         } else {
           if (
             (isAdmin === false && props.type === "admin") ||
-            (isAdmin === true && props.type === "student")
+            (isAdmin === true && props.type === "student") ||
+            props.type === "register"
           ) {
             setComponent(<Redirect to="/not-authorized" />);
           } else {
@@ -78,16 +80,17 @@ const AuthRoute = (props) => {
         }
       } else {
         clearTokens();
-        setComponent(<Redirect to="/login" />);
+        setComponent(<Redirect to={URL_LOGIN} />);
       }
     } else {
       if (props.type === "login") {
         setComponent(<Route {...props} />);
-        history.push("/login");
-      } else if (props.type === "register") {
+        history.push(URL_LOGIN);
+      } else if (props.type === "register" || props.type === "not-auth") {
         setComponent(<Route {...props} />);
       } else {
-        setComponent(<Redirect to="/login" />);
+        console.log(props);
+        setComponent(<Redirect to={URL_LOGIN} />);
       }
     }
   }, [props.component, token, tokenError]);

@@ -13,7 +13,7 @@ export const slice = createSlice({
     tokenError: null,
     error: "",
     errorCustomMessage: "",
-    authError: "",
+    anyError: "",
   },
   reducers: {
     tokenUserReceived: (state, action) => {
@@ -52,14 +52,12 @@ export const slice = createSlice({
       state.error = "";
       state.errorCustomMessage = "";
     },
-    authErrorReceived: (state, action) => {
-      state.authError = action.payload;
+    anyErrorReceived: (state, action) => {
+      state.anyError = action.payload;
     },
-    authErrorCleared: (state) => {
-      state.authError = "";
+    anyErrorCleared: (state) => {
+      state.anyError = "";
     },
-    passwordReseted: () => {},
-    passwordResetedFailed: () => {},
   },
 });
 
@@ -73,29 +71,11 @@ export const {
   userRegistered,
   userRegisterFailed,
   errorCleared,
-  authErrorReceived,
-  authErrorCleared,
-  passwordReseted,
-  passwordResetedFailed,
+  anyErrorReceived,
+  anyErrorCleared,
 } = slice.actions;
 
 export default slice.reducer;
-
-const urlForgottenPassword = "/forgotten-password/send-email";
-
-export const resetPassword = (email) => (dispatch) => {
-  const data = { email };
-
-  return dispatch(
-    apiCallBegan({
-      url: urlForgottenPassword,
-      onSuccess: passwordReseted.type,
-      method: "put",
-      data,
-      onError: passwordResetedFailed.type,
-    })
-  );
-};
 
 const urlTokenWithLogin = "/login";
 
@@ -182,8 +162,8 @@ export const clearError = () => (dispatch) => {
   dispatch({ type: errorCleared.type });
 };
 
-export const clearAuthError = () => (dispatch) => {
-  dispatch({ type: authErrorCleared.type });
+export const clearAnyError = () => (dispatch) => {
+  dispatch({ type: anyErrorCleared.type });
 };
 
 export const getHeaderToken = (token) => {
@@ -203,5 +183,5 @@ export const getToken = (state) => state.currentUser.token;
 export const getError = (state) => state.currentUser.error;
 export const getTokenError = (state) => state.currentUser.tokenError;
 export const getCustomError = (state) => state.currentUser.errorCustomMessage;
-export const getAuthError = (state) => state.currentUser.authError;
+export const getAnyError = (state) => state.currentUser.anyError;
 export const getIsAdmin = (state) => state.currentUser.isAdmin;

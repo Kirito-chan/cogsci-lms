@@ -46,23 +46,14 @@ export const Fx = 50;
 
 export const SALT_ROUNDS = 10;
 
-export const getEmailTextForResetPassword = (clientURL, token, userId) => {
+export const URL_RESETED_PASSWORD = "/reseted-password";
+
+export const getEmailTextForResetPassword = (clientURL, userId, token) => {
+  const url = clientURL + URL_RESETED_PASSWORD + "/" + userId + "/" + token;
   return (
     "<h4><b>Resetovanie hesla</b></h4>" +
     "<p>Na obnovenie hesla vyplňte formulár na nasledujúcom linku:</p>" +
-    "<a href=" +
-    clientURL +
-    "reset/" +
-    userId +
-    "/" +
-    token +
-    '">' +
-    clientURL +
-    "reset/" +
-    userId +
-    "/" +
-    token +
-    "</a>" +
+    `<a href="${url}">${url}</a>` +
     "<br><br>" +
     "<p>-- Admin z kognitívnych vied</p>"
   );

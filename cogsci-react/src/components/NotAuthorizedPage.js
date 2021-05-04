@@ -5,7 +5,7 @@ function NotAuthorizedPage() {
   return (
     <div>
       <Navigation />
-      <h1 className="text-center"> Neautorizovaný prístup na admin stránku!</h1>
+      <h1 className="text-center"> Neautorizovaný prístup na stránku !</h1>
     </div>
   );
 }

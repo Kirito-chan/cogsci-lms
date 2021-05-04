@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as actions from "../actions";
-import { authErrorReceived, getTokenHeaders } from "../currentUserSlice";
+import { anyErrorReceived, getTokenHeaders } from "../currentUserSlice";
 
 const api = ({ dispatch }) => (next) => async (action) => {
   if (action.type !== actions.apiCallBegan.type) return next(action);
@@ -39,7 +39,8 @@ const api = ({ dispatch }) => (next) => async (action) => {
   } catch (error) {
     // General
     dispatch(actions.apiCallFailed(error.message));
-    dispatch({ type: authErrorReceived.type, payload: error.response?.data });
+
+    dispatch({ type: anyErrorReceived.type, payload: error.response?.data });
 
     // Specific
     if (onError) {
