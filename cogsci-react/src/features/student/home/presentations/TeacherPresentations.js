@@ -6,7 +6,7 @@ import {
   getTeacherPresentations,
 } from "../homeSlice";
 import { useParams } from "react-router";
-import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../../components/utils/StringUtils";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 
 function TeacherPresentations() {

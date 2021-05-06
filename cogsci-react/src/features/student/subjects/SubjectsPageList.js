@@ -17,7 +17,7 @@ import {
   ACCEPTED_TO_SUBJ,
   REJECTED_TO_SUBJ,
 } from "../../../constants";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 
 // prettier-ignore
 function SubjectsPageList({ subjects, currentUserId }) {

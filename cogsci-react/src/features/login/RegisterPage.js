@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCustomError, registerNewUser } from "../../app/currentUserSlice";
-import Navigation from "../../components/Navigation";
+import Navigation from "../../components/navigations/Navigation";
 import Login from "./Login";
 import RegisterView from "./RegisterView";
 

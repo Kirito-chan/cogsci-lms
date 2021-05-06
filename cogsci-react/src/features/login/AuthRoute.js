@@ -28,7 +28,7 @@ const AuthRoute = (props) => {
   const isAdmin = useSelector(getIsAdmin);
   let token = useSelector(getToken);
   const tokenError = useSelector(getTokenError);
-  const authError = useSelector(getAnyError);
+  const anyError = useSelector(getAnyError);
 
   if (!token) {
     token = localStorage.getItem("token");
@@ -50,10 +50,10 @@ const AuthRoute = (props) => {
   }, [currentUserId]);
 
   useEffect(() => {
-    if (authError) {
-      if (authError.includes("token")) history.push(URL_NOT_AUTHORIZED);
+    if (anyError) {
+      if (anyError.includes("token")) history.push(URL_NOT_AUTHORIZED);
     }
-  }, [authError]);
+  }, [anyError]);
 
   useEffect(() => {
     if (token) {
@@ -89,7 +89,6 @@ const AuthRoute = (props) => {
       } else if (props.type === "register" || props.type === "not-auth") {
         setComponent(<Route {...props} />);
       } else {
-        console.log(props);
         setComponent(<Redirect to={URL_LOGIN} />);
       }
     }

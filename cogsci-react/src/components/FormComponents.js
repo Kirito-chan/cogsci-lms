@@ -42,6 +42,7 @@ export function TextAreaInput({ title, content, handleContent, rows }) {
 
 export function TextInputRegistration({
   title,
+  content = "",
   setContent,
   type = "text",
   autoComplete,
@@ -61,6 +62,40 @@ export function TextInputRegistration({
           type={type}
           isInvalid={isInvalid}
           autoComplete={autoComplete}
+          value={content}
+          onChange={(e) => {
+            setContent(e.target.value);
+            if (clearError) dispatch(clearError());
+          }}
+        />
+        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+      </Col>
+    </Form.Group>
+  );
+}
+
+export function TextInputRegistrationNoRequired({
+  title,
+  content = "",
+  setContent,
+  type = "text",
+  autoComplete,
+  isInvalid = false,
+  error,
+  clearError,
+}) {
+  const dispatch = useDispatch();
+  return (
+    <Form.Group as={Row}>
+      <Form.Label column md="4" sm="4" xs="3" className="text-right">
+        <b>{title}</b>
+      </Form.Label>
+      <Col lg="4" md="6" sm="8" xs="9">
+        <Form.Control
+          type={type}
+          isInvalid={isInvalid}
+          autoComplete={autoComplete}
+          value={content}
           onChange={(e) => {
             setContent(e.target.value);
             if (clearError) dispatch(clearError());

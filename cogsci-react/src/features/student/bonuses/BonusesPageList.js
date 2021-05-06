@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import BonusInfo from "../bonus/BonusInfo";
 import { Link } from "react-router-dom";
 import { URL_ADMIN_OVERALL_BONUSES, URL_BONUSES } from "../../../constants";

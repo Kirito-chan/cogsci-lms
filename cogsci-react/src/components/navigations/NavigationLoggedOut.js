@@ -3,7 +3,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { FaBrain, FaUser, FaUserPlus } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import { URL_LOGIN, URL_REGISTER } from "../constants";
+import { URL_LOGIN, URL_REGISTER } from "../../constants";
 
 function NavigationLoggedOut() {
   return (

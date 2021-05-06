@@ -10,7 +10,7 @@ import {
   getPresentationWeight,
 } from "../homeSlice";
 import { useParams } from "react-router";
-import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../../components/utils/StringUtils";
 
 function MyPresentation() {
   const dispatch = useDispatch();
@@ -23,16 +23,22 @@ function MyPresentation() {
   const handleUpload = (e) => {
     e.preventDefault();
     const file = fileInputRef.current.files[0];
-    dispatch(uploadPresentation(file, subjectId, currentUserId, false)).then(
-      (res) => {
-        if (res) {
-          const userId = res.payload.userId;
-          const subjectId = res.payload.subjectId;
-          dispatch(loadMyPresentation(userId, subjectId));
-          dispatch(loadStudentPresentationsOpened(userId, subjectId));
-        }
+    dispatch(
+      uploadPresentation(
+        file,
+        subjectId,
+        currentUserId,
+        false,
+        myPresentation.status
+      )
+    ).then((res) => {
+      if (res) {
+        const userId = res.payload.userId;
+        const subjectId = res.payload.subjectId;
+        dispatch(loadMyPresentation(userId, subjectId));
+        dispatch(loadStudentPresentationsOpened(userId, subjectId));
       }
-    );
+    });
   };
 
   useEffect(() => {

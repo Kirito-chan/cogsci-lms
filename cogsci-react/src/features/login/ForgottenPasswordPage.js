@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPasswordResetError, resetPassword } from "./resetPasswordSlice";
-import Navigation from "../../components/Navigation";
+import Navigation from "../../components/navigations/Navigation";
 import ForgottenPasswordView from "./ForgottenPasswordView";
 
 function ForgottenPasswordPage() {

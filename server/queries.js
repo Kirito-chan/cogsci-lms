@@ -457,9 +457,10 @@ export const getUserByUsername = async (username) => {
 
 export const getAttendedCoursesOfUser = async (userId) => {
   const [rows] = await execute(
-    `SELECT subject_id as id FROM user_subject_lookup usl
-     WHERE user_id = ? AND subject_id IS NOT NULL`,
-    [userId]
+    `SELECT usl.subject_id as id 
+     FROM user_subject_lookup usl JOIN subject s ON usl.subject_id = s.id
+     WHERE usl.user_id = ? AND usl.subject_id IS NOT NULL AND usl.status = ? AND s.status = ?`,
+    [userId, ACCEPTED_TO_SUBJ, SUBJ_IS_ACTIVE]
   );
   return rows;
 };
@@ -476,6 +477,26 @@ export const updateUserResetPassword = async (token, expires, id) => {
     "UPDATE user SET reset_password_token = ?, reset_password_expires = ? WHERE id = ?",
     [token, expires, id]
   );
+};
+
+export const updateUser = async (
+  id,
+  firstName,
+  lastName,
+  username,
+  email,
+  password,
+  salt
+) => {
+  let array = [firstName, lastName, username, email, password, salt, id];
+  let sql = `UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, password = ?, salt = ? WHERE id = ?`;
+  if (!password) {
+    sql = `UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ? WHERE id = ?`;
+    array = [firstName, lastName, username, email, id];
+  }
+
+  const [row] = await execute(sql, array);
+  return row[0];
 };
 
 export const getUserById = async (id) => {

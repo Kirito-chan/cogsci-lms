@@ -1,5 +1,5 @@
 import format from "date-fns/format";
-import { SUMMER_SEASON, WINTER_SEASON } from "../constants";
+import { SUMMER_SEASON, WINTER_SEASON } from "../../constants";
 
 export default function formatDate(date) {
   return format(new Date(date), "dd. MM. yyyy");

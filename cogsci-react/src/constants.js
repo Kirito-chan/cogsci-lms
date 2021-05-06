@@ -32,6 +32,7 @@ export const URL_REGISTER = "/register";
 export const URL_FORGOTTEN_PASSWORD = "/forgotten-password";
 export const URL_RESETED_PASSWORD = "/reseted-password";
 export const URL_LOGIN = "/login";
+export const URL_PROFILE = "/profile";
 
 // konstanty z databazy
 export const IS_STUDENT = 1; // rola pouzivatela, ktora ja v tabulke user v stlpci role
@@ -58,6 +59,8 @@ export const MINIMAL_PASSWORD_LENGTH = 6;
 export const DIFFERENT_PASSWORD_ERROR = "Heslá sa nezhodujú !";
 export const SHORT_PASSWORD_ERROR = `Heslo musí mať aspoň ${MINIMAL_PASSWORD_LENGTH} znakov !`;
 
+const serverURL = process.env.REACT_APP_API_URL;
+
 // URL na API
 export const createUrlToDownloadPresentation = (
   subjectId,
@@ -65,7 +68,7 @@ export const createUrlToDownloadPresentation = (
   fileName,
   isTeacherPres
 ) => {
-  return `http://localhost:8080/api/subject/${subjectId}/presentation/${presId}/download?filename=${encodeURIComponent(
+  return `${serverURL}/subject/${subjectId}/presentation/${presId}/download?filename=${encodeURIComponent(
     fileName
   )}&teacherPres=${isTeacherPres}`;
 };
@@ -73,7 +76,8 @@ export const createUrlToDownloadPresentation = (
 export const createUrlToUploadPresentation = (
   subjectId,
   isTeacherPres,
-  userId
+  userId,
+  status
 ) => {
-  return `http://localhost:8080/api/subject/${subjectId}/presentation/upload?teacherPres=${isTeacherPres}&userId=${userId}`;
+  return `${serverURL}/subject/${subjectId}/presentation/upload?teacherPres=${isTeacherPres}&userId=${userId}&status=${status}`;
 };

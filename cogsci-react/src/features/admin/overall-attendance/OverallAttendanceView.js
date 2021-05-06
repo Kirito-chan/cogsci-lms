@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import formatDate from "../../../components/DateUtils";
+import formatDate from "../../../components/utils/DateUtils";
 import Button from "react-bootstrap/Button";
 
 function OverallAttendanceView({

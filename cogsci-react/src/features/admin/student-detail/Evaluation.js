@@ -16,7 +16,7 @@ import {
 } from "./studentDetailSlice";
 import { useParams } from "react-router";
 import EvaluationTable from "../../student/home/evaluation/EvaluationTable";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 
 export default function Evaluation({ student }) {
   const dispatch = useDispatch();

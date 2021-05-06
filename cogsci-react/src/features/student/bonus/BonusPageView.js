@@ -5,11 +5,11 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import { FaArrowUp } from "react-icons/fa";
 import "./Bonus.css";
-import Navigation from "./../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { insertComment, loadComments } from "./bonusSlice";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 
 function BonusPageView({
   bonus,

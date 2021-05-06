@@ -10,8 +10,8 @@ import {
   updatePassword,
   getPasswordUpdateError,
 } from "./resetPasswordSlice";
-import { showLoaderIfAnyNull } from "../../components/StringUtils";
-import Navigation from "../../components/Navigation";
+import { showLoaderIfAnyNull } from "../../components/utils/StringUtils";
+import Navigation from "../../components/navigations/Navigation";
 import { Link } from "react-router-dom";
 import { URL_LOGIN } from "../../constants";
 

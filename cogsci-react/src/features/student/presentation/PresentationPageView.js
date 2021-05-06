@@ -2,12 +2,12 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import CommentsList from "../bonus/CommentsList";
 import PresentationEvaluation from "./PresentationEvaluation";
 import formatTranslation, {
   showLoaderIfAnyNull,
-} from "../../../components/StringUtils";
+} from "../../../components/utils/StringUtils";
 import download from "js-file-download";
 import axios from "axios";
 import {
@@ -17,6 +17,7 @@ import {
 import PresStatusButtons from "./PresStatusButtons";
 import DeleteButton from "./DeleteButton";
 import { Link } from "react-router-dom";
+import { getTokenHeaders } from "../../../app/currentUserSlice";
 
 function PresentationPageView({
   presentation,
@@ -47,6 +48,7 @@ function PresentationPageView({
         ),
         {
           responseType: "blob",
+          headers: getTokenHeaders(),
         }
       )
       .then((res) => {

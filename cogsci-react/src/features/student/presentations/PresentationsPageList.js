@@ -1,6 +1,6 @@
 import React from "react";
 import Container from "react-bootstrap/Container";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 import StudentPresentationsList from "../home/presentations/StudentPresentationsList";
 import TeacherPresentationsList from "../home/presentations/TeacherPresentationsList";
 import MyPresentationList from "../home/presentations/MyPresentationList";

@@ -5,11 +5,11 @@ import { getCurrentUserId, getIsAdmin } from "../../../app/currentUserSlice";
 import BonusPageView from "./BonusPageView";
 import { getBonus, getComments, loadComments } from "./bonusSlice";
 import { HashLink } from "react-router-hash-link";
-import createOrderedCommentsMap from "./../../../components/ArrayUtils";
+import createOrderedCommentsMap from "../../../components/utils/ArrayUtils";
 import {
   cursorFocus,
   scrollWithOffset,
-} from "./../../../components/ScrollUtils";
+} from "../../../components/utils/ScrollUtils";
 import { loadBonuses } from "../home/homeSlice";
 
 function BonusPage() {

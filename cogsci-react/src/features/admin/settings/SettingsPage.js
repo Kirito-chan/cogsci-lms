@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import { SUBJ_IS_ACTIVE, SUBJ_IS_NOT_ACTIVE } from "../../../constants";
 import {
   getCurrentSubjectStatus,

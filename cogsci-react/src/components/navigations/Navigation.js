@@ -4,7 +4,7 @@ import {
   getToken,
   getCurrentUserName,
   getIsAdmin,
-} from "../app/currentUserSlice";
+} from "../../app/currentUserSlice";
 import "./Navigation.css";
 import NavigationLoggedIn from "./NavigationLoggedIn";
 import NavigationLoggedOut from "./NavigationLoggedOut";

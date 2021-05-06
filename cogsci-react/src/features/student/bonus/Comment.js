@@ -1,5 +1,5 @@
 import React from "react";
-import formatDate from "../../../components/DateUtils";
+import formatDate from "../../../components/utils/DateUtils";
 import Button from "react-bootstrap/Button";
 import "./Bonus.css";
 import CommentEval from "./CommentEval";

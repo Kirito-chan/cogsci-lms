@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./Attendance.css";
 import { getBonuses, loadBonuses } from "./studentDetailSlice";
 import { useParams } from "react-router";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 import BonusTable from "./BonusTable";
 
 export default function Bonus({ student }) {

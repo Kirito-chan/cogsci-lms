@@ -22,8 +22,8 @@ import { HashLink } from "react-router-hash-link";
 import {
   cursorFocus,
   scrollWithOffset,
-} from "./../../../components/ScrollUtils";
-import createOrderedCommentsMap from "./../../../components/ArrayUtils";
+} from "../../../components/utils/ScrollUtils";
+import createOrderedCommentsMap from "../../../components/utils/ArrayUtils";
 import { loadStudentPresentationsNeutral } from "../../admin/home/homeSlice";
 import {
   loadMyPresentation as loadMyPresentationAdmin,
@@ -136,7 +136,6 @@ function PresentationPage() {
       document.getElementById("scrollDownToSlider").click();
     }
   }, [valuationTypes]);
-  console.log(presentationWeight);
 
   return (
     <div>

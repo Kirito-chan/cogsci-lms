@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import Attendance from "./attendance/Attendance";
 import Bonuses from "./bonuses/Bonuses";
 import AllPresentations from "./presentations/AllPresentations";

@@ -17,7 +17,7 @@ import {
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
 import { useParams } from "react-router";
-import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../../components/utils/StringUtils";
 
 export default function Evaluation() {
   const dispatch = useDispatch();

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 import {
   getSubjectValuation,
   loadSubjectValuation,

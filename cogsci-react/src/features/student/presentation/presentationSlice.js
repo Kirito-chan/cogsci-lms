@@ -248,7 +248,8 @@ export const getPresentation = (state, presentationId, presIsOpened, presIsNeutr
     presentations = state.features.student.home.studentPresentationsClosed;
   }
   //prettier-ignore
-  const presentation = presentations?.filter((studPres) => studPres.id == presentationId)[0];
+  
+  const presentation = presentations?.filter((studPres) => studPres?.id == presentationId)[0];
   return presentation;
 };
 

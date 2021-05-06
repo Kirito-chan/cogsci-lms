@@ -4,8 +4,8 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
-import Navigation from "../../../components/Navigation";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import Navigation from "../../../components/navigations/Navigation";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 
 function EmailPageView({
   studentEmailsAndNamesDoubleArr,

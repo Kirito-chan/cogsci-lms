@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import Navigation from "../../../components/Navigation";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import Navigation from "../../../components/navigations/Navigation";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 import {
   loadStudentsAndAttendance,
   getOverallAttendance,

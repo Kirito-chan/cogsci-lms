@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import formatDate from "../../../components/DateUtils";
+import formatDate from "../../../components/utils/DateUtils";
 import { URL_BONUSES } from "../../../constants";
 import BonusVideo from "../bonuses/BonusVideo";
 import Row from "react-bootstrap/Row";
@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Discussion from "../home/Discussion";
 import "./Bonus.css";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
 

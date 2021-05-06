@@ -132,7 +132,6 @@ app.patch("/api/reseted-password/change-password", async function (req, res) {
   );
 
   if (user == undefined) {
-    console.log("nerovnaju sa2");
     res.status(403).send("Token is invalid or has already expired.");
     return;
   }
@@ -401,6 +400,65 @@ app.put(
   }
 );
 
+app.put("/api/user/:userId/profile", async function (req, res) {
+  const { userId } = req.params;
+  const {
+    firstName,
+    lastName,
+    username,
+    oldPassword,
+    password,
+    passwordAgain,
+    email,
+  } = req.body;
+  if (password !== passwordAgain) return;
+  const user = await queries.getUserById(userId);
+  const hashedOldPassword = crypto
+    .createHash("sha512")
+    .update(`${oldPassword}{${user.salt}}`)
+    .digest("base64");
+  if (hashedOldPassword !== user.password) {
+    res.status(401).send("Nesprávne heslo !");
+    return;
+  }
+
+  const userWithSameEmail = await queries.getUserByEmail(email);
+  if (userWithSameEmail && userWithSameEmail.id != userId) {
+    res.status(409).send("Zadaný email už existuje, zvoľte iný !");
+    return;
+  }
+
+  const userWithSameUsername = await queries.getUserByUsername(username);
+  if (userWithSameUsername && userWithSameUsername.id != userId) {
+    res.status(409).send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
+    return;
+  }
+
+  let salt;
+  let hashedNewPassword;
+
+  if (password) {
+    salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
+    const passwordAndSalt = `${password}{${salt}}`;
+    hashedNewPassword = crypto
+      .createHash("sha512")
+      .update(passwordAndSalt)
+      .digest("base64");
+  }
+
+  await queries.updateUser(
+    userId,
+    firstName,
+    lastName,
+    username,
+    email,
+    hashedNewPassword,
+    salt
+  );
+
+  res.json(userId);
+});
+
 // treba osetrit aby student mohol poziadat o pristup iba do aktivneho predmetu
 app.post("/api/subject/:subjectId/sign-in", async function (req, res) {
   const { subjectId } = req.params;
@@ -425,9 +483,11 @@ app.post("/api/login", async function (req, res) {
 
   if (isCorrectPassword(password, user.salt, user.password)) {
     // Issue token
-    const enrolledCourses = await queries.getAttendedCoursesOfUser(user.id);
+    const enrolledActiveCourses = await queries.getAttendedCoursesOfUser(
+      user.id
+    );
     const isAdmin = user.role == constants.IS_ADMIN;
-    const payload = { id: user.id, isAdmin, enrolledCourses };
+    const payload = { id: user.id, isAdmin, enrolledActiveCourses };
     const token = jwt.sign(payload, process.env.JWT_PRIVATE_KEY, {
       expiresIn: "1h",
     });
@@ -448,6 +508,7 @@ app.get("/api/get-token", async function (req, res) {
   }
   const partialUserInfo = {
     id: user.id,
+    username: user.username,
     first_name: user.first_name,
     last_name: user.last_name,
     email: user.email,
@@ -875,6 +936,7 @@ app.get(
   (req, res) => {
     const { presentationId, subjectId } = req.params;
     const { filename, teacherPres } = req.query;
+
     let filePath = "";
     if (teacherPres == "true") {
       filePath = `uploads/teacher/${subjectId}/${presentationId}_${filename}`;
@@ -907,7 +969,7 @@ app.post(
   upload.single("file"),
   async (req, res, next) => {
     const { subjectId } = req.params;
-    const { teacherPres, userId } = req.query;
+    const { teacherPres, userId, status } = req.query;
     const file = req.file;
     let presId = null;
 
@@ -925,6 +987,7 @@ app.post(
         getCurrentDate()
       );
     } else {
+      if (parseInt(status) !== constants.STUD_PRES_NEUTRAL) return;
       const oldPres = await queries.getStudentPresentation(userId, subjectId);
       if (oldPres) {
         const targetUslId = oldPres.target_usl_id;

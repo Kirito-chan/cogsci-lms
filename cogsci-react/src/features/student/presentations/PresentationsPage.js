@@ -14,7 +14,7 @@ import {
   loadSubjectWeight,
   loadTeacherPresentations,
 } from "../home/homeSlice";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import PresentationsPageList from "./PresentationsPageList";
 
 function PresentationsPage() {

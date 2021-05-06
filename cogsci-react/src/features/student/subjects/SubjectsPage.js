@@ -11,7 +11,7 @@ import {
   clearCurrentSubject,
   getCurrentSubjectId,
 } from "./subjectsSlice";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 import { resetState } from "../../../app/actions";
 
 function SubjectsPage() {

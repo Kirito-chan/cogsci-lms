@@ -3,7 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import SlidersForm from "./SlidersForm";
 import Container from "react-bootstrap/Container";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 
 function PresentationEvaluation({ evaluatedUserId }) {
   return (

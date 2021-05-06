@@ -1,5 +1,5 @@
 import React from "react";
-import formatTranslation from "../../../../components/StringUtils";
+import formatTranslation from "../../../../components/utils/StringUtils";
 import {
   GOT_0_BONUS_POINTS,
   GOT_1_BONUS_POINTS,

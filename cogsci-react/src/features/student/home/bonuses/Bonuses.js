@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import { loadBonuses, getBonuses } from "../homeSlice";
 import { useParams } from "react-router";
-import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../../components/utils/StringUtils";
 
 function Bonuses() {
   const dispatch = useDispatch();

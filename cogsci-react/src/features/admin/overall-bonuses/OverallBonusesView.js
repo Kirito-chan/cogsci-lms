@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import formatDate from "../../../components/DateUtils";
+import formatDate from "../../../components/utils/DateUtils";
 import Button from "react-bootstrap/Button";
 import {
   GOT_1_BONUS_POINTS,
@@ -29,8 +29,6 @@ function OverallBonusesView({
   const numOfBonuses = hasStudentsAndBonuses
     ? studentsBonuses[0].bonuses.length
     : 0;
-  console.log(studentsBonuses);
-  console.log(checkedBonuses);
 
   return (
     <Container fluid>

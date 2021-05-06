@@ -17,10 +17,7 @@ const api = ({ dispatch }) => (next) => async (action) => {
 
   if (onStart) dispatch({ type: onStart });
 
-  let newHeaders = headers;
-  if (!headers) {
-    newHeaders = getTokenHeaders();
-  }
+  const newHeaders = { ...getTokenHeaders(), ...headers };
 
   next(action);
   let response = null;

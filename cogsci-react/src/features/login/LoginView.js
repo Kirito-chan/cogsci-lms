@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import Navigation from "../../components/Navigation";
+import Navigation from "../../components/navigations/Navigation";
 import { Link } from "react-router-dom";
 import { URL_FORGOTTEN_PASSWORD } from "../../constants";
 
@@ -29,7 +29,7 @@ function LoginView({
             type="text"
             placeholder="Username"
             onChange={(e) => setUsername(e.target.value)}
-            isInvalid={Boolean(error.includes("meno"))}
+            isInvalid={Boolean(error?.includes("meno"))}
             autoComplete="username"
           />
           <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
@@ -41,7 +41,7 @@ function LoginView({
             type="password"
             placeholder="Heslo"
             onChange={(e) => setPassword(e.target.value)}
-            isInvalid={Boolean(error.includes("heslo"))}
+            isInvalid={Boolean(error?.includes("heslo"))}
             autoComplete="current-password"
           />
           <Link to={URL_FORGOTTEN_PASSWORD}>Zabudli ste heslo?</Link>

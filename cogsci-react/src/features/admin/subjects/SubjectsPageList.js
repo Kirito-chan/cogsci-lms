@@ -12,7 +12,7 @@ import {
   SUBJ_IS_ACTIVE,
   URL_ADMIN_HOME,
 } from "../../../constants";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import AddSubjectModal from "./AddSubjectModal";
 import Badge from "react-bootstrap/Badge";
 

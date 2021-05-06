@@ -1,5 +1,5 @@
 import React from "react";
-import Navigation from "./Navigation";
+import Navigation from "./navigations/Navigation";
 
 function NotAuthorizedPage() {
   return (

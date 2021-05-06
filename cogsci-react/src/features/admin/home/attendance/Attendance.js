@@ -4,7 +4,7 @@ import "./Attendance.css";
 import { getAttendance, loadAttendance } from "../homeSlice";
 import AttendanceTable from "./AttendanceTable";
 import { useParams } from "react-router";
-import { showLoaderIfAnyNull } from "../../../../components/StringUtils";
+import { showLoaderIfAnyNull } from "../../../../components/utils/StringUtils";
 
 export default function Attendance() {
   const dispatch = useDispatch();

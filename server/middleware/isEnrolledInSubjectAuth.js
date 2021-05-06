@@ -12,8 +12,13 @@ const isEnrolledInSubjectAuth = function (req, res, next) {
   const decodedToken = jwt.decode(getToken(req));
 
   if (decodedToken) {
-    const enrolledCourses = decodedToken.enrolledCourses;
-    for (const course of enrolledCourses) {
+    if (decodedToken?.isAdmin) {
+      next();
+      return;
+    }
+    const enrolledActiveCourses = decodedToken.enrolledActiveCourses;
+
+    for (const course of enrolledActiveCourses) {
       if (course.id == subjectId) {
         next();
         return;

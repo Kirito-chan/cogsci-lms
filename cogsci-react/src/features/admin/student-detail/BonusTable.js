@@ -2,7 +2,7 @@ import React from "react";
 import Table from "react-bootstrap/Table";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
-import formatDate from "../../../components/DateUtils";
+import formatDate from "../../../components/utils/DateUtils";
 import {
   GOT_0_BONUS_POINTS,
   GOT_1_BONUS_POINTS,

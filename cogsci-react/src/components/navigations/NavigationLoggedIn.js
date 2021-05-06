@@ -20,20 +20,21 @@ import {
   URL_ADMIN_USERS,
   URL_ADMIN_OVERALL_ATTENDANCE,
   USER_LOGOUT,
-} from "../constants";
-import { useLocation, useParams } from "react-router";
+} from "../../constants";
+import { useHistory, useLocation, useParams } from "react-router";
 import {
   loadSubject,
   getCurrentSubjectName,
   clearCurrentSubject,
   getCurrentSubjectId,
-} from "../features/student/subjects/subjectsSlice";
+} from "../../features/student/subjects/subjectsSlice";
 import { NavLink } from "react-router-dom";
 import NavDivider from "./NavDivider";
-import { resetState } from "../app/actions";
+import { resetState } from "../../app/actions";
 
 function NavigationLoggedIn({ currentUserName, isAdmin }) {
   const dispatch = useDispatch();
+  const history = useHistory();
   const subjectIdParams = useParams().subjectId;
   const subjectName = useSelector(getCurrentSubjectName);
   const subjectId = useSelector(getCurrentSubjectId);
@@ -52,6 +53,8 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
     if (event === USER_LOGOUT) {
       localStorage.clear();
       dispatch(resetState());
+    } else if (event === "changeProfile") {
+      history.push("/profile");
     }
   };
 
@@ -144,8 +147,8 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
             id="nav-dropdown"
             onSelect={handleDropdown}
           >
-            <NavDropdown.Item eventKey="changePassword">
-              Zmeniť heslo
+            <NavDropdown.Item eventKey="changeProfile">
+              Upraviť profil
             </NavDropdown.Item>
             <NavDropdown.Item eventKey={USER_LOGOUT}>Odhlásiť</NavDropdown.Item>
           </NavDropdown>

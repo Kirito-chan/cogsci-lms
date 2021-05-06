@@ -1,6 +1,6 @@
 export const scrollWithOffset = (el) => {
   const yCoordinate = el.getBoundingClientRect().top + window.pageYOffset;
-  const yOffset = 96;
+  const yOffset = 250;
   window.scrollTo({ top: yCoordinate - yOffset, behavior: "smooth" });
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
-import getGrade from "../../../../components/Math";
+import getGrade from "../../../../components/utils/Math";
 
 export default function EvaluationTable({
   presentation,

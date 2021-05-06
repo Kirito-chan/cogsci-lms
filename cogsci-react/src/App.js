@@ -27,10 +27,11 @@ import {
   URL_FORGOTTEN_PASSWORD,
   URL_RESETED_PASSWORD,
   URL_LOGIN,
+  URL_PROFILE,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./components/utils/ScrollToTop";
 import PresentationPage from "./features/student/presentation/PresentationPage";
 import PresentationsPage from "./features/student/presentations/PresentationsPage";
 import TermsPage from "./features/student/terms/TermsPage";
@@ -46,6 +47,7 @@ import OverallAttendance from "./features/admin/overall-attendance/OverallAttend
 import OverallBonuses from "./features/admin/overall-bonuses/OverallBonuses";
 import ForgottenPasswordPage from "./features/login/ForgottenPasswordPage";
 import ResetedPasswordPage from "./features/login/ResetedPasswordPage";
+import ProfileChangePage from "./components/profile-change/ProfileChangePage";
 
 // prettier-ignore
 function App() {
@@ -80,6 +82,7 @@ function App() {
           {/* student and admin common routes */}        
           <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="both" />
           <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} component={PresentationPage} type="both" />
+          <AuthRoute path={URL_PROFILE} component={ProfileChangePage} type="both" />
           <AuthRoute path={URL_REGISTER} component={RegisterPage} type="register" />
           <AuthRoute path={URL_FORGOTTEN_PASSWORD} component={ForgottenPasswordPage} type="register" />
           <AuthRoute path={URL_RESETED_PASSWORD + "/:userId/:token"} component={ResetedPasswordPage} type="register" />

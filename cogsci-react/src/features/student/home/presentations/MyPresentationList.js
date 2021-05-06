@@ -1,7 +1,7 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import formatTranslation from "../../../../components/StringUtils";
+import formatTranslation from "../../../../components/utils/StringUtils";
 import { Link } from "react-router-dom";
 import {
   STUD_PRES_CLOSED,

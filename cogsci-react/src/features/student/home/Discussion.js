@@ -1,5 +1,5 @@
 import React from "react";
-import formatTranslation from "../../../components/StringUtils";
+import formatTranslation from "../../../components/utils/StringUtils";
 import BonusEvaluation from "./bonuses/BonusEvaluation";
 import { HashLink } from "react-router-hash-link";
 import { useSelector } from "react-redux";

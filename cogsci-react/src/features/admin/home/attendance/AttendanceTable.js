@@ -1,6 +1,6 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
-import formatDate from "../../../../components/DateUtils";
+import formatDate from "../../../../components/utils/DateUtils";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import LockAttendance from "./LockAttendance";
 import { ATTENDANCE_CLOSED, ATTENDANCE_OPENED } from "../../../../constants";

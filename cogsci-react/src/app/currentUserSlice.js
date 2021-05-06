@@ -6,9 +6,12 @@ export const slice = createSlice({
   name: "currentUser",
   initialState: {
     id: null, // 346 je dobry testovaci user, 241 som ja
+    username: "",
+    firstName: "",
+    lastName: "",
     name: "",
-    isAdmin: null,
     email: "",
+    isAdmin: null,
     token: "",
     tokenError: null,
     error: "",
@@ -19,6 +22,9 @@ export const slice = createSlice({
     tokenUserReceived: (state, action) => {
       state.token = action.payload.token;
       state.id = action.payload.user.id;
+      state.username = action.payload.user.username;
+      state.firstName = action.payload.user.first_name;
+      state.lastName = action.payload.user.last_name;
       state.name =
         action.payload.user.first_name + " " + action.payload.user.last_name;
       state.email = action.payload.user.email;
@@ -179,6 +185,9 @@ export const getTokenHeaders = () => {
 export const getCurrentUserId = (state) => state.currentUser.id;
 export const getCurrentUserName = (state) => state.currentUser.name;
 export const getCurrentUserEmail = (state) => state.currentUser.email;
+export const getCurrentUsername = (state) => state.currentUser.username;
+export const getCurrentFirstName = (state) => state.currentUser.firstName;
+export const getCurrentLastName = (state) => state.currentUser.lastName;
 export const getToken = (state) => state.currentUser.token;
 export const getError = (state) => state.currentUser.error;
 export const getTokenError = (state) => state.currentUser.tokenError;

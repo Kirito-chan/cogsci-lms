@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { getUsers, loadUsers, updateUserRole } from "./allUsersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import UsersList from "./UsersList";
-import { showLoaderIfAnyNull } from "../../../components/StringUtils";
-import Navigation from "../../../components/Navigation";
+import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
+import Navigation from "../../../components/navigations/Navigation";
 import { IS_ADMIN, IS_STUDENT } from "../../../constants";
 import { resetState } from "../../../app/actions";
 

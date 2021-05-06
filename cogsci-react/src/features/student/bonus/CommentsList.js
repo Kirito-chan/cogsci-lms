@@ -8,7 +8,7 @@ import Col from "react-bootstrap/Col";
 import {
   showLoaderIfAnyNull,
   showLoaderIfEmptyArray,
-} from "../../../components/StringUtils";
+} from "../../../components/utils/StringUtils";
 import { useDispatch, useSelector } from "react-redux";
 import { getIsAdmin } from "../../../app/currentUserSlice";
 import { loadBonuses } from "../home/homeSlice";

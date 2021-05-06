@@ -92,14 +92,16 @@ export const uploadPresentation = (
   file,
   subjectId,
   currentUserId,
-  isTeacherPres
+  isTeacherPres,
+  status = 0
 ) => (dispatch) => {
   const data = new FormData();
   data.append("file", file);
   const url = createUrlToUploadPresentation(
     subjectId,
     isTeacherPres,
-    currentUserId
+    currentUserId,
+    status
   );
 
   return dispatch(

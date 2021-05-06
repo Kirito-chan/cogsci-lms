@@ -12,7 +12,7 @@ import {
   loadStudentPresentationsOpened,
   loadTeacherPresentations,
 } from "../../student/home/homeSlice";
-import Navigation from "../../../components/Navigation";
+import Navigation from "../../../components/navigations/Navigation";
 import PresentationsPageList from "./PresentationsPageList";
 import { getStudentPresentationsNeutral } from "../home/homeSlice";
 import { loadStudentPresentationsNeutral } from "../home/homeSlice";

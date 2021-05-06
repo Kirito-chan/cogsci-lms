@@ -15,7 +15,7 @@ import { insertSubject, loadSubjects } from "./subjectsSlice";
 import {
   getCurrentSchoolYear,
   getCurrentSeason,
-} from "../../../components/DateUtils";
+} from "../../../components/utils/DateUtils";
 import { TextAreaInput, TextInput } from "../../../components/FormComponents";
 
 function AddSubjectModal({ showAddSubject, setShowAddSubject }) {
