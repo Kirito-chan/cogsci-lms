@@ -14,6 +14,9 @@ function PresentationsPageList({
   myPresentation,
   presentationWeight,
   subjectId,
+  currentUserId,
+  handleUpload,
+  fileInputRef,
 }) {
   return (
     <div>
@@ -28,6 +31,9 @@ function PresentationsPageList({
                 myPresentation={myPresentation}
                 presentationWeight={presentationWeight}
                 subjectId={subjectId}
+                currentUserId={currentUserId}
+                handleUpload={handleUpload}
+                fileInputRef={fileInputRef}
                 classname="mt-0"
               />
             )}

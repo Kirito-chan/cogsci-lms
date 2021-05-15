@@ -54,6 +54,7 @@ export const slice = createSlice({
     },
     updatedStudentStatus: () => {},
     attendancesReceived: (state, action) => {
+      console.log(action.payload);
       state.attendances = action.payload;
     },
     updatedAttendanceStatus: () => {},

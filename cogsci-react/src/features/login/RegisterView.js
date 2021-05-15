@@ -14,6 +14,9 @@ import {
 import { isValidEmail } from "../../components/utils/StringUtils";
 
 function RegisterView({
+  firstName,
+  lastName,
+  username,
   setFirstName,
   setLastName,
   setUsername,
@@ -41,10 +44,12 @@ function RegisterView({
                   title="Meno"
                   setContent={setFirstName}
                   autoComplete="given-name"
+                  content={firstName}
                 />
                 <TextInputRegistration
                   title="Priezvisko"
                   autoComplete="family-name"
+                  content={lastName}
                   setContent={setLastName}
                 />
 
@@ -56,12 +61,14 @@ function RegisterView({
                     !isValidEmail(email) || Boolean(error?.includes("email"))
                   }
                   error={error ? error : emailError}
+                  content={email}
                   setContent={setEmail}
                   clearError={clearError}
                 />
 
                 <TextInputRegistration
                   title="Prihlasovacie meno"
+                  content={username}
                   setContent={setUsername}
                   isInvalid={Boolean(error?.includes("meno"))}
                   error={error}
@@ -72,6 +79,7 @@ function RegisterView({
                   title="Heslo"
                   type="password"
                   autoComplete="new-password"
+                  content={password}
                   setContent={setPassword}
                   isInvalid={password?.length < MINIMAL_PASSWORD_LENGTH}
                   error={SHORT_PASSWORD_ERROR}
@@ -80,6 +88,7 @@ function RegisterView({
                 <TextInputRegistration
                   title="Zopakujte heslo"
                   type="password"
+                  content={passwordAgain}
                   setContent={setPasswordAgain}
                   isInvalid={password !== passwordAgain}
                   error={DIFFERENT_PASSWORD_ERROR}

@@ -12,16 +12,16 @@ function BonusEvaluation({ evaluation }) {
   let text = "získal " + evaluation;
 
   if (evaluation == GOT_0_BONUS_POINTS) {
-    textClassAttribute = "text-danger font-weight-bold";
+    textClassAttribute = "text-muted";
     text = text.concat(" " + formatTranslation(0, "bod"));
   } else if (evaluation == GOT_1_BONUS_POINTS) {
     textClassAttribute = "text-success font-weight-bold";
     text = text.concat(" " + formatTranslation(1, "bod"));
   } else if (evaluation == NOT_YET_EVALUATED_BONUS_POINTS) {
     textClassAttribute = "text-secondary";
-    text = "nehodnotené";
+    text = "zatiaľ nehodnotené";
   } else if (evaluation == NOT_YET_COMMENTED) {
-    textClassAttribute = "text-secondary";
+    textClassAttribute = "text-danger font-weight-bold";
     text = "nekomentovali ste";
   }
 

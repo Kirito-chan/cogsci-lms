@@ -24,12 +24,7 @@ export const slice = createSlice({
   },
   reducers: {
     attendancesReceived: (state, action) => {
-      state.attendances = [];
-      for (const attendance of action.payload) {
-        let attendanceCopy = Object.assign({}, attendance);
-        delete attendance.password;
-        state.attendances.push(attendanceCopy);
-      }
+      state.attendances = action.payload;
     },
     bonusesReceived: (state, action) => {
       state.bonuses = action.payload;

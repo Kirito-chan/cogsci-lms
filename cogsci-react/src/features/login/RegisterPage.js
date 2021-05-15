@@ -44,15 +44,18 @@ function RegisterPage() {
       ) : (
         <RegisterView
           handleSubmit={handleSubmit}
+          firstName={firstName}
+          lastName={lastName}
+          username={username}
+          email={email}
+          password={password}
+          passwordAgain={passwordAgain}
           setFirstName={setFirstName}
           setLastName={setLastName}
           setUsername={setUsername}
           setPassword={setPassword}
           setEmail={setEmail}
           setPasswordAgain={setPasswordAgain}
-          password={password}
-          passwordAgain={passwordAgain}
-          email={email}
           error={error}
         />
       )}

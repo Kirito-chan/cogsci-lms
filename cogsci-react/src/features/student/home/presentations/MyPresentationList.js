@@ -62,7 +62,7 @@ function MyPresentationList({
               Pridať prezentáciu
             </Button>
           ) : (
-            <Button size="sm" type="submit" variant="outline-danger">
+            <Button size="sm" type="submit" variant="outline-warning">
               Nahradiť prezentáciu
             </Button>
           )}

@@ -499,6 +499,18 @@ app.post("/api/login", async function (req, res) {
 
 app.get("/api/get-token", async function (req, res) {
   const token = getToken(req);
+  if (!token) {
+    res.status(401).send("Unauthorized: No token provided");
+    return;
+  } else {
+    jwt.verify(token, secret, function (err, decoded) {
+      if (err) {
+        res.status(401).send("Unauthorized: Invalid token");
+        return;
+      }
+    });
+  }
+
   const decodedToken = jwt.decode(token);
   const userId = decodedToken.id;
   const user = await queries.getUserById(userId);
@@ -520,27 +532,23 @@ app.get("/api/get-token", async function (req, res) {
 
 // POST route to register a user
 app.post("/api/register", async function (req, res) {
-  const {
-    firstName,
-    lastName,
-    username,
-    password,
-    passwordAgain,
-    email,
-  } = req.body;
+  const { firstName, lastName, username, password, passwordAgain, email } =
+    req.body;
   if (password !== passwordAgain) {
     res.status(403).send("Heslá sa nezhodujú !");
     return;
   }
 
   const user = await queries.getUserByUsername(username);
-  const userEmail = await queries.getUserByEmail(email)?.email;
+  const user2 = await queries.getUserByEmail(email);
+  const user2Email = user2?.email;
 
   if (user) {
     res.status(409).send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
     return;
   }
-  if (userEmail) {
+
+  if (user2Email) {
     res.status(409).send("Zadaný email už existuje, zvoľte iný !");
     return;
   }
@@ -642,6 +650,7 @@ app.get(
   async (req, res) => {
     const { subjectId } = req.params;
     const rows = await queries.getAttendance(subjectId);
+
     res.json(rows);
   }
 );
@@ -902,7 +911,7 @@ app.get(
     res.json(rows);
   }
 );
-// TREBA ESTE OVERIT ci values maju v sebe len hodnotu medzi <0, 10>
+
 // insert evaluation of a presentation that is taken from Sliders form
 app.post(
   "/api/subject/:subjectId/presentation/:presentationId/evaluation",
@@ -911,6 +920,12 @@ app.post(
     const { subjectId, presentationId } = req.params;
     const { userWhoEvaluatesId, evaluatedUserId } = req.query;
     const { values } = req.body;
+
+    if (values && values.length > 0) {
+      for (const value of values) {
+        if (value.value < 0 || value.value > 10) return;
+      }
+    }
 
     const whoseUslId = await queries.getUslId(subjectId, userWhoEvaluatesId);
     const targetUslId = await queries.getUslId(subjectId, evaluatedUserId);

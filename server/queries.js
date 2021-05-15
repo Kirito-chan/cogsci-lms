@@ -904,6 +904,11 @@ export const getTeacherPresentations = async (userId, subjectId) => {
   return row;
 };
 
+export const getAllTeachers = async () => {
+  const [rows] = await execute(`SELECT * FROM user WHERE role = ?`, [IS_ADMIN]);
+  return rows;
+};
+
 export const getAllTeachersIds = async () => {
   const [rows] = await execute(`SELECT id FROM user WHERE role = ?`, [
     IS_ADMIN,
