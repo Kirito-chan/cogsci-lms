@@ -20,11 +20,10 @@ function Comment({
   return (
     <article
       className={
-        "p-3 mb-2 bg-light-grey " +
-        (isMyComment
-          ? "border border-primary"
-          : isAdminComment
-          ? "border border-success"
+        "p-3 mb-2 " +
+        (isAdminComment ? " bg-dark-grey " : " bg-light-grey ") +
+        (isMyComment && !isAdminComment
+          ? "border border-primary my-border-2 "
           : "") +
         " " +
         indentLeftCSS

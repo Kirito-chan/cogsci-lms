@@ -4,6 +4,15 @@
   border-radius: 4%;
 }
 
+.bg-dark-grey {
+  background-color: #dee2ed;
+  border-radius: 4%;
+}
+
+.my-border-2 {
+  border-width: 2px !important;
+}
+
 /* v Comment.js */
 .with-spaces {
   white-space: pre-wrap;

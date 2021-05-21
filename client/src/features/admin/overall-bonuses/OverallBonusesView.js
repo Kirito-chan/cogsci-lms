@@ -8,10 +8,13 @@ import {
   GOT_1_BONUS_POINTS,
   NOT_YET_COMMENTED,
   NOT_YET_EVALUATED_BONUS_POINTS,
+  URL_ADMIN_STUDENT_DETAIL,
+  URL_BONUSES,
 } from "../../../constants";
-import { FaToggleOff, FaToggleOn } from "react-icons/fa";
+
 import "./OverallBonusesView.css";
 import LoadingInButton from "../../../components/LoadingInButton";
+import { Link } from "react-router-dom";
 
 function OverallBonusesView({
   studentsBonuses,
@@ -19,8 +22,7 @@ function OverallBonusesView({
   handleChange,
   handleSubmit,
   loading,
-  handleToggleOff,
-  handleToggleOn,
+  subjectId,
 }) {
   const hasStudents = studentsBonuses.length > 0;
   const hasStudentsAndBonuses =
@@ -38,11 +40,26 @@ function OverallBonusesView({
           <Table bordered striped hover size="sm" className="text-center">
             <thead>
               <tr>
-                <th>Bonus</th>
+                <th className="align-middle">Bonus</th>
                 {Array(numOfBonuses)
                   .fill(1)
                   .map((_, i) => (
-                    <th key={i}>{i + 1}.</th>
+                    <th key={i}>
+                      {
+                        <Link
+                          to={
+                            "/subject/" +
+                            subjectId +
+                            URL_BONUSES +
+                            "/" +
+                            studentsBonuses[0].bonuses[i].id
+                          }
+                          className="link"
+                        >
+                          {i + 1}.
+                        </Link>
+                      }
+                    </th>
                   ))}
               </tr>
               <tr>
@@ -57,8 +74,19 @@ function OverallBonusesView({
               {studentsBonuses.map((studentBonus) => (
                 <tr key={studentBonus.student.id}>
                   <td>
-                    {studentBonus.student.last_name}{" "}
-                    {studentBonus.student.first_name}
+                    <Link
+                      to={
+                        "/subject/" +
+                        subjectId +
+                        URL_ADMIN_STUDENT_DETAIL +
+                        "/" +
+                        studentBonus.student.id
+                      }
+                      className="link"
+                    >
+                      {studentBonus.student.last_name}{" "}
+                      {studentBonus.student.first_name}
+                    </Link>
                   </td>
 
                   {Array(numOfBonuses)
@@ -75,79 +103,48 @@ function OverallBonusesView({
                       const commented = isChecked == NOT_YET_COMMENTED;
                       return (
                         <td key={j}>
-                          <div
-                            className={
-                              !commented
-                                ? "d-flex justify-content-between pl-5"
-                                : ""
-                            }
-                          >
-                            <Form.Check
-                              row={studentBonus.student.id}
-                              col={studentBonus.bonuses[j].id}
-                              type="checkbox"
-                              className={
-                                commented ? "d-none" : "d-inline-block"
-                              }
-                            >
-                              <Form.Check.Input
+                          <div>
+                            <div>
+                              <Form.Check
                                 row={studentBonus.student.id}
                                 col={studentBonus.bonuses[j].id}
                                 type="checkbox"
-                                onChange={handleChange}
-                                disabled={
-                                  isChecked == NOT_YET_EVALUATED_BONUS_POINTS
+                                className={commented ? "d-none" : "d-block"}
+                              >
+                                <Form.Check.Input
+                                  row={studentBonus.student.id}
+                                  col={studentBonus.bonuses[j].id}
+                                  type="checkbox"
+                                  onChange={handleChange}
+                                  className="opacity-1"
+                                  checked={
+                                    isChecked == GOT_1_BONUS_POINTS
+                                      ? true
+                                      : false
+                                  }
+                                />
+                              </Form.Check>
+                              <div
+                                className={
+                                  "text-center " +
+                                  (commented ? "d-block" : "d-none")
                                 }
-                                className="opacity-1"
-                                checked={
-                                  isChecked == GOT_1_BONUS_POINTS ? true : false
-                                }
-                              />
-                            </Form.Check>
-                            <div
-                              className={
-                                "text-center " +
-                                (commented ? "d-block" : "d-none")
-                              }
-                            >
-                              <span>nekomentoval</span>
+                              >
+                                <span>nekomentoval</span>
+                              </div>
                             </div>
-
-                            <span
-                              className={
-                                commented ? "d-none" : "d-inline-block"
-                              }
-                            >
-                              <Button
-                                variant="outline-success"
-                                row={studentBonus.student.id}
-                                col={studentBonus.bonuses[j].id}
-                                className={
-                                  "btn-xs " +
-                                  (isChecked != NOT_YET_EVALUATED_BONUS_POINTS
-                                    ? "d-inline-block"
-                                    : "d-none")
-                                }
-                                onClick={handleToggleOn}
-                              >
-                                <FaToggleOn size={15} />
-                              </Button>
-                              <Button
-                                variant="outline-danger"
-                                row={studentBonus.student.id}
-                                col={studentBonus.bonuses[j].id}
-                                className={
-                                  "btn-xs " +
-                                  (isChecked == NOT_YET_EVALUATED_BONUS_POINTS
-                                    ? "d-inline-block"
-                                    : "d-none")
-                                }
-                                onClick={handleToggleOff}
-                              >
-                                <FaToggleOff size={15} />
-                              </Button>
-                            </span>
                           </div>
+
+                          {isChecked == NOT_YET_EVALUATED_BONUS_POINTS ? (
+                            <div>
+                              <p></p>
+                              <p className="mb-0 font-weight-bold">
+                                nehodnotené
+                              </p>
+                            </div>
+                          ) : (
+                            ""
+                          )}
                         </td>
                       );
                     })}

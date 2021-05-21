@@ -9,6 +9,7 @@ import {
   NOT_YET_COMMENTED,
   NOT_YET_EVALUATED_BONUS_POINTS,
 } from "../../../constants";
+import { loadComments } from "../../student/bonus/bonusSlice";
 
 import {
   loadStudentsAndBonuses,
@@ -27,9 +28,12 @@ function OverallBonuses() {
     checkedItems: new Map(),
   });
 
-  const handleClick = (e, isChecked) => {
+  const handleChange = (e) => {
     const studentId = e.currentTarget.getAttribute("row");
     const bonusId = e.currentTarget.getAttribute("col");
+    const isChecked = e.currentTarget.checked
+      ? GOT_1_BONUS_POINTS
+      : GOT_0_BONUS_POINTS;
 
     setCheckedBonuses((prevState) => {
       let bonuses = prevState.checkedItems.get(parseInt(studentId));
@@ -45,21 +49,6 @@ function OverallBonuses() {
     });
   };
 
-  const handleChange = (e) => {
-    handleClick(
-      e,
-      e.currentTarget.checked ? GOT_1_BONUS_POINTS : GOT_0_BONUS_POINTS
-    );
-  };
-
-  const handleToggleOn = (e) => {
-    handleClick(e, NOT_YET_EVALUATED_BONUS_POINTS);
-  };
-
-  const handleToggleOff = (e) => {
-    handleClick(e, GOT_0_BONUS_POINTS);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -68,6 +57,10 @@ function OverallBonuses() {
       checkedItems.push({ student: { id: key }, bonuses: value });
     }
     dispatch(updateStudentsAndBonuses(subjectId, checkedItems)).then(() => {
+      for (let i = 0; i < checkedItems[0].bonuses.length; i++) {
+        dispatch(loadComments(checkedItems[0].bonuses[i].bonusId, subjectId));
+      }
+
       setLoading(false);
     });
   };
@@ -112,8 +105,7 @@ function OverallBonuses() {
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           loading={loading}
-          handleToggleOn={handleToggleOn}
-          handleToggleOff={handleToggleOff}
+          subjectId={subjectId}
         />
       )}
     </div>

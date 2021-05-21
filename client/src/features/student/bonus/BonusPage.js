@@ -39,8 +39,8 @@ function BonusPage() {
   }, [currentUserId, subjectId]);
 
   useEffect(() => {
-    if (bonusId) dispatch(loadComments(bonusId, subjectId));
-  }, [bonusId]);
+    if (bonusId && subjectId) dispatch(loadComments(bonusId, subjectId));
+  }, [bonusId, subjectId]);
 
   useEffect(() => {
     if (comments) {

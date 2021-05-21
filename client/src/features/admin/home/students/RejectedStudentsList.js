@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
-
+import "./SmallerButtons.css";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
@@ -21,7 +21,7 @@ function RejectedStudentsList({ rejectedStudents, handleAcceptStudent }) {
             <Button
               variant="success"
               size="sm"
-              className="ml-2"
+              className="ml-2 my-btn-small"
               value={student.id}
               onClick={handleAcceptStudent}
             >

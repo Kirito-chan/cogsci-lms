@@ -86,6 +86,7 @@ function OverallAttendance() {
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           loading={loading}
+          subjectId={subjectId}
         />
       )}
     </div>

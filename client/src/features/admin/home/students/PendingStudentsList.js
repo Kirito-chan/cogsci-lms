@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
+import "./SmallerButtons.css";
 
 function PendingStudentsList({
   pendingStudents,
@@ -22,13 +23,14 @@ function PendingStudentsList({
               size="sm"
               value={student.id}
               onClick={handleRejectStudent}
+              className="my-btn-small"
             >
               Zamietnuť
             </Button>
             <Button
               variant="success"
               size="sm"
-              className="ml-2 mr-5"
+              className="ml-2 mr-5 my-btn-small"
               value={student.id}
               onClick={handleAcceptStudent}
             >

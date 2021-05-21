@@ -5,6 +5,8 @@ import Form from "react-bootstrap/Form";
 import formatDate from "../../../components/utils/DateUtils";
 import Button from "react-bootstrap/Button";
 import LoadingInButton from "../../../components/LoadingInButton";
+import { Link } from "react-router-dom";
+import { URL_ADMIN_STUDENT_DETAIL } from "../../../constants";
 
 function OverallAttendanceView({
   studentsAttendance,
@@ -12,6 +14,7 @@ function OverallAttendanceView({
   handleChange,
   handleSubmit,
   loading,
+  subjectId,
 }) {
   const hasStudents = studentsAttendance.length > 0;
   const hasStudentsAndAttendances =
@@ -46,8 +49,19 @@ function OverallAttendanceView({
               {studentsAttendance.map((studentAttendance) => (
                 <tr key={studentAttendance.student.id}>
                   <td>
-                    {studentAttendance.student.last_name}{" "}
-                    {studentAttendance.student.first_name}
+                    <Link
+                      to={
+                        "/subject/" +
+                        subjectId +
+                        URL_ADMIN_STUDENT_DETAIL +
+                        "/" +
+                        studentAttendance.student.id
+                      }
+                      className="link"
+                    >
+                      {studentAttendance.student.last_name}{" "}
+                      {studentAttendance.student.first_name}
+                    </Link>
                   </td>
 
                   {Array(numOfAttendances)

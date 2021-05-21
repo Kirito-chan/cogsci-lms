@@ -7,6 +7,7 @@ import {
   URL_ADMIN_STUDENT_DETAIL,
   URL_PRESENTATIONS,
 } from "../../../../constants";
+import "./SmallerButtons.css";
 
 function AcceptedStudentsList({
   acceptedStudents,
@@ -31,16 +32,16 @@ function AcceptedStudentsList({
               "/" +
               student.id
             }
-            className="pl-0 nav-link"
+            className="pl-0 link d-block font-weight-bold mb-1"
           >
             {student.last_name} {student.first_name}
           </Link>
 
           <Button
             variant="outline-danger"
-            size="sm"
             value={student.id}
             onClick={handleRejectStudent}
+            className="my-btn-small"
           >
             Zamietnuť
           </Button>
@@ -53,7 +54,7 @@ function AcceptedStudentsList({
               "/" +
               student.id
             }
-            className="btn btn-warning btn-sm ml-5 mr-2"
+            className="btn btn-warning btn-sm ml-5 mr-2 my-btn-small"
           >
             Hodnotenie
           </Link>
@@ -73,7 +74,7 @@ function AcceptedStudentsList({
                   ? "false"
                   : "neutral")
               }
-              className="btn btn-success btn-sm"
+              className="btn btn-success btn-sm my-btn-small"
             >
               Prezentácia
             </Link>
