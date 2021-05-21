@@ -15,6 +15,7 @@ import * as mailer from "./mailer.js";
 import isAdminAuth from "./middleware/isAdminAuth.js";
 import isEnrolledInSubjectAuth from "./middleware/isEnrolledInSubjectAuth.js";
 import { convertDateToSQLFormat, getCurrentDate } from "./DateUtils.js";
+import pool from "./db.js";
 
 dotenv.config();
 
@@ -45,45 +46,62 @@ app.post("/api/admin/send-email", isAdminAuth, async function (req, res) {
 
 // forgotten and reseted password endpoints
 app.put("/api/forgotten-password/send-email", async function (req, res) {
-  const { email } = req.body;
-  const fromName = "Admin KV";
-  const subject = "Obnovenie hesla";
-  const fromEmail = constants.FROM_EMAIL_RESET_PASSWORD;
+  pool.getConnection().then((conn) => {
+    conn.beginTransaction().then(async () => {
+      try {
+        const { email } = req.body;
+        const fromName = "Admin KV";
+        const subject = "Obnovenie hesla";
+        const fromEmail = constants.FROM_EMAIL_RESET_PASSWORD;
 
-  const user = await queries.getUserByEmail(email);
-  if (user == null) {
-    console.error("Email not in DB");
-    res.status(403).send("Zadaný email neexistuje");
-    return;
-  }
+        const user = await queries.getUserByEmail(email, conn);
+        if (user == null) {
+          console.error("Email not in DB");
+          res.status(403).send("Zadaný email neexistuje");
+          return;
+        }
 
-  const token = crypto.randomBytes(32).toString("hex");
-  const hashedToken = crypto
-    .createHash("sha512")
-    .update(token)
-    .digest("base64");
-  const expires = convertDateToSQLFormat(new Date().addHours(1));
+        const token = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto
+          .createHash("sha512")
+          .update(token)
+          .digest("base64");
+        const expires = convertDateToSQLFormat(new Date().addHours(1));
 
-  await queries.updateUserResetPassword(hashedToken, expires, user.id);
-  const text = constants.getEmailTextForResetPassword(
-    process.env.CLIENT_URL,
-    user.id,
-    token
-  );
+        await queries.updateUserResetPassword(
+          hashedToken,
+          expires,
+          user.id,
+          conn
+        );
+        const text = constants.getEmailTextForResetPassword(
+          process.env.CLIENT_URL,
+          user.id,
+          token
+        );
 
-  const toEmail = [];
-  toEmail.push(email);
-  const messageInfo = {
-    toEmail,
-    fromEmail,
-    fromName,
-    subject,
-    text,
-  };
+        const toEmail = [];
+        toEmail.push(email);
+        const messageInfo = {
+          toEmail,
+          fromEmail,
+          fromName,
+          subject,
+          text,
+        };
 
-  mailer.sendOne(messageInfo);
-
-  res.send('{"message":"Email sent."}');
+        conn.commit().then(() => {
+          mailer.sendOne(messageInfo);
+          res.send('{"message":"Email sent."}');
+        });
+        conn.release();
+      } catch (error) {
+        conn.rollback();
+        conn.release();
+        console.error(error);
+      }
+    });
+  });
 });
 
 app.get("/api/reseted-password/check-expiration", async function (req, res) {
@@ -115,42 +133,57 @@ app.get("/api/reseted-password/check-expiration", async function (req, res) {
 });
 
 app.patch("/api/reseted-password/change-password", async function (req, res) {
-  const { userId, token } = req.query;
-  const { password } = req.body;
+  pool.getConnection().then((conn) => {
+    conn.beginTransaction().then(async () => {
+      try {
+        const { userId, token } = req.query;
+        const { password } = req.body;
 
-  const hashedTokenUrl = crypto
-    .createHash("sha512")
-    .update(token)
-    .digest("base64");
+        const hashedTokenUrl = crypto
+          .createHash("sha512")
+          .update(token)
+          .digest("base64");
 
-  const currentDate = getCurrentDate();
+        const currentDate = getCurrentDate();
 
-  const user = await queries.checkUserResetPasswordToken(
-    userId,
-    hashedTokenUrl,
-    currentDate
-  );
+        const user = await queries.checkUserResetPasswordToken(
+          userId,
+          hashedTokenUrl,
+          currentDate,
+          conn
+        );
 
-  if (user == undefined) {
-    res.status(403).send("Token is invalid or has already expired.");
-    return;
-  }
+        if (user == undefined) {
+          res.status(403).send("Token is invalid or has already expired.");
+          return;
+        }
 
-  const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
-  const passwordAndSalt = `${password}{${salt}}`;
-  const hashedPassword = crypto
-    .createHash("sha512")
-    .update(passwordAndSalt)
-    .digest("base64");
+        const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
+        const passwordAndSalt = `${password}{${salt}}`;
+        const hashedPassword = crypto
+          .createHash("sha512")
+          .update(passwordAndSalt)
+          .digest("base64");
 
-  await queries.updateUserPasswordAndTokens(
-    userId,
-    hashedPassword,
-    salt,
-    currentDate
-  );
+        await queries.updateUserPasswordAndTokens(
+          userId,
+          hashedPassword,
+          salt,
+          currentDate,
+          conn
+        );
 
-  res.json(userId);
+        conn.commit().then(() => {
+          res.json(userId);
+        });
+        conn.release();
+      } catch (error) {
+        conn.rollback();
+        conn.release();
+        console.error(error);
+      }
+    });
+  });
 });
 
 app.post(
@@ -237,34 +270,49 @@ app.patch(
 );
 
 app.post("/api/admin/subject", isAdminAuth, async function (req, res) {
-  let { name, year, season, about, userLimit, weeks, active } = req.body;
+  pool.getConnection().then((conn) => {
+    conn.beginTransaction().then(async () => {
+      try {
+        let { name, year, season, about, userLimit, weeks, active } = req.body;
 
-  if (about === undefined) about = null;
-  const subjectId = await queries.insertSubject(
-    name,
-    year,
-    season,
-    about,
-    userLimit,
-    weeks,
-    active
-  );
-  const teachersIds = await queries.getAllTeachersIds();
-  for (const teacher of teachersIds) {
-    await queries.insertTeacherToUSL(teacher.id, subjectId);
-  }
-  let newPresFolderStudents = "uploads/" + subjectId;
-  let newPresFolderTeachers = "uploads/teacher/" + subjectId;
+        if (about === undefined) about = null;
+        const subjectId = await queries.insertSubject(
+          name,
+          year,
+          season,
+          about,
+          userLimit,
+          weeks,
+          active,
+          conn
+        );
+        const teachersIds = await queries.getAllTeachersIds(conn);
+        for (const teacher of teachersIds) {
+          await queries.insertTeacherToUSL(teacher.id, subjectId, conn);
+        }
+        let newPresFolderStudents = "uploads/" + subjectId;
+        let newPresFolderTeachers = "uploads/teacher/" + subjectId;
 
-  if (!fs.existsSync(newPresFolderStudents)) {
-    fs.mkdirSync(newPresFolderStudents);
-  }
-  if (!fs.existsSync(newPresFolderTeachers)) {
-    fs.mkdirSync(newPresFolderTeachers);
-  }
+        if (!fs.existsSync(newPresFolderStudents)) {
+          fs.mkdirSync(newPresFolderStudents);
+        }
+        if (!fs.existsSync(newPresFolderTeachers)) {
+          fs.mkdirSync(newPresFolderTeachers);
+        }
 
-  await queries.insertSubjectValuation(subjectId);
-  res.json(subjectId);
+        await queries.insertSubjectValuation(subjectId, conn);
+
+        conn.commit().then(() => {
+          res.json(subjectId);
+        });
+        conn.release();
+      } catch (error) {
+        conn.rollback();
+        conn.release();
+        console.error(error);
+      }
+    });
+  });
 });
 
 // admin loading students
@@ -302,14 +350,34 @@ app.get(
   "/api/admin/subject/:subjectId/overall-bonuses",
   isAdminAuth,
   async (req, res) => {
-    const { subjectId } = req.params;
-    const students = await queries.getStudentsBySubjectId(subjectId);
-    const studentBonusesArr = [];
-    for (const student of students) {
-      const bonuses = await queries.getBonusesOfStudent(student.id, subjectId);
-      studentBonusesArr.push({ student, bonuses });
-    }
-    res.json(studentBonusesArr);
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async (res) => {
+        try {
+          const { subjectId } = req.params;
+          const students = await queries.getStudentsBySubjectId(
+            subjectId,
+            conn
+          );
+          const studentBonusesArr = [];
+          for (const student of students) {
+            const bonuses = await queries.getBonusesOfStudent(
+              student.id,
+              subjectId,
+              conn
+            );
+            studentBonusesArr.push({ student, bonuses });
+          }
+          conn.commit().then(() => {
+            res.json(studentBonusesArr);
+          });
+          conn.release();
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
+    });
   }
 );
 
@@ -317,33 +385,48 @@ app.put(
   "/api/admin/subject/:subjectId/overall-bonuses",
   isAdminAuth,
   async (req, res) => {
-    const { subjectId } = req.params;
-    const { checkedBonuses } = req.body;
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          const { subjectId } = req.params;
+          const { checkedBonuses } = req.body;
 
-    for (const checkedBonus of checkedBonuses) {
-      const student = checkedBonus.student;
-      const bonuses = checkedBonus.bonuses;
+          for (const checkedBonus of checkedBonuses) {
+            const student = checkedBonus.student;
+            const bonuses = checkedBonus.bonuses;
 
-      for (const bonus of bonuses) {
-        const studentId = student.id;
-        const valuated =
-          bonus.isChecked == constants.NOT_YET_EVALUATED_BONUS_POINTS
-            ? null
-            : bonus.isChecked == constants.NOT_YET_COMMENTED
-            ? undefined
-            : parseInt(bonus.isChecked);
-        const bonusId = bonus.bonusId;
+            for (const bonus of bonuses) {
+              const studentId = student.id;
+              const valuated =
+                bonus.isChecked == constants.NOT_YET_EVALUATED_BONUS_POINTS
+                  ? null
+                  : bonus.isChecked == constants.NOT_YET_COMMENTED
+                  ? undefined
+                  : parseInt(bonus.isChecked);
+              const bonusId = bonus.bonusId;
 
-        const commentId = await queries.getBonusCommentForUser(
-          studentId,
-          bonusId
-        );
+              const commentId = await queries.getBonusCommentForUser(
+                studentId,
+                bonusId,
+                conn
+              );
 
-        if (valuated !== undefined)
-          await queries.updateBonusValuated(commentId, valuated);
-      }
-    }
-    res.json(subjectId);
+              if (valuated !== undefined)
+                await queries.updateBonusValuated(commentId, valuated, conn);
+            }
+          }
+
+          conn.commit().then(() => {
+            res.json(subjectId);
+          });
+          conn.release();
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
+    });
   }
 );
 
@@ -351,17 +434,35 @@ app.get(
   "/api/admin/subject/:subjectId/overall-attendance",
   isAdminAuth,
   async (req, res) => {
-    const { subjectId } = req.params;
-    const students = await queries.getStudentsBySubjectId(subjectId);
-    const studentAttendancesArr = [];
-    for (const student of students) {
-      const attendances = await queries.getAttendancesOfStudent(
-        student.id,
-        subjectId
-      );
-      studentAttendancesArr.push({ student, attendances });
-    }
-    res.json(studentAttendancesArr);
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          const { subjectId } = req.params;
+          const students = await queries.getStudentsBySubjectId(
+            subjectId,
+            conn
+          );
+          const studentAttendancesArr = [];
+          for (const student of students) {
+            const attendances = await queries.getAttendancesOfStudent(
+              student.id,
+              subjectId,
+              conn
+            );
+            studentAttendancesArr.push({ student, attendances });
+          }
+
+          conn.commit().then(() => {
+            res.json(studentAttendancesArr);
+          });
+          conn.release();
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
+    });
   }
 );
 
@@ -369,94 +470,136 @@ app.put(
   "/api/admin/subject/:subjectId/overall-attendance",
   isAdminAuth,
   async (req, res) => {
-    const { subjectId } = req.params;
-    const { checkedAttendances } = req.body;
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          const { subjectId } = req.params;
+          const { checkedAttendances } = req.body;
 
-    for (const checkedAttendance of checkedAttendances) {
-      const student = checkedAttendance.student;
-      const attendances = checkedAttendance.attendances;
+          for (const checkedAttendance of checkedAttendances) {
+            const student = checkedAttendance.student;
+            const attendances = checkedAttendance.attendances;
 
-      for (const attendance of attendances) {
-        const studentId = student.id;
-        const isChecked = attendance.isChecked;
-        const attendanceId = attendance.attendanceId;
-        const hasAttendance = await queries.userHasAttendance(
-          studentId,
-          attendanceId
-        );
+            for (const attendance of attendances) {
+              const studentId = student.id;
+              const isChecked = attendance.isChecked;
+              const attendanceId = attendance.attendanceId;
+              const hasAttendance = await queries.userHasAttendance(
+                studentId,
+                attendanceId,
+                conn
+              );
 
-        if (isChecked) {
-          if (!hasAttendance) {
-            await queries.insertAttendanceForUser(studentId, attendanceId);
+              if (isChecked) {
+                if (!hasAttendance) {
+                  await queries.insertAttendanceForUser(
+                    studentId,
+                    attendanceId,
+                    conn
+                  );
+                }
+              } else {
+                if (hasAttendance) {
+                  await queries.deleteAttendanceForUser(
+                    studentId,
+                    attendanceId,
+                    conn
+                  );
+                }
+              }
+            }
           }
-        } else {
-          if (hasAttendance) {
-            await queries.deleteAttendanceForUser(studentId, attendanceId);
-          }
+
+          conn.commit().then(() => {
+            res.json(subjectId);
+          });
+          conn.release();
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
         }
-      }
-    }
-    res.json(subjectId);
+      });
+    });
   }
 );
 
 app.put("/api/user/:userId/profile", async function (req, res) {
-  const { userId } = req.params;
-  const {
-    firstName,
-    lastName,
-    username,
-    oldPassword,
-    password,
-    passwordAgain,
-    email,
-  } = req.body;
-  if (password !== passwordAgain) return;
-  const user = await queries.getUserById(userId);
-  const hashedOldPassword = crypto
-    .createHash("sha512")
-    .update(`${oldPassword}{${user.salt}}`)
-    .digest("base64");
-  if (hashedOldPassword !== user.password) {
-    res.status(401).send("Nesprávne heslo !");
-    return;
-  }
+  pool.getConnection().then((conn) => {
+    conn.beginTransaction().then(async () => {
+      try {
+        const { userId } = req.params;
+        const {
+          firstName,
+          lastName,
+          username,
+          oldPassword,
+          password,
+          passwordAgain,
+          email,
+        } = req.body;
+        if (password !== passwordAgain) return;
+        const user = await queries.getUserById(userId, conn);
+        const hashedOldPassword = crypto
+          .createHash("sha512")
+          .update(`${oldPassword}{${user.salt}}`)
+          .digest("base64");
+        if (hashedOldPassword !== user.password) {
+          res.status(401).send("Nesprávne heslo !");
+          return;
+        }
 
-  const userWithSameEmail = await queries.getUserByEmail(email);
-  if (userWithSameEmail && userWithSameEmail.id != userId) {
-    res.status(409).send("Zadaný email už existuje, zvoľte iný !");
-    return;
-  }
+        const userWithSameEmail = await queries.getUserByEmail(email, conn);
+        if (userWithSameEmail && userWithSameEmail.id != userId) {
+          res.status(409).send("Zadaný email už existuje, zvoľte iný !");
+          return;
+        }
 
-  const userWithSameUsername = await queries.getUserByUsername(username);
-  if (userWithSameUsername && userWithSameUsername.id != userId) {
-    res.status(409).send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
-    return;
-  }
+        const userWithSameUsername = await queries.getUserByUsername(
+          username,
+          conn
+        );
+        if (userWithSameUsername && userWithSameUsername.id != userId) {
+          res
+            .status(409)
+            .send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
+          return;
+        }
 
-  let salt;
-  let hashedNewPassword;
+        let salt;
+        let hashedNewPassword;
 
-  if (password) {
-    salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
-    const passwordAndSalt = `${password}{${salt}}`;
-    hashedNewPassword = crypto
-      .createHash("sha512")
-      .update(passwordAndSalt)
-      .digest("base64");
-  }
+        if (password) {
+          salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
+          const passwordAndSalt = `${password}{${salt}}`;
+          hashedNewPassword = crypto
+            .createHash("sha512")
+            .update(passwordAndSalt)
+            .digest("base64");
+        }
 
-  await queries.updateUser(
-    userId,
-    firstName,
-    lastName,
-    username,
-    email,
-    hashedNewPassword,
-    salt
-  );
+        await queries.updateUser(
+          userId,
+          firstName,
+          lastName,
+          username,
+          email,
+          hashedNewPassword,
+          salt,
+          conn
+        );
 
-  res.json(userId);
+        conn.commit().then(() => {
+          res.json(userId);
+        });
+        conn.release();
+      } catch (error) {
+        conn.rollback();
+        conn.release();
+        console.error(error);
+      }
+    });
+  });
 });
 
 // treba osetrit aby student mohol poziadat o pristup iba do aktivneho predmetu
@@ -499,79 +642,104 @@ app.post("/api/login", async function (req, res) {
 
 app.get("/api/get-token", async function (req, res) {
   const token = getToken(req);
+  const secret = process.env.JWT_PRIVATE_KEY;
+
   if (!token) {
     res.status(401).send("Unauthorized: No token provided");
     return;
   } else {
-    jwt.verify(token, secret, function (err, decoded) {
+    jwt.verify(token, secret, async function (err, decoded) {
       if (err) {
         res.status(401).send("Unauthorized: Invalid token");
         return;
+      } else {
+        const decodedToken = jwt.decode(token);
+        const userId = decodedToken.id;
+        const user = await queries.getUserById(userId);
+        if (user === undefined) {
+          res.status(404).send(`Užívateľ s id = ${userId} neexistuje`);
+          return;
+        }
+        const partialUserInfo = {
+          id: user.id,
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          role: user.role,
+        };
+
+        res.json({ token, user: partialUserInfo });
       }
     });
   }
-
-  const decodedToken = jwt.decode(token);
-  const userId = decodedToken.id;
-  const user = await queries.getUserById(userId);
-  if (user === undefined) {
-    res.status(404).send(`Užívateľ s id = ${userId} neexistuje`);
-    return;
-  }
-  const partialUserInfo = {
-    id: user.id,
-    username: user.username,
-    first_name: user.first_name,
-    last_name: user.last_name,
-    email: user.email,
-    role: user.role,
-  };
-
-  res.json({ token, user: partialUserInfo });
 });
 
 // POST route to register a user
 app.post("/api/register", async function (req, res) {
-  const { firstName, lastName, username, password, passwordAgain, email } =
-    req.body;
-  if (password !== passwordAgain) {
-    res.status(403).send("Heslá sa nezhodujú !");
-    return;
-  }
+  pool.getConnection().then((conn) => {
+    conn.beginTransaction().then(async () => {
+      try {
+        const {
+          firstName,
+          lastName,
+          username,
+          password,
+          passwordAgain,
+          email,
+        } = req.body;
+        if (password !== passwordAgain) {
+          res.status(403).send("Heslá sa nezhodujú !");
+          return;
+        }
 
-  const user = await queries.getUserByUsername(username);
-  const user2 = await queries.getUserByEmail(email);
-  const user2Email = user2?.email;
+        const user = await queries.getUserByUsername(username, conn);
+        const user2 = await queries.getUserByEmail(email, conn);
+        const user2Email = user2?.email;
 
-  if (user) {
-    res.status(409).send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
-    return;
-  }
+        if (user) {
+          res
+            .status(409)
+            .send("Zadané prihlasovacie meno už existuje, zvoľte iné !");
+          return;
+        }
 
-  if (user2Email) {
-    res.status(409).send("Zadaný email už existuje, zvoľte iný !");
-    return;
-  }
-  const typedPassword = password;
+        if (user2Email) {
+          res.status(409).send("Zadaný email už existuje, zvoľte iný !");
+          return;
+        }
+        const typedPassword = password;
 
-  const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
-  const passwordAndSalt = `${typedPassword}{${salt}}`;
-  const hashedPassword = crypto
-    .createHash("sha512")
-    .update(passwordAndSalt)
-    .digest("base64");
-  const date = getCurrentDate();
+        const salt = bcrypt.genSaltSync(constants.SALT_ROUNDS);
+        const passwordAndSalt = `${typedPassword}{${salt}}`;
+        const hashedPassword = crypto
+          .createHash("sha512")
+          .update(passwordAndSalt)
+          .digest("base64");
+        const date = getCurrentDate();
 
-  const id = await queries.registerUser(
-    firstName,
-    lastName,
-    username,
-    hashedPassword,
-    email,
-    salt,
-    date
-  );
-  res.json(id);
+        const id = await queries.registerUser(
+          firstName,
+          lastName,
+          username,
+          hashedPassword,
+          email,
+          salt,
+          date,
+          conn
+        );
+
+        conn.commit().then(() => {
+          res.json(id);
+        });
+        conn.release();
+      } catch (error) {
+        conn.rollback();
+        conn.release();
+        console.error(error);
+      }
+    });
+  });
 });
 
 app.get(
@@ -598,14 +766,36 @@ app.get("/api/admin/user", isAdminAuth, async function (req, res) {
 app.patch("/api/admin/user/:userId", isAdminAuth, async function (req, res) {
   const { userId } = req.params;
   const { role } = req.body;
-  await queries.updateUserRole(userId, role);
-  if (role == constants.IS_ADMIN) {
-    const subjects = await queries.getSubjectsWhereUserIsNotIn(userId);
-    for (const subject of subjects) {
-      await queries.insertTeacherToUSL(userId, subject.id);
-    }
-  }
-  res.json(userId);
+  pool.getConnection().then((conn) => {
+    conn.beginTransaction().then(async () => {
+      try {
+        await queries.updateUserRole(userId, role, conn);
+        if (role == constants.IS_ADMIN) {
+          const subjects = await queries.getSubjectsWhereUserIsNotIn(
+            userId,
+            conn
+          );
+          for (const subject of subjects) {
+            await queries.insertTeacherToUSL(userId, subject.id, conn);
+          }
+        } else if (role == constants.IS_STUDENT) {
+          const usls = await queries.getUSLWhereUserIsInAndAdmin(userId, conn);
+
+          for (const uslId of usls) {
+            await queries.deleteUserFromUSL(uslId?.id, conn);
+          }
+        }
+        conn.commit().then(() => {
+          res.json(userId);
+        });
+        conn.release();
+      } catch (error) {
+        conn.rollback();
+        conn.release();
+        console.error(error);
+      }
+    });
+  });
 });
 
 // attendance student
@@ -624,21 +814,40 @@ app.post(
   "/api/subject/:subjectId/attendance",
   isEnrolledInSubjectAuth,
   async (req, res) => {
-    const { subjectId } = req.params;
-    const { userId } = req.query;
-    const { password } = req.body;
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          const { subjectId } = req.params;
+          const { userId } = req.query;
+          const { password } = req.body;
 
-    const attendanceId = await queries.getAttendanceIdForPassword(
-      subjectId,
-      password
-    );
+          const attendanceId = await queries.getAttendanceIdForPassword(
+            subjectId,
+            password,
+            conn
+          );
 
-    if (attendanceId) {
-      const id = await queries.insertAttendanceForUser(userId, attendanceId);
-      res.json(id);
-      return;
-    }
-    res.status(401).send("Nesprávne heslo");
+          if (attendanceId) {
+            const id = await queries.insertAttendanceForUser(
+              userId,
+              attendanceId,
+              conn
+            );
+
+            conn.commit().then(() => {
+              res.json(id);
+            });
+            conn.release();
+            return;
+          }
+          res.status(401).send("Nesprávne heslo");
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
+    });
   }
 );
 
@@ -832,24 +1041,45 @@ app.post(
   "/api/admin/subject/:subjectId/settings/presentation-criteria",
   isAdminAuth,
   async (req, res) => {
-    const { subjectId } = req.params;
-    const { criteria } = req.body;
-    const { wereJustUpdatedNotDeletedOrInserted } = req.query;
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          const { subjectId } = req.params;
+          const { criteria } = req.body;
+          const { wereJustUpdatedNotDeletedOrInserted } = req.query;
 
-    if (wereJustUpdatedNotDeletedOrInserted == "true") {
-      for (const criterion of criteria) {
-        await queries.updatePresentationCriteria(
-          criterion.id,
-          criterion.name,
-          criterion.height
-        );
-      }
-      res.json(subjectId);
-    } else {
-      await queries.deletePresentationCriteria(subjectId);
-      const id = await queries.insertPresentationCriteria(subjectId, criteria);
-      res.json(id);
-    }
+          if (wereJustUpdatedNotDeletedOrInserted == "true") {
+            for (const criterion of criteria) {
+              await queries.updatePresentationCriteria(
+                criterion.id,
+                criterion.name,
+                criterion.height,
+                conn
+              );
+            }
+            conn.commit().then(() => {
+              res.json(subjectId);
+            });
+            conn.release();
+          } else {
+            await queries.deletePresentationCriteria(subjectId, conn);
+            const id = await queries.insertPresentationCriteria(
+              subjectId,
+              criteria,
+              conn
+            );
+            conn.commit().then(() => {
+              res.json(id);
+            });
+            conn.release();
+          }
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
+    });
   }
 );
 
@@ -917,30 +1147,52 @@ app.post(
   "/api/subject/:subjectId/presentation/:presentationId/evaluation",
   isEnrolledInSubjectAuth,
   async (req, res) => {
-    const { subjectId, presentationId } = req.params;
-    const { userWhoEvaluatesId, evaluatedUserId } = req.query;
-    const { values } = req.body;
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          const { subjectId, presentationId } = req.params;
+          const { userWhoEvaluatesId, evaluatedUserId } = req.query;
+          const { values } = req.body;
 
-    if (values && values.length > 0) {
-      for (const value of values) {
-        if (value.value < 0 || value.value > 10) return;
-      }
-    }
+          if (values && values.length > 0) {
+            for (const value of values) {
+              if (value.value < 0 || value.value > 10) return;
+            }
+          }
 
-    const whoseUslId = await queries.getUslId(subjectId, userWhoEvaluatesId);
-    const targetUslId = await queries.getUslId(subjectId, evaluatedUserId);
+          const whoseUslId = await queries.getUslId(
+            subjectId,
+            userWhoEvaluatesId,
+            conn
+          );
+          const targetUslId = await queries.getUslId(
+            subjectId,
+            evaluatedUserId,
+            conn
+          );
 
-    for (const element of values) {
-      const pvpId = await queries.getPvpId(subjectId, element.name);
-      await queries.insertPresentationValuation(
-        whoseUslId,
-        targetUslId,
-        pvpId,
-        element.value
-      );
-    }
+          for (const element of values) {
+            const pvpId = await queries.getPvpId(subjectId, element.name, conn);
+            await queries.insertPresentationValuation(
+              whoseUslId,
+              targetUslId,
+              pvpId,
+              element.value,
+              conn
+            );
+          }
 
-    res.json(presentationId);
+          conn.commit().then(() => {
+            res.json(presentationId);
+          });
+          conn.release();
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
+    });
   }
 );
 
@@ -993,50 +1245,81 @@ app.post(
       error.httpStatusCode = 400;
       return next(error);
     }
-
-    if (teacherPres === "true") {
-      presId = await queries.insertTeacherPresentation(
-        subjectId,
-        path.parse(file.filename).name,
-        file.filename,
-        getCurrentDate()
-      );
-    } else {
-      if (parseInt(status) !== constants.STUD_PRES_NEUTRAL) return;
-      const oldPres = await queries.getStudentPresentation(userId, subjectId);
-      if (oldPres) {
-        const targetUslId = oldPres.target_usl_id;
-        await queries.deleteStudentEvaluation(targetUslId);
-        await queries.deleteStudentPresentation(oldPres.id);
-        const editedPath = `uploads/${subjectId}/${oldPres.id}_${oldPres.path}`;
-        fs.unlink(editedPath, (err) => {
-          if (err) {
-            console.error(err);
-            return;
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          if (teacherPres === "true") {
+            presId = await queries.insertTeacherPresentation(
+              subjectId,
+              path.parse(file.filename).name,
+              file.filename,
+              getCurrentDate(),
+              conn
+            );
+          } else {
+            if (parseInt(status) !== constants.STUD_PRES_NEUTRAL) return;
+            const oldPres = await queries.getStudentPresentation(
+              userId,
+              subjectId,
+              conn
+            );
+            if (oldPres) {
+              const targetUslId = oldPres.target_usl_id;
+              await queries.deleteStudentEvaluation(targetUslId, conn);
+              await queries.deleteStudentPresentation(oldPres.id, conn);
+              const editedPath = `uploads/${subjectId}/${oldPres.id}_${oldPres.path}`;
+              fs.unlink(editedPath, (err) => {
+                if (err) {
+                  conn.rollback();
+                  conn.release();
+                  console.error(err);
+                  return;
+                }
+              });
+            }
+            presId = await queries.insertStudentPresentation(
+              path.parse(file.filename).name,
+              file.filename,
+              parseInt(userId),
+              conn
+            );
+            await queries.updateStudentPresentation(
+              presId,
+              userId,
+              subjectId,
+              conn
+            );
           }
-        });
-      }
-      presId = await queries.insertStudentPresentation(
-        path.parse(file.filename).name,
-        file.filename,
-        parseInt(userId)
-      );
-      await queries.updateStudentPresentation(presId, userId, subjectId);
-    }
-    let destFolder = "uploads";
-    if (teacherPres === "true") {
-      destFolder += "/teacher";
-    }
-    destFolder += "/" + subjectId + "/";
+          let destFolder = "uploads";
+          if (teacherPres === "true") {
+            destFolder += "/teacher";
+          }
+          destFolder += "/" + subjectId + "/";
 
-    fs.rename(
-      destFolder + file.filename,
-      destFolder + presId + "_" + file.filename,
-      function (err) {
-        if (err) console.log("ERROR: " + err);
-      }
-    );
-    res.json({ subjectId, userId });
+          fs.rename(
+            destFolder + file.filename,
+            destFolder + presId + "_" + file.filename,
+            function (err) {
+              if (err) {
+                conn.rollback();
+                conn.release();
+                console.error(err);
+                return;
+              }
+            }
+          );
+
+          conn.commit().then(() => {
+            res.json({ subjectId, userId });
+          });
+          conn.release();
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
+    });
   }
 );
 
@@ -1044,15 +1327,31 @@ app.get(
   "/api/subject/:subjectId/weight",
   isEnrolledInSubjectAuth,
   async (req, res) => {
-    const { subjectId } = req.params;
-    const presentationWeight = await queries.getPresentationWeight(subjectId);
-    const attendanceWeight = await queries.getAttendanceWeight(subjectId);
-    const commentsWeight = await queries.getCommentsWeight(subjectId);
+    pool.getConnection().then((conn) => {
+      conn.beginTransaction().then(async () => {
+        try {
+          const { subjectId } = req.params;
+          const presentationWeight = await queries.getPresentationWeight(
+            subjectId
+          );
+          const attendanceWeight = await queries.getAttendanceWeight(subjectId);
+          const commentsWeight = await queries.getCommentsWeight(subjectId);
 
-    res.json({
-      presentationWeight,
-      attendanceWeight,
-      commentsWeight,
+          conn.commit().then(() => {
+            res.json({
+              presentationWeight,
+              attendanceWeight,
+              commentsWeight,
+            });
+            x;
+          });
+          conn.release();
+        } catch (error) {
+          conn.rollback();
+          conn.release();
+          console.error(error);
+        }
+      });
     });
   }
 );

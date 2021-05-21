@@ -6,6 +6,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Navigation from "../../../components/navigations/Navigation";
 import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
+import { IS_ADMIN } from "../../../constants";
 
 function EmailPageView({
   studentEmailsAndNamesDoubleArr,
@@ -45,7 +46,12 @@ function EmailPageView({
                           }
                         />
 
-                        <Form.Check.Label title={student.email}>
+                        <Form.Check.Label
+                          title={student.email}
+                          className={
+                            student.role == IS_ADMIN ? "text-secondary" : ""
+                          }
+                        >
                           {student.first_name + " " + student.last_name}
                         </Form.Check.Label>
                       </Form.Check>

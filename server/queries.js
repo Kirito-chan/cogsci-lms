@@ -24,14 +24,12 @@ import {
   IS_ADMIN,
 } from "./constants.js";
 
-// subject_id = 15  je predmet KV jazyk a kognicia ked som nanho chodil
-// subject_id = 18 je KV mozog a mysel co som chodil naposledy, minuly semester
-// user_id = 6 je admin
-// user_id = 241 som ja Frantisek Kochjar - Soarsky
-// user_id = 346 je user dobry na dochadzku
-
-const execute = async (queryString, paramsArr) => {
-  const rows = await pool.promise().query(queryString, paramsArr);
+const execute = async (queryString, paramsArr, conn = null) => {
+  if (conn) {
+    const rows = await conn.query(queryString, paramsArr);
+    return rows;
+  }
+  const rows = await pool.query(queryString, paramsArr);
   return rows;
 };
 
@@ -42,7 +40,8 @@ export const registerUser = async (
   password,
   email,
   salt,
-  date
+  date,
+  conn
 ) => {
   const [row] = await execute(
     `INSERT INTO user (first_name, last_name, username, password, email, role, salt, last_visited_announcements)
@@ -64,7 +63,7 @@ export const insertBonus = async (subjectId, title, content, urlRef, created) =>
   return row.insertId;
 };
 
-export const getBonusesOfStudent = async (userId, subjectId) => {
+export const getBonusesOfStudent = async (userId, subjectId, conn) => {
   const [rows] = await execute(
     `SELECT a.id, a.created,
          CASE
@@ -84,19 +83,21 @@ export const getBonusesOfStudent = async (userId, subjectId) => {
       GOT_0_BONUS_POINTS,
       userId,
       subjectId,
-    ]
+    ],
+    conn
   );
   return rows;
 };
 
-export const getBonusCommentForUser = async (userId, bonusId) => {
+export const getBonusCommentForUser = async (userId, bonusId, conn) => {
   const [rows] = await execute(
     `SELECT id FROM announcement_comments 
      WHERE user_id = ? AND announcement_id = ? AND announcement_comment_id IS NULL
      ORDER BY ISNULL(valuated), valuated DESC
      LIMIT 1
      `,
-    [userId, bonusId]
+    [userId, bonusId],
+    conn
   );
   return rows[0]?.id;
 };
@@ -185,14 +186,15 @@ export const updateBonusInfo = async (
   );
 };
 
-export const updateBonusValuated = async (commentId, valuated) => {
+export const updateBonusValuated = async (commentId, valuated, conn) => {
   if (valuated == NOT_YET_EVALUATED_BONUS_POINTS) {
     valuated = null;
   }
   await execute(
     `UPDATE announcement_comments a SET a.valuated = ?
      WHERE id = ?`,
-    [valuated, commentId]
+    [valuated, commentId],
+    conn
   );
 };
 
@@ -243,7 +245,8 @@ export const insertSubject = async (
   about,
   userLimit,
   weeks,
-  active
+  active,
+  conn
 ) => {
   const [row] = await execute(
     `INSERT INTO subject (name, year, season, about, user_limit, status, weeks, 
@@ -260,16 +263,18 @@ export const insertSubject = async (
       ATTENDANCE_WEIGHT,
       PRESENTATION_WEIGHT,
       COMMENT_WEIGHT,
-    ]
+    ],
+    conn
   );
   return row.insertId;
 };
 
-export const insertSubjectValuation = async (subjectId) => {
+export const insertSubjectValuation = async (subjectId, conn) => {
   const [row] = await execute(
     `INSERT INTO subject_valuation (subject_id, A, B, C, D, E, Fx)
      VALUES (?, ?, ?, ?, ?,  ?, ?)`,
-    [subjectId, A, B, C, D, E, Fx]
+    [subjectId, A, B, C, D, E, Fx],
+    conn
   );
   return row.insertId;
 };
@@ -351,23 +356,35 @@ export const updateSubjectStatus = async (subjectId, status) => {
   ]);
 };
 
-export const getSubjectsWhereUserIsNotIn = async (userId) => {
+export const getSubjectsWhereUserIsNotIn = async (userId, conn) => {
   const [rows] = await execute(
     `
   SELECT DISTINCT usl.subject_id as id FROM user u JOIN user_subject_lookup usl 
   WHERE ? NOT IN (SELECT user_id FROM user_subject_lookup usl2 WHERE usl2.subject_id = usl.subject_id)
   `,
-    [userId]
+    [userId],
+    conn
+  );
+  return rows;
+};
+
+export const getUSLWhereUserIsInAndAdmin = async (userId, conn) => {
+  const [rows] = await execute(
+    `
+  SELECT usl.id FROM user_subject_lookup usl 
+  WHERE usl.user_id = ? AND usl.status = ?
+  `,
+    [userId, ADMIN_FOR_SUBJ],
+    conn
   );
   return rows;
 };
 
 export const getSubjectValuation = async (subjectId) => {
-  const [
-    row,
-  ] = await execute("SELECT * FROM subject_valuation WHERE subject_id = ?", [
-    subjectId,
-  ]);
+  const [row] = await execute(
+    "SELECT * FROM subject_valuation WHERE subject_id = ?",
+    [subjectId]
+  );
   return row[0];
 };
 
@@ -387,37 +404,40 @@ export const updateSubjectValuation = async (
   );
 };
 
-export const updateUserRole = async (userId, role) => {
-  await execute("UPDATE user SET role = ? WHERE id = ?", [role, userId]);
+export const updateUserRole = async (userId, role, conn) => {
+  await execute("UPDATE user SET role = ? WHERE id = ?", [role, userId], conn);
 };
 
-export const getStudentsBySubjectId = async (subjectId) => {
+export const getStudentsBySubjectId = async (subjectId, conn) => {
   const [rows] = await execute(
     `SELECT u.id, u.first_name, u.last_name FROM 
      user_subject_lookup usl JOIN user u ON u.id = usl.user_id
-     WHERE usl.subject_id = ? AND u.role = ?
+     WHERE usl.subject_id = ? AND u.role = ? AND usl.status = ?
      ORDER BY u.last_name, u.first_name`,
-    [subjectId, IS_STUDENT]
+    [subjectId, IS_STUDENT, ACCEPTED_TO_SUBJ],
+    conn
   );
   return rows;
 };
 
-export const getAttendancesOfStudent = async (userId, subjectId) => {
+export const getAttendancesOfStudent = async (userId, subjectId, conn) => {
   const [rows] = await execute(
     `SELECT a.id, a.date, CASE WHEN ual.user_id IS NULL THEN FALSE ELSE TRUE END as got_point
      FROM user_attendance_lookup ual RIGHT JOIN attendance a ON a.id = ual.attendance_id AND ual.user_id = ?
      WHERE a.subject_id = ?
      ORDER BY a.id`,
-    [userId, subjectId]
+    [userId, subjectId],
+    conn
   );
   return rows;
 };
 
-export const userHasAttendance = async (userId, attendanceId) => {
+export const userHasAttendance = async (userId, attendanceId, conn) => {
   const [rows] = await execute(
     `SELECT * FROM user_attendance_lookup ual
      WHERE user_id = ? AND attendance_id = ? `,
-    [userId, attendanceId]
+    [userId, attendanceId],
+    conn
   );
   return rows.length > 0;
 };
@@ -428,9 +448,7 @@ export const updateAttendancesOfStudent = async (userId, subjectId) => {
 };
 
 export const getUsers = async (username) => {
-  const [
-    rows,
-  ] = await execute(
+  const [rows] = await execute(
     "SELECT * FROM user ORDER BY role DESC, last_name, first_name",
     [username]
   );
@@ -448,10 +466,12 @@ export const getUserByIdAndSubjectId = async (userId, subjectId) => {
   return row[0];
 };
 
-export const getUserByUsername = async (username) => {
-  const [row] = await execute("SELECT * FROM user WHERE username = ?", [
-    username,
-  ]);
+export const getUserByUsername = async (username, conn) => {
+  const [row] = await execute(
+    "SELECT * FROM user WHERE username = ?",
+    [username],
+    conn
+  );
   return row[0];
 };
 
@@ -465,17 +485,20 @@ export const getAttendedCoursesOfUser = async (userId) => {
   return rows;
 };
 
-export const getUserByEmail = async (email) => {
-  const [row] = await execute("SELECT id, email FROM user WHERE email = ?", [
-    email,
-  ]);
+export const getUserByEmail = async (email, conn) => {
+  const [row] = await execute(
+    "SELECT id, email FROM user WHERE email = ?",
+    [email],
+    conn
+  );
   return row[0];
 };
 
-export const updateUserResetPassword = async (token, expires, id) => {
+export const updateUserResetPassword = async (token, expires, id, conn) => {
   await execute(
     "UPDATE user SET reset_password_token = ?, reset_password_expires = ? WHERE id = ?",
-    [token, expires, id]
+    [token, expires, id],
+    conn
   );
 };
 
@@ -486,7 +509,8 @@ export const updateUser = async (
   username,
   email,
   password,
-  salt
+  salt,
+  conn
 ) => {
   let array = [firstName, lastName, username, email, password, salt, id];
   let sql = `UPDATE user SET first_name = ?, last_name = ?, username = ?, email = ?, password = ?, salt = ? WHERE id = ?`;
@@ -495,26 +519,28 @@ export const updateUser = async (
     array = [firstName, lastName, username, email, id];
   }
 
-  const [row] = await execute(sql, array);
+  const [row] = await execute(sql, array, conn);
   return row[0];
 };
 
-export const getUserById = async (id) => {
-  const [row] = await execute("SELECT * FROM user WHERE id = ?", [id]);
+export const getUserById = async (id, conn) => {
+  const [row] = await execute("SELECT * FROM user WHERE id = ?", [id], conn);
   return row[0];
 };
 
 export const checkUserResetPasswordToken = async (
   userId,
   hashedToken,
-  currentDate
+  currentDate,
+  conn
 ) => {
   const [row] = await execute(
     `
   SELECT username, first_name, last_name 
   FROM user 
   WHERE id = ? AND reset_password_token = ? AND reset_password_expires >= ? `,
-    [userId, hashedToken, currentDate]
+    [userId, hashedToken, currentDate],
+    conn
   );
   return row[0];
 };
@@ -523,13 +549,15 @@ export const updateUserPasswordAndTokens = async (
   userId,
   password,
   salt,
-  currentDate
+  currentDate,
+  conn
 ) => {
   const [row] = await execute(
     `
   UPDATE user SET password = ?, salt = ?, reset_password_token = '', reset_password_expires = ? 
   WHERE id = ?`,
-    [password, salt, currentDate, userId]
+    [password, salt, currentDate, userId],
+    conn
   );
   return row[0];
 };
@@ -577,39 +605,36 @@ export const getAttendance = async (subjectId) => {
   return rows;
 };
 
-export const getAttendanceIdForPassword = async (subjectId, password) => {
-  const [
-    rows,
-  ] = await execute(
+export const getAttendanceIdForPassword = async (subjectId, password, conn) => {
+  const [rows] = await execute(
     `SELECT id FROM attendance WHERE subject_id = ? AND password like binary ? AND status = ?`,
-    [subjectId, password, ATTENDANCE_OPENED]
+    [subjectId, password, ATTENDANCE_OPENED],
+    conn
   );
 
   if (rows.length > 0) return rows[0].id;
   else return false;
 };
 
-export const insertAttendanceForUser = async (userId, attendanceId) => {
-  const [
-    row,
-  ] = await execute(
+export const insertAttendanceForUser = async (userId, attendanceId, conn) => {
+  const [row] = await execute(
     `INSERT INTO user_attendance_lookup (user_id, attendance_id) VALUES (?, ?)`,
-    [userId, attendanceId]
+    [userId, attendanceId],
+    conn
   );
   return row.insertId;
 };
 
-export const deleteAttendanceForUser = async (userId, attendanceId) => {
+export const deleteAttendanceForUser = async (userId, attendanceId, conn) => {
   await execute(
     `DELETE FROM user_attendance_lookup WHERE user_id = ? AND attendance_id = ?`,
-    [userId, attendanceId]
+    [userId, attendanceId],
+    conn
   );
 };
 
 export const insertAttendance = async (subjectId, date, password) => {
-  const [
-    row,
-  ] = await execute(
+  const [row] = await execute(
     `INSERT INTO attendance (subject_id, date, password, status) VALUES (?, ?, ?, ?)`,
     [subjectId, date, password, ATTENDANCE_OPENED]
   );
@@ -665,42 +690,37 @@ export const insertPresentationComment = async (
 
 export const getUserEmailsAndNames = async (subjectId) => {
   const [rows] = await execute(
-    `SELECT u.id, u.first_name, u.last_name, u.email FROM user u JOIN user_subject_lookup usl 
-         ON u.id = usl.user_id AND usl.subject_id = ? AND usl.status = ? 
-         WHERE u.role = ?
-         ORDER BY u.first_name, u.last_name `,
-    [subjectId, ACCEPTED_TO_SUBJ, IS_STUDENT]
+    `SELECT u.id, u.first_name, u.last_name, u.email, u.role FROM user u JOIN user_subject_lookup usl 
+         ON u.id = usl.user_id AND usl.subject_id = ? AND (usl.status = ? OR usl.status = ?)
+         ORDER BY u.role DESC, u.last_name, u.first_name `,
+    [subjectId, ACCEPTED_TO_SUBJ, ADMIN_FOR_SUBJ]
   );
   return rows;
 };
 
 // presentation valuation types
 export const getPresentationValuationTypes = async (subjectId) => {
-  const [
-    rows,
-  ] = await execute(
+  const [rows] = await execute(
     `SELECT * FROM presentation_valuation_point pvp WHERE pvp.subject_id = ?`,
     [subjectId]
   );
   return rows;
 };
 
-export const getUslId = async (subjectId, userId) => {
-  const [
-    row,
-  ] = await execute(
+export const getUslId = async (subjectId, userId, conn) => {
+  const [row] = await execute(
     `SELECT id FROM user_subject_lookup WHERE subject_id = ? AND user_id = ?`,
-    [subjectId, userId]
+    [subjectId, userId],
+    conn
   );
   return row[0].id;
 };
 
-export const getPvpId = async (subjectId, name) => {
-  const [
-    row,
-  ] = await execute(
+export const getPvpId = async (subjectId, name, conn) => {
+  const [row] = await execute(
     `SELECT id FROM presentation_valuation_point WHERE subject_id = ? AND point = ?`,
-    [subjectId, name]
+    [subjectId, name],
+    conn
   );
   return row[0].id;
 };
@@ -709,34 +729,36 @@ export const insertPresentationValuation = async (
   whoseUslId,
   targetUslId,
   pvpId,
-  points
+  points,
+  conn
 ) => {
-  const [
-    row,
-  ] = await execute(
+  const [row] = await execute(
     `INSERT INTO user_presentation_valuation (whose_usl_id, target_usl_id, pvp_id, points) VALUES(?, ?, ?, ?)`,
-    [whoseUslId, targetUslId, pvpId, points]
+    [whoseUslId, targetUslId, pvpId, points],
+    conn
   );
   return row.insertId;
 };
 
 // presentations
 
-export const deletePresentationCriteria = async (subjectId) => {
+export const deletePresentationCriteria = async (subjectId, conn) => {
   await execute(
     `DELETE FROM presentation_valuation_point WHERE subject_id = ?`,
-    [subjectId]
+    [subjectId],
+    conn
   );
 };
 
-export const updatePresentationCriteria = async (id, name, height) => {
+export const updatePresentationCriteria = async (id, name, height, conn) => {
   await execute(
     `UPDATE presentation_valuation_point SET point = ?, height = ? WHERE id = ?`,
-    [name, height, id]
+    [name, height, id],
+    conn
   );
 };
 
-export const insertPresentationCriteria = async (subjectId, criteria) => {
+export const insertPresentationCriteria = async (subjectId, criteria, conn) => {
   let query =
     "INSERT INTO presentation_valuation_point (subject_id, point, height) VALUES ";
   for (let index = 0; index < criteria.length; index++) {
@@ -745,7 +767,7 @@ export const insertPresentationCriteria = async (subjectId, criteria) => {
       query += `(${subjectId}, '${criterion.name}', ${criterion.height}), `;
     } else query += `(${subjectId}, '${criterion.name}', ${criterion.height})`;
   }
-  const [row] = await execute(query, [subjectId]);
+  const [row] = await execute(query, [subjectId], conn);
   return row.insertId;
 };
 
@@ -909,19 +931,32 @@ export const getAllTeachers = async () => {
   return rows;
 };
 
-export const getAllTeachersIds = async () => {
-  const [rows] = await execute(`SELECT id FROM user WHERE role = ?`, [
-    IS_ADMIN,
-  ]);
+export const getAllTeachersIds = async (conn) => {
+  const [rows] = await execute(
+    `SELECT id FROM user WHERE role = ?`,
+    [IS_ADMIN],
+    conn
+  );
   return rows;
 };
 
 // aby mohli aj oni hodnotit prezentacie druhych studentov zo svojich uctov
-export const insertTeacherToUSL = async (teacherId, subjectId) => {
+export const insertTeacherToUSL = async (teacherId, subjectId, conn) => {
   const [row] = await execute(
     `INSERT INTO user_subject_lookup (user_id, subject_id, status) 
     VALUES(?, ?, ?)`,
-    [teacherId, subjectId, ADMIN_FOR_SUBJ]
+    [teacherId, subjectId, ADMIN_FOR_SUBJ],
+    conn
+  );
+  return row.insertId;
+};
+
+export const deleteUserFromUSL = async (id, conn) => {
+  const [row] = await execute(
+    `DELETE FROM user_subject_lookup WHERE id = ?
+    `,
+    [id],
+    conn
   );
   return row.insertId;
 };
@@ -930,49 +965,60 @@ export const insertTeacherPresentation = async (
   subjectId,
   title,
   path,
-  date
+  date,
+  conn
 ) => {
   const [row] = await execute(
     `INSERT INTO teacher_presentation (subject_id, title, path, date) 
     VALUES(?, ?, ?, ?)`,
-    [subjectId, title, path, date]
+    [subjectId, title, path, date],
+    conn
   );
   return row.insertId;
 };
 
-export const getStudentPresentation = async (userId, subjectId) => {
+export const getStudentPresentation = async (userId, subjectId, conn) => {
   const [row] = await execute(
     `SELECT p.id, p.path, usl.id as target_usl_id FROM user_subject_lookup usl JOIN presentation p ON p.id = usl.presentation_id 
      WHERE usl.user_id = ? AND usl.subject_id = ?`,
-    [userId, subjectId]
+    [userId, subjectId],
+    conn
   );
   return row[0];
 };
 
-export const insertStudentPresentation = async (title, path, ownerId) => {
+export const insertStudentPresentation = async (title, path, ownerId, conn) => {
   const [row] = await execute(
     `INSERT INTO presentation (title, path, status, owner_id) 
     VALUES(?, ?, ?, ?)`,
-    [title, path, STUD_PRES_NEUTRAL, ownerId]
+    [title, path, STUD_PRES_NEUTRAL, ownerId],
+    conn
   );
   return row.insertId;
 };
 
-export const updateStudentPresentation = async (presId, userId, subjectId) => {
+export const updateStudentPresentation = async (
+  presId,
+  userId,
+  subjectId,
+  conn
+) => {
   await execute(
     `UPDATE user_subject_lookup SET presentation_id = ?
      WHERE user_id = ? AND subject_id = ?`,
-    [presId, userId, subjectId]
+    [presId, userId, subjectId],
+    conn
   );
 };
 
-export const deleteStudentPresentation = async (presId) => {
-  await execute(`DELETE FROM presentation WHERE id = ?`, [presId]);
+export const deleteStudentPresentation = async (presId, conn) => {
+  await execute(`DELETE FROM presentation WHERE id = ?`, [presId], conn);
 };
 
-export const deleteStudentEvaluation = async (targetUslId) => {
+export const deleteStudentEvaluation = async (targetUslId, conn) => {
   await execute(
     `DELETE FROM user_presentation_valuation WHERE target_usl_id = ?`,
-    [targetUslId]
+    [targetUslId],
+    conn
   );
 };

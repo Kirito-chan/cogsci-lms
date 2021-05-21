@@ -19,8 +19,10 @@ function UsersPage() {
 
   const handleMakeAdmin = (e) => {
     const userId = e.target.value;
-    dispatch(updateUserRole(userId, IS_ADMIN)).then(() => {
-      dispatch(loadUsers());
+    dispatch(updateUserRole(userId, IS_ADMIN)).then((r) => {
+      if (r) {
+        dispatch(loadUsers());
+      }
     });
   };
 
