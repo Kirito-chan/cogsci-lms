@@ -930,6 +930,9 @@ app.get("/api/subject/:subjectId/bonus/:bonusId/comment", async (req, res) => {
 app.post("/api/subject/:subjectId/bonus/:bonusId/comment", async (req, res) => {
   const { bonusId } = req.params;
   const { userId, content, refCommentId } = req.body;
+  console.log("tu som");
+  if (!content || content.trim() === "") return;
+  console.log("tu som1");
   const date = getCurrentDate();
   // prettier-ignore
   const id = await queries.insertBonusComment(bonusId, userId, content, date, refCommentId);
@@ -987,6 +990,7 @@ app.post(
   async (req, res) => {
     const { presentationId } = req.params;
     const { userId, content, refCommentId } = req.body;
+    if (!content || content.trim() === "") return;
     const date = getCurrentDate();
     // prettier-ignore
     const id = await queries.insertPresentationComment(presentationId, userId, content, date, refCommentId, constants.TEACHER);
@@ -1000,6 +1004,7 @@ app.post(
   async (req, res) => {
     const { presentationId } = req.params;
     const { userId, content, refCommentId } = req.body;
+    if (!content || content.trim() === "") return;
     const date = getCurrentDate();
     // prettier-ignore
     const id = await queries.insertPresentationComment(presentationId, userId, content, date, refCommentId, constants.STUDENT);
@@ -1343,7 +1348,6 @@ app.get(
               attendanceWeight,
               commentsWeight,
             });
-            x;
           });
           conn.release();
         } catch (error) {
