@@ -20,6 +20,7 @@ import {
   TextAreaInputSettings,
   TextInputSettings,
 } from "../../../components/FormComponents";
+import LoadingInButton from "../../../components/LoadingInButton";
 
 function SubjectParameters() {
   const dispatch = useDispatch();
@@ -74,9 +75,11 @@ function SubjectParameters() {
   const [sum, setSum] = useState();
   const [errorSum, setErrorSum] = useState("d-none");
   const [allAreInvalid, setAllAreInvalid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleUpdateSubject = (e) => {
     e.preventDefault();
+    setLoading(true);
     const sum =
       parseInt(subjectValPres) +
       parseInt(subjectValAttendance) +
@@ -85,6 +88,7 @@ function SubjectParameters() {
       setSum(sum);
       setErrorSum("d-inline-block");
       setAllAreInvalid(true);
+      setLoading(false);
       return;
     }
     setErrorSum("d-none");
@@ -106,6 +110,7 @@ function SubjectParameters() {
     ).then(() => {
       dispatch(loadSubject(subject.id));
       dispatch(loadSubjects());
+      setLoading(false);
     });
   };
 
@@ -191,7 +196,7 @@ function SubjectParameters() {
             type="submit"
             onClick={handleUpdateSubject}
           >
-            Uložiť zmeny
+            {loading ? <LoadingInButton /> : "Uložiť zmeny"}
           </Button>
         </div>
         <Row className="mt-2">

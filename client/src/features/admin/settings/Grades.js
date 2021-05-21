@@ -11,6 +11,7 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import LoadingInButton from "../../../components/LoadingInButton";
 
 function Grades() {
   const dispatch = useDispatch();
@@ -63,51 +64,44 @@ function Grades() {
   };
 
   return (
-    showLoaderIfAnyNull(subjectValuation, gradeA) || (
-      <div>
-        <h2 className="mb-3">Stupnica hodnotenia</h2>
-        <Form>
-          <Row>
-            <Col>
-              {/* prettier-ignore */}
-              <TextInput label="A" content={gradeA} handleContent={e => setGradeA(e.target.value)} />
-              {/* prettier-ignore */}
-              <TextInput label="B" content={gradeB} handleContent={e => setGradeB(e.target.value)} />
-              {/* prettier-ignore */}
-              <TextInput label="C" content={gradeC} handleContent={e => setGradeC(e.target.value)} />
-              {/* prettier-ignore */}
-              <TextInput label="D" content={gradeD} handleContent={e => setGradeD(e.target.value)} />
-              {/* prettier-ignore */}
-              <TextInput label="E" content={gradeE} handleContent={e => setGradeE(e.target.value)} />
-              {/* prettier-ignore */}
-              <TextInput label="Fx" content={gradeFx} handleContent={e => setGradeFx(e.target.value)}
+    <div>
+      <h2 className="mb-3">Stupnica hodnotenia</h2>
+      {showLoaderIfAnyNull(subjectValuation, gradeA) || (
+        <div>
+          <Form>
+            <Row>
+              <Col>
+                {/* prettier-ignore */}
+                <TextInput label="A" content={gradeA} handleContent={e => setGradeA(e.target.value)} />
+                {/* prettier-ignore */}
+                <TextInput label="B" content={gradeB} handleContent={e => setGradeB(e.target.value)} />
+                {/* prettier-ignore */}
+                <TextInput label="C" content={gradeC} handleContent={e => setGradeC(e.target.value)} />
+                {/* prettier-ignore */}
+                <TextInput label="D" content={gradeD} handleContent={e => setGradeD(e.target.value)} />
+                {/* prettier-ignore */}
+                <TextInput label="E" content={gradeE} handleContent={e => setGradeE(e.target.value)} />
+                {/* prettier-ignore */}
+                <TextInput label="Fx" content={gradeFx} handleContent={e => setGradeFx(e.target.value)}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col className="text-right">
-              <Button
-                variant="success"
-                type="submit"
-                size="sm"
-                onClick={changeGrades}
-              >
-                {loading ? (
-                  <span>
-                    <span
-                      className={"spinner-border spinner-border-sm "}
-                    ></span>{" "}
-                    Loading...
-                  </span>
-                ) : (
-                  "Uložiť zmeny"
-                )}
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      </div>
-    )
+              </Col>
+            </Row>
+            <Row>
+              <Col className="text-right">
+                <Button
+                  variant="success"
+                  type="submit"
+                  size="sm"
+                  onClick={changeGrades}
+                >
+                  {loading ? <LoadingInButton /> : "Uložiť zmeny"}
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </div>
+      )}
+    </div>
   );
 }
 

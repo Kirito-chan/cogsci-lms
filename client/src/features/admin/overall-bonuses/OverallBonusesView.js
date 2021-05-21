@@ -11,6 +11,7 @@ import {
 } from "../../../constants";
 import { FaToggleOff, FaToggleOn } from "react-icons/fa";
 import "./OverallBonusesView.css";
+import LoadingInButton from "../../../components/LoadingInButton";
 
 function OverallBonusesView({
   studentsBonuses,
@@ -156,14 +157,7 @@ function OverallBonusesView({
           </Table>
           <div className="text-right">
             <Button variant="success" type="submit">
-              {loading ? (
-                <span>
-                  <span className={"spinner-border spinner-border-sm "}></span>{" "}
-                  Loading...
-                </span>
-              ) : (
-                "Uložiť zmeny"
-              )}
+              {loading ? <LoadingInButton /> : "Uložiť zmeny"}
             </Button>
           </div>
         </Form>

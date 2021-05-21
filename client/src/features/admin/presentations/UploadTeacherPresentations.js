@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,18 +8,22 @@ import {
   uploadPresentation,
 } from "../../student/home/homeSlice";
 import { getCurrentUserId } from "../../../app/currentUserSlice";
+import LoadingInButton from "../../../components/LoadingInButton";
 
 function UploadTeacherPresentations() {
   const dispatch = useDispatch();
   const currentUserId = useSelector(getCurrentUserId);
   const { subjectId } = useParams();
   const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const handleUpload = (e) => {
     e.preventDefault();
+    setLoading(true);
     const file = fileInputRef.current.files[0];
     dispatch(uploadPresentation(file, subjectId, null, true)).then(() => {
       dispatch(loadTeacherPresentations(currentUserId, subjectId));
+      setLoading(false);
     });
   };
   return (
@@ -30,7 +34,7 @@ function UploadTeacherPresentations() {
           <Form.File ref={fileInputRef} />
         </Form.Group>
         <Button size="sm" type="submit" variant="success">
-          Pridať prezentáciu
+          {loading ? <LoadingInButton /> : "Pridať prezentáciu"}
         </Button>
       </Form>
     </div>

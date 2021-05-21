@@ -54,7 +54,6 @@ export const slice = createSlice({
     },
     updatedStudentStatus: () => {},
     attendancesReceived: (state, action) => {
-      console.log(action.payload);
       state.attendances = action.payload;
     },
     updatedAttendanceStatus: () => {},
@@ -120,20 +119,24 @@ export const loadAttendance = (subjectId) => (dispatch) => {
   );
 };
 
-export const updateAttendanceStatus = (subjectId, attendanceId, status) => (
-  dispatch
-) => {
-  const data = { status };
-  return dispatch(
-    apiCallBegan({
-      method: "patch",
-      data,
-      url:
-        urlAdminSubject + "/" + subjectId + urlAttendance + "/" + attendanceId,
-      onSuccess: updatedAttendanceStatus.type,
-    })
-  );
-};
+export const updateAttendanceStatus =
+  (subjectId, attendanceId, status) => (dispatch) => {
+    const data = { status };
+    return dispatch(
+      apiCallBegan({
+        method: "patch",
+        data,
+        url:
+          urlAdminSubject +
+          "/" +
+          subjectId +
+          urlAttendance +
+          "/" +
+          attendanceId,
+        onSuccess: updatedAttendanceStatus.type,
+      })
+    );
+  };
 
 const urlStudents = "/student";
 
@@ -166,19 +169,18 @@ export const loadRejectedStudents = (subjectId) => (dispatch) => {
   );
 };
 
-export const updateStudentStatus = (subjectId, studentId, status) => (
-  dispatch
-) => {
-  const data = { status };
-  return dispatch(
-    apiCallBegan({
-      method: "put",
-      url: urlAdminSubject + "/" + subjectId + urlStudents + "/" + studentId,
-      data,
-      onSuccess: updatedStudentStatus.type,
-    })
-  );
-};
+export const updateStudentStatus =
+  (subjectId, studentId, status) => (dispatch) => {
+    const data = { status };
+    return dispatch(
+      apiCallBegan({
+        method: "put",
+        url: urlAdminSubject + "/" + subjectId + urlStudents + "/" + studentId,
+        data,
+        onSuccess: updatedStudentStatus.type,
+      })
+    );
+  };
 
 const urlEmail = "/email";
 
@@ -202,19 +204,18 @@ export const loadStudentsAndAttendance = (subjectId) => (dispatch) => {
   );
 };
 
-export const updateStudentsAndAttendance = (subjectId, checkedAttendances) => (
-  dispatch
-) => {
-  const data = { checkedAttendances };
-  return dispatch(
-    apiCallBegan({
-      method: "put",
-      url: urlAdminSubject + "/" + subjectId + urlOverallAttendance,
-      data,
-      onSuccess: studentsAttendanceUpdated.type,
-    })
-  );
-};
+export const updateStudentsAndAttendance =
+  (subjectId, checkedAttendances) => (dispatch) => {
+    const data = { checkedAttendances };
+    return dispatch(
+      apiCallBegan({
+        method: "put",
+        url: urlAdminSubject + "/" + subjectId + urlOverallAttendance,
+        data,
+        onSuccess: studentsAttendanceUpdated.type,
+      })
+    );
+  };
 
 const urlOverallBonuses = "/overall-bonuses";
 
@@ -227,52 +228,49 @@ export const loadStudentsAndBonuses = (subjectId) => (dispatch) => {
   );
 };
 
-export const updateStudentsAndBonuses = (subjectId, checkedBonuses) => (
-  dispatch
-) => {
-  const data = { checkedBonuses };
-  return dispatch(
-    apiCallBegan({
-      method: "put",
-      url: urlAdminSubject + "/" + subjectId + urlOverallBonuses,
-      data,
-      onSuccess: studentsBonusesUpdated.type,
-    })
-  );
-};
+export const updateStudentsAndBonuses =
+  (subjectId, checkedBonuses) => (dispatch) => {
+    const data = { checkedBonuses };
+    return dispatch(
+      apiCallBegan({
+        method: "put",
+        url: urlAdminSubject + "/" + subjectId + urlOverallBonuses,
+        data,
+        onSuccess: studentsBonusesUpdated.type,
+      })
+    );
+  };
 
 const urlAdminSendEmail = "/admin/send-email";
 
-export const sendEmail = (fromEmail, toEmail, fromName, subject, text) => (
-  dispatch
-) => {
-  const data = { toEmail, fromEmail, fromName, subject, text };
-  return dispatch(
-    apiCallBegan({
-      url: urlAdminSendEmail,
-      method: "post",
-      data,
-      onSuccess: emailSent.type,
-    })
-  );
-};
+export const sendEmail =
+  (fromEmail, toEmail, fromName, subject, text) => (dispatch) => {
+    const data = { toEmail, fromEmail, fromName, subject, text };
+    return dispatch(
+      apiCallBegan({
+        url: urlAdminSendEmail,
+        method: "post",
+        data,
+        onSuccess: emailSent.type,
+      })
+    );
+  };
 
 const urlBonus = "/bonus";
 
-export const insertBonus = (subjectId, title, content, urlRef) => (
-  dispatch
-) => {
-  const data = { title, content, urlRef };
+export const insertBonus =
+  (subjectId, title, content, urlRef) => (dispatch) => {
+    const data = { title, content, urlRef };
 
-  return dispatch(
-    apiCallBegan({
-      method: "post",
-      data,
-      url: urlAdminSubject + "/" + subjectId + urlBonus,
-      onSuccess: insertedBonus.type,
-    })
-  );
-};
+    return dispatch(
+      apiCallBegan({
+        method: "post",
+        data,
+        url: urlAdminSubject + "/" + subjectId + urlBonus,
+        onSuccess: insertedBonus.type,
+      })
+    );
+  };
 
 const urlTeacherPresentations = "/teacher-presentation";
 
@@ -292,42 +290,39 @@ export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
 
 const urlStudentPresentations = "/student-presentation";
 
-export const loadStudentPresentationsNeutral = (userId, subjectId) => (
-  dispatch
-) => {
-  return dispatch(
-    apiCallBegan({
-      // prettier-ignore
-      url: urlStudentPresentations + "/?status=" + STUD_PRES_NEUTRAL + "&userId=" + userId + "&subjectId=" + subjectId,
-      onSuccess: studentPresentationsNeutralReceived.type,
-    })
-  );
-};
+export const loadStudentPresentationsNeutral =
+  (userId, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        // prettier-ignore
+        url: urlStudentPresentations + "/?status=" + STUD_PRES_NEUTRAL + "&userId=" + userId + "&subjectId=" + subjectId,
+        onSuccess: studentPresentationsNeutralReceived.type,
+      })
+    );
+  };
 
-export const loadStudentPresentationsOpened = (userId, subjectId) => (
-  dispatch
-) => {
-  return dispatch(
-    apiCallBegan({
-      // prettier-ignore
-      url: urlStudentPresentations + "/?status=" + STUD_PRES_OPENED + "&userId=" + userId + "&subjectId=" + subjectId,
-      onSuccess: studentPresentationsOpenedReceived.type,
-    })
-  );
-};
+export const loadStudentPresentationsOpened =
+  (userId, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        // prettier-ignore
+        url: urlStudentPresentations + "/?status=" + STUD_PRES_OPENED + "&userId=" + userId + "&subjectId=" + subjectId,
+        onSuccess: studentPresentationsOpenedReceived.type,
+      })
+    );
+  };
 
-export const loadStudentPresentationsClosed = (userId, subjectId) => (
-  dispatch
-) => {
-  return dispatch(
-    apiCallBegan({
-      // prettier-ignore
-      url:
+export const loadStudentPresentationsClosed =
+  (userId, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        // prettier-ignore
+        url:
         urlStudentPresentations + "/?status=" + STUD_PRES_CLOSED + "&userId=" + userId + "&subjectId=" + subjectId,
-      onSuccess: studentPresentationsClosedReceived.type,
-    })
-  );
-};
+        onSuccess: studentPresentationsClosedReceived.type,
+      })
+    );
+  };
 
 // Selectors
 export const getTeacherPresentations = (state) =>

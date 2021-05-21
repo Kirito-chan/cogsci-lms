@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MyPresentationList from "./MyPresentationList";
 import { useDispatch, useSelector } from "react-redux";
 import { getCurrentUserId } from "../../../../app/currentUserSlice";
@@ -19,9 +19,11 @@ function MyPresentation() {
   const presentationWeight = useSelector(getPresentationWeight);
   const { subjectId } = useParams();
   const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   const handleUpload = (e) => {
     e.preventDefault();
+    setLoading(true);
     const file = fileInputRef.current.files[0];
     dispatch(
       uploadPresentation(
@@ -37,6 +39,7 @@ function MyPresentation() {
         const subjectId = res.payload.subjectId;
         dispatch(loadMyPresentation(userId, subjectId));
         dispatch(loadStudentPresentationsOpened(userId, subjectId));
+        setLoading(false);
       }
     });
   };
@@ -56,6 +59,7 @@ function MyPresentation() {
         handleUpload={handleUpload}
         fileInputRef={fileInputRef}
         classname="mt-5 mb-5"
+        loading={loading}
       />
     )
   );

@@ -4,8 +4,9 @@ import Container from "react-bootstrap/Container";
 import { IS_ADMIN } from "../../../constants";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/esm/Button";
+import LoadingInButton from "../../../components/LoadingInButton";
 
-function UsersList({ users, handleMakeAdmin, handleMakeStudent }) {
+function UsersList({ users, handleMakeAdmin, handleMakeStudent, loading }) {
   return (
     <Container fluid>
       <Table bordered striped hover size="sm" className="text-center">
@@ -45,7 +46,11 @@ function UsersList({ users, handleMakeAdmin, handleMakeStudent }) {
                     onClick={handleMakeStudent}
                     value={user.id}
                   >
-                    Urobiť študentom
+                    {loading == user.id ? (
+                      <LoadingInButton />
+                    ) : (
+                      "Urobiť študentom"
+                    )}
                   </Button>
                 ) : (
                   <Button
@@ -54,7 +59,11 @@ function UsersList({ users, handleMakeAdmin, handleMakeStudent }) {
                     onClick={handleMakeAdmin}
                     value={user.id}
                   >
-                    Urobiť adminom
+                    {loading == user.id ? (
+                      <LoadingInButton />
+                    ) : (
+                      "Urobiť adminom"
+                    )}
                   </Button>
                 )}
               </td>

@@ -8,6 +8,7 @@ import {
   STUD_PRES_OPENED,
   URL_PRESENTATIONS,
 } from "../../../../constants";
+import LoadingInButton from "../../../../components/LoadingInButton";
 
 function MyPresentationList({
   myPresentation,
@@ -16,6 +17,7 @@ function MyPresentationList({
   handleUpload,
   fileInputRef,
   classname,
+  loading,
 }) {
   const isUploaded = Object.keys(myPresentation).length !== 0;
   return (
@@ -59,11 +61,11 @@ function MyPresentationList({
           </Form.Group>
           {!isUploaded ? (
             <Button size="sm" type="submit" variant="success">
-              Pridať prezentáciu
+              {loading ? <LoadingInButton /> : "Pridať prezentáciu"}
             </Button>
           ) : (
             <Button size="sm" type="submit" variant="outline-warning">
-              Nahradiť prezentáciu
+              {loading ? <LoadingInButton /> : "Nahradiť prezentáciu"}
             </Button>
           )}
         </Form>

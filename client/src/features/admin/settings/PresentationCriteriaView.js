@@ -3,6 +3,7 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import LoadingInButton from "../../../components/LoadingInButton";
 
 function PresentationCriteriaView({
   values,
@@ -22,14 +23,18 @@ function PresentationCriteriaView({
       <Form>
         <Row>
           <Col>
-            <Row>
-              <Col xs="5">
-                <h6> Kritérium</h6>
-              </Col>
-              <Col xs="3" xl="2">
-                <h6>Váha</h6>
-              </Col>
-            </Row>
+            {values?.length ? (
+              <Row>
+                <Col xs="5">
+                  <h6> Kritérium</h6>
+                </Col>
+                <Col xs="3" xl="2">
+                  <h6>Váha</h6>
+                </Col>
+              </Row>
+            ) : (
+              ""
+            )}
 
             <Col></Col>
             {values.map((val) => (
@@ -62,26 +67,23 @@ function PresentationCriteriaView({
             </span>
           </Col>
         </Row>
-        <Row>
-          <Col xs="11" sm="8" xl="9" className="text-right mt-2">
-            <Button
-              variant="success"
-              type="submit"
-              size="sm"
-              onClick={submitForm}
-            >
-              {loading ? (
-                <span>
-                  <span className={"spinner-border spinner-border-sm "}></span>{" "}
-                  Loading...
-                </span>
-              ) : (
-                "Uložiť zmeny"
-              )}
-            </Button>
-            <br />
-          </Col>
-        </Row>
+        {values?.length ? (
+          <Row>
+            <Col xs="11" sm="8" xl="9" className="text-right mt-2">
+              <Button
+                variant="success"
+                type="submit"
+                size="sm"
+                onClick={submitForm}
+              >
+                {loading ? <LoadingInButton /> : "Uložiť zmeny"}
+              </Button>
+              <br />
+            </Col>
+          </Row>
+        ) : (
+          ""
+        )}
       </Form>
     </div>
   );

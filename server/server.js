@@ -351,7 +351,7 @@ app.get(
   isAdminAuth,
   async (req, res) => {
     pool.getConnection().then((conn) => {
-      conn.beginTransaction().then(async (res) => {
+      conn.beginTransaction().then(async () => {
         try {
           const { subjectId } = req.params;
           const students = await queries.getStudentsBySubjectId(
@@ -930,9 +930,9 @@ app.get("/api/subject/:subjectId/bonus/:bonusId/comment", async (req, res) => {
 app.post("/api/subject/:subjectId/bonus/:bonusId/comment", async (req, res) => {
   const { bonusId } = req.params;
   const { userId, content, refCommentId } = req.body;
-  console.log("tu som");
+
   if (!content || content.trim() === "") return;
-  console.log("tu som1");
+
   const date = getCurrentDate();
   // prettier-ignore
   const id = await queries.insertBonusComment(bonusId, userId, content, date, refCommentId);

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { useDispatch } from "react-redux";
+import LoadingInButton from "../../../components/LoadingInButton";
 import {
   GOT_0_BONUS_POINTS,
   GOT_1_BONUS_POINTS,
@@ -98,14 +99,7 @@ function CommentEval({ bonusId, comment }) {
           className="left-btn"
           style={{ boxShadow: "none" }}
         >
-          {loadingZero ? (
-            <span>
-              <span className={"spinner-border spinner-border-sm "}></span>{" "}
-              Loading...
-            </span>
-          ) : (
-            "0 bodov"
-          )}
+          {loadingZero ? <LoadingInButton /> : "0 bodov"}
         </Button>
         <Button
           variant={onePointActive ? "success" : "outline-success"}
@@ -114,14 +108,7 @@ function CommentEval({ bonusId, comment }) {
           className="right-btn"
           style={{ boxShadow: "none" }}
         >
-          {loadingOne ? (
-            <span>
-              <span className={"spinner-border spinner-border-sm "}></span>{" "}
-              Loading...
-            </span>
-          ) : (
-            "1 bod"
-          )}
+          {loadingOne ? <LoadingInButton /> : "1 bod"}
         </Button>
       </div>
       <ModalDeleteComment
