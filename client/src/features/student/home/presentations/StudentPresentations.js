@@ -27,6 +27,7 @@ function StudentPresentations() {
 
   return (
     <div>
+      <h3>Študentské prezentácie</h3>
       {showLoaderIfAnyNull(studentPresentations, myPresentation) || (
         <StudentPresentationsList
           studentPresentations={studentPresentations}

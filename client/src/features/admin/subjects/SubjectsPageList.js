@@ -6,7 +6,7 @@ import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import { loadCurrentSubjectId } from "./subjectsSlice";
 import { useDispatch } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import {
   WINTER_SEASON,
   SUBJ_IS_ACTIVE,
@@ -64,16 +64,7 @@ function SubjectsPageList({ subjects }) {
                       onClick={handleEnterSubjClick}
                       style={{ cursor: "pointer" }}
                     >
-                      <td subjectid={subject.id}>
-                        {
-                          <Link
-                            to={`/subject/${subject.id}${URL_ADMIN_HOME}`}
-                            subjectid={subject.id}
-                          >
-                            {subject.name}
-                          </Link>
-                        }
-                      </td>
+                      <td subjectid={subject.id}>{subject.name}</td>
                       <td subjectid={subject.id}>
                         {subjIsActive ? (
                           <Badge pill variant="success" subjectid={subject.id}>

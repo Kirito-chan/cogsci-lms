@@ -26,7 +26,7 @@ function MyComment({
       id={id == "new" ? "myNewComment" : id}
     >
       <Form>
-        <Form.Group controlId="Form.ControlTextarea">
+        <Form.Group>
           <Form.Label>
             <strong>{header}</strong>
           </Form.Label>

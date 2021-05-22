@@ -21,12 +21,15 @@ function TeacherPresentations() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfAnyNull(teacherPresentations) || (
-      <TeacherPresentationsList
-        teacherPresentations={teacherPresentations}
-        subjectId={subjectId}
-      />
-    )
+    <div>
+      <h3>Učiteľské prezentácie</h3>
+      {showLoaderIfAnyNull(teacherPresentations) || (
+        <TeacherPresentationsList
+          teacherPresentations={teacherPresentations}
+          subjectId={subjectId}
+        />
+      )}
+    </div>
   );
 }
 

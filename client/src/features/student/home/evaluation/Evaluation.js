@@ -43,24 +43,27 @@ export default function Evaluation() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfAnyNull(
-      attendances,
-      bonuses,
-      subjectValuation,
-      myPresentation,
-      presentationWeight,
-      attendanceWeight,
-      commentsWeight
-    ) || (
-      <EvaluationTable
-        presentation={myPresentation}
-        presentationWeight={presentationWeight}
-        attendanceWeight={attendanceWeight}
-        commentsWeight={commentsWeight}
-        attendances={attendances}
-        bonuses={bonuses}
-        subjectValuation={subjectValuation}
-      />
-    )
+    <div>
+      <h2>Celkové hodnotenie</h2>
+      {showLoaderIfAnyNull(
+        attendances,
+        bonuses,
+        subjectValuation,
+        myPresentation,
+        presentationWeight,
+        attendanceWeight,
+        commentsWeight
+      ) || (
+        <EvaluationTable
+          presentation={myPresentation}
+          presentationWeight={presentationWeight}
+          attendanceWeight={attendanceWeight}
+          commentsWeight={commentsWeight}
+          attendances={attendances}
+          bonuses={bonuses}
+          subjectValuation={subjectValuation}
+        />
+      )}
+    </div>
   );
 }

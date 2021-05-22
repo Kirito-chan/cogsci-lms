@@ -17,5 +17,10 @@ export default function Bonus({ student }) {
     }
   }, [student, subjectId]);
 
-  return showLoaderIfAnyNull(bonuses) || <BonusTable bonuses={bonuses} />;
+  return (
+    <div>
+      <h2>Bonusové úlohy</h2>
+      {showLoaderIfAnyNull(bonuses) || <BonusTable bonuses={bonuses} />}
+    </div>
+  );
 }

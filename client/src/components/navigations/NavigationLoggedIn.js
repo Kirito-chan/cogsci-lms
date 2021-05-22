@@ -59,7 +59,7 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" fixed="top" expand="md">
+    <Navbar bg="dark" variant="dark" fixed="top" expand={isAdmin ? "xl" : "lg"}>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">

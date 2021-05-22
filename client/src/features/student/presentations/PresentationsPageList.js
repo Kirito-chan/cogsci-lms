@@ -26,6 +26,7 @@ function PresentationsPageList({
         <h2 className="mb-3">Študentské prezentácie</h2>
         <Row className="mb-4">
           <Col lg="3">
+            <h3>Moja prezentácia</h3>
             {showLoaderIfAnyNull(myPresentation, myPresentation) || (
               <MyPresentationList
                 myPresentation={myPresentation}
@@ -40,13 +41,13 @@ function PresentationsPageList({
           </Col>
 
           <Col lg="5">
+            <h3>Otvorené hodnotenie</h3>
             {showLoaderIfAnyNull(
               studentPresentationsOpened,
               myPresentation
             ) || (
               <StudentPresentationsList
                 studentPresentations={studentPresentationsOpened}
-                headerText="Otvorené na hodnotenie"
                 subjectId={subjectId}
                 myPresentationId={myPresentation.id}
               />
@@ -55,13 +56,13 @@ function PresentationsPageList({
 
           <Col lg="4">
             <div>
+              <h3>Uzavreté hodnotenie</h3>
               {showLoaderIfAnyNull(
                 studentPresentationsClosed,
                 myPresentation
               ) || (
                 <StudentPresentationsList
                   studentPresentations={studentPresentationsClosed}
-                  headerText="Uzavreté hodnotenie"
                   hideHodnotitBtn={true}
                   subjectId={subjectId}
                   myPresentationId={myPresentation.id}
@@ -70,11 +71,10 @@ function PresentationsPageList({
             </div>
           </Col>
         </Row>
-
+        <h2 className="mt-5">Učiteľské prezentácie</h2>
         {showLoaderIfAnyNull(teacherPresentations) || (
           <TeacherPresentationsList
             teacherPresentations={teacherPresentations}
-            h2="true"
           />
         )}
       </Container>

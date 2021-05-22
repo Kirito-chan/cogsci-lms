@@ -8,6 +8,7 @@ export function TextInput({ title, content, handleContent }) {
     <Form.Group as={Row}>
       <Form.Label column sm="3" className="text-right">
         <b>{title}</b>
+        <span className="text-danger">*</span>
       </Form.Label>
       <Col sm="9">
         <Form.Control
@@ -26,6 +27,7 @@ export function TextAreaInput({ title, content, handleContent, rows }) {
     <Form.Group as={Row}>
       <Form.Label column sm="3" className="text-right">
         <b>{title}</b>
+        <span className="text-danger">*</span>
       </Form.Label>
       <Col sm="9">
         <Form.Control
@@ -54,7 +56,10 @@ export function TextInputRegistration({
   return (
     <Form.Group as={Row}>
       <Form.Label column md="4" sm="4" xs="3" className="text-right">
-        <b>{title}</b>
+        <b>
+          {title}
+          <span className="text-danger">*</span>
+        </b>
       </Form.Label>
       <Col lg="4" md="6" sm="8" xs="9">
         <Form.Control
@@ -118,6 +123,7 @@ export function TextInputSettings({
     <Form.Group as={Row}>
       <Form.Label column sm={sm[0]}>
         <b>{title}</b>
+        <span className="text-danger">*</span>
       </Form.Label>
       <Col sm={sm[1]}>
         <Form.Control
@@ -137,6 +143,7 @@ export function TextAreaInputSettings({ title, content, handleContent, rows }) {
     <Form.Group as={Row}>
       <Form.Label column sm="2">
         <b>{title}</b>
+        <span className="text-danger">*</span>
       </Form.Label>
       <Col sm="5">
         <Form.Control

@@ -10,8 +10,6 @@ function PendingStudentsList({
   const isEmpty = pendingStudents.length === 0;
   return (
     <div className={"mb-5 " + (isEmpty ? "d-none" : "")}>
-      <h2>Nepotvrdení študenti</h2>
-
       {pendingStudents.map((student) => (
         <div key={student.id} className="d-flex justify-content-between">
           <p>

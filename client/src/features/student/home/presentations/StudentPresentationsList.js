@@ -8,15 +8,12 @@ import { Link } from "react-router-dom";
 function StudentPresentationsList({
   studentPresentations,
   subjectId,
-  headerText,
   hideHodnotitBtn,
   myPresentationId,
   hideEvalDiscussion,
 }) {
   return (
     <div className={hideHodnotitBtn ? "mt-3 mt-lg-0" : ""}>
-      <h3>{headerText}</h3>
-
       {studentPresentations.length == 0 && (
         <p className="text-secondary">Žiadne</p>
       )}

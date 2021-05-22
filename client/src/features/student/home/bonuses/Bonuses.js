@@ -19,9 +19,12 @@ function Bonuses() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfAnyNull(bonuses) || (
-      <BonusesList bonuses={bonuses} subjectId={subjectId} />
-    )
+    <div className="mt-5">
+      <h2>Bonusové úlohy</h2>
+      {showLoaderIfAnyNull(bonuses) || (
+        <BonusesList bonuses={bonuses} subjectId={subjectId} />
+      )}
+    </div>
   );
 }
 

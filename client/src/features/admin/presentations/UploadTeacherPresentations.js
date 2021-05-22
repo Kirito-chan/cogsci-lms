@@ -9,6 +9,9 @@ import {
 } from "../../student/home/homeSlice";
 import { getCurrentUserId } from "../../../app/currentUserSlice";
 import LoadingInButton from "../../../components/LoadingInButton";
+import Container from "react-bootstrap/Container";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 
 function UploadTeacherPresentations() {
   const dispatch = useDispatch();
@@ -27,17 +30,21 @@ function UploadTeacherPresentations() {
     });
   };
   return (
-    <div>
-      <h3>Pridanie učiteľskej prezentácie</h3>
-      <Form className="mt-4" onSubmit={handleUpload}>
-        <Form.Group>
-          <Form.File ref={fileInputRef} />
-        </Form.Group>
-        <Button size="sm" type="submit" variant="success">
-          {loading ? <LoadingInButton /> : "Pridať prezentáciu"}
-        </Button>
-      </Form>
-    </div>
+    <Container fluid>
+      <Row>
+        <Col lg={5} className="mt-5 border border-dark rounded p-3">
+          <h3>Pridanie učiteľskej prezentácie</h3>
+          <Form className="mt-4" onSubmit={handleUpload}>
+            <Form.Group>
+              <Form.File ref={fileInputRef} />
+            </Form.Group>
+            <Button size="sm" type="submit" variant="success">
+              {loading ? <LoadingInButton /> : "Pridať prezentáciu"}
+            </Button>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

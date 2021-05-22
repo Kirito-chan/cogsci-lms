@@ -18,8 +18,11 @@ export default function Attendance({ student }) {
   }, [student, subjectId]);
 
   return (
-    showLoaderIfAnyNull(attendances) || (
-      <AttendanceTable attendances={attendances} detail={true} />
-    )
+    <div>
+      <h2>Dochádzka</h2>
+      {showLoaderIfAnyNull(attendances) || (
+        <AttendanceTable attendances={attendances} detail={true} />
+      )}
+    </div>
   );
 }

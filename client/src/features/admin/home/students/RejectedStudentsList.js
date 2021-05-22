@@ -8,8 +8,6 @@ function RejectedStudentsList({ rejectedStudents, handleAcceptStudent }) {
   const isEmpty = rejectedStudents.length === 0;
   return (
     <div className={"mb-5 " + (isEmpty ? "d-none" : "")}>
-      <h2>Zamietnutí študenti</h2>
-
       {rejectedStudents.map((student, i) => (
         <Row key={i}>
           <Col lg={6} xs={7}>

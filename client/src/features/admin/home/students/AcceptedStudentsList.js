@@ -16,8 +16,6 @@ function AcceptedStudentsList({
 }) {
   return (
     <div className="mb-5">
-      <h2>Potvrdení študenti</h2>
-
       {acceptedStudents.length === 0 && (
         <p className="text-secondary">Žiadni</p>
       )}

@@ -39,7 +39,6 @@ export default function EvaluationTable({
 
   return (
     <div>
-      <h2>Celkové hodnotenie</h2>
       <Table bordered striped hover size="sm" className="text-center">
         <thead>
           <tr>

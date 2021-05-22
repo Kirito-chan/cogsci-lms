@@ -50,18 +50,20 @@ function MyPresentation() {
   }, [currentUserId, subjectId]);
 
   return (
-    showLoaderIfAnyNull(myPresentation) || (
-      <MyPresentationList
-        myPresentation={myPresentation}
-        presentationWeight={presentationWeight}
-        subjectId={subjectId}
-        currentUserId={currentUserId}
-        handleUpload={handleUpload}
-        fileInputRef={fileInputRef}
-        classname="mt-5 mb-5"
-        loading={loading}
-      />
-    )
+    <div className="mt-5 mb-5">
+      <h3>Moja prezentácia</h3>
+      {showLoaderIfAnyNull(myPresentation) || (
+        <MyPresentationList
+          myPresentation={myPresentation}
+          presentationWeight={presentationWeight}
+          subjectId={subjectId}
+          currentUserId={currentUserId}
+          handleUpload={handleUpload}
+          fileInputRef={fileInputRef}
+          loading={loading}
+        />
+      )}
+    </div>
   );
 }
 

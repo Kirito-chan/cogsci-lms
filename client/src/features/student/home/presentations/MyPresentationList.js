@@ -16,13 +16,11 @@ function MyPresentationList({
   subjectId,
   handleUpload,
   fileInputRef,
-  classname,
   loading,
 }) {
   const isUploaded = Object.keys(myPresentation).length !== 0;
   return (
-    <div className={classname}>
-      <h3>Moja prezentácia</h3>
+    <div>
       <div>
         {isUploaded || (
           <span className="text-secondary">Neodovzdaná prezentácia</span>

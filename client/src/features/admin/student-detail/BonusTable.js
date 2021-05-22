@@ -9,11 +9,9 @@ import {
   NOT_YET_COMMENTED,
 } from "../../../constants";
 
-export default function bonusTable({ bonuses }) {
+export default function BonusTable({ bonuses }) {
   return (
     <div>
-      <h2>Bonusové úlohy</h2>
-
       <Table bordered striped hover size="sm" className="text-center">
         <thead>
           <tr>

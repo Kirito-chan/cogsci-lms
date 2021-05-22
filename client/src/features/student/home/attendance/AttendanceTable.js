@@ -7,7 +7,6 @@ import InputPassword from "./InputPassword";
 export default function AttendanceTable({ attendances }) {
   return (
     <div>
-      <h2>Dochádzka</h2>
       {attendances.length === 0 ? (
         <p>Žiadna</p>
       ) : (

@@ -30,13 +30,16 @@ function AcceptedStudents() {
   };
 
   return (
-    showLoaderIfAnyNull(acceptedStudents) || (
-      <AcceptedStudentsList
-        acceptedStudents={acceptedStudents}
-        subjectId={subjectId}
-        handleRejectStudent={handleRejectStudent}
-      />
-    )
+    <div>
+      <h2>Potvrdení študenti</h2>
+      {showLoaderIfAnyNull(acceptedStudents) || (
+        <AcceptedStudentsList
+          acceptedStudents={acceptedStudents}
+          subjectId={subjectId}
+          handleRejectStudent={handleRejectStudent}
+        />
+      )}
+    </div>
   );
 }
 

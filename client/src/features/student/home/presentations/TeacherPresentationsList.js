@@ -7,15 +7,9 @@ import { URL_PRESENTATIONS } from "../../../../constants";
 import Discussion from "../Discussion";
 import DeleteButton from "../../presentation/DeleteButton";
 
-function TeacherPresentationsList({ teacherPresentations, subjectId, h2 }) {
+function TeacherPresentationsList({ teacherPresentations, subjectId }) {
   return (
-    <div className="mb-5">
-      {h2 ? (
-        <h2 className="mt-5">Učiteľské prezentácie</h2>
-      ) : (
-        <h3>Učiteľské prezentácie</h3>
-      )}
-
+    <div>
       {teacherPresentations.length !== 0 || (
         <p className="text-secondary">Žiadne</p>
       )}

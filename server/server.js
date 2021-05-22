@@ -30,6 +30,7 @@ app.post("/api/admin/send-email", isAdminAuth, async function (req, res) {
   res.set("Content-Type", "application/json");
 
   const { toEmail, fromEmail, fromName, subject, text } = req.body;
+  if (!subject || subject.trim() === "" || !text || text.trim() === "") return;
 
   const messageInfo = {
     toEmail,

@@ -78,6 +78,7 @@ function EmailPageView({
               <Col md="8">
                 <Form.Label>
                   <b>Predmet</b>
+                  <span className="text-danger">*</span>
                 </Form.Label>
                 <Form.Control
                   required
@@ -87,6 +88,7 @@ function EmailPageView({
                 />
                 <Form.Label>
                   <b>Správa</b>
+                  <span className="text-danger">*</span>
                 </Form.Label>
 
                 <Form.Control

@@ -28,15 +28,19 @@ function RejectedStudents() {
       dispatch(loadAcceptedStudents(subjectId));
     });
   };
+  const isEmpty = rejectedStudents?.length === 0;
 
   return (
-    showLoaderIfAnyNull(rejectedStudents) || (
-      <RejectedStudentsList
-        rejectedStudents={rejectedStudents}
-        subjectId={subjectId}
-        handleAcceptStudent={handleAcceptStudent}
-      />
-    )
+    <div>
+      <h2 className={isEmpty ? "d-none" : ""}>Zamietnutí študenti</h2>
+      {showLoaderIfAnyNull(rejectedStudents) || (
+        <RejectedStudentsList
+          rejectedStudents={rejectedStudents}
+          subjectId={subjectId}
+          handleAcceptStudent={handleAcceptStudent}
+        />
+      )}
+    </div>
   );
 }
 

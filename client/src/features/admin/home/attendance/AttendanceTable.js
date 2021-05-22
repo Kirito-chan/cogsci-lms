@@ -13,7 +13,6 @@ export default function AttendanceTable({ attendances, detail }) {
 
   return (
     <div>
-      <h2>Dochádzka</h2>
       {allLocked && !detail ? <AddAttendance /> : ""}
 
       <Table bordered striped hover size="sm" className="text-center">

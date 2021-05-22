@@ -38,16 +38,20 @@ function PendingStudents() {
       dispatch(loadRejectedStudents(subjectId));
     });
   };
+  const isEmpty = pendingStudents?.length === 0;
 
   return (
-    showLoaderIfAnyNull(pendingStudents) || (
-      <PendingStudentsList
-        pendingStudents={pendingStudents}
-        subjectId={subjectId}
-        handleAcceptStudent={handleAcceptStudent}
-        handleRejectStudent={handleRejectStudent}
-      />
-    )
+    <div>
+      <h2 className={isEmpty ? "d-none" : ""}>Nepotvrdení študenti</h2>
+      {showLoaderIfAnyNull(pendingStudents) || (
+        <PendingStudentsList
+          pendingStudents={pendingStudents}
+          subjectId={subjectId}
+          handleAcceptStudent={handleAcceptStudent}
+          handleRejectStudent={handleRejectStudent}
+        />
+      )}
+    </div>
   );
 }
 
