@@ -1,4 +1,5 @@
 // bonuses
+export const NUM_OF_BONUSES_NOT_SET = -1; // po novom bude admin zadavat pocet bonusov pre dany predmet, avsak predosle predmety pocitali pocet bonusov z poctu aktualne zvytvorenych bonusov - aby nebolo treba rucne pre kazdy predmet zadat kolko tam je bonusov, tak -1 znamena ze tam ma pocet bonusov vypocitat z aktualnych
 export const GOT_0_BONUS_POINTS = 0; // stlpec valuated v tabulke announcement_comments = 0 znamena, ze dostal 0 bodov
 export const GOT_1_BONUS_POINTS = 1; // stlpec valuated v tabulke announcement_comments = 1 znamena, ze dostal 1 bod
 export const NOT_YET_EVALUATED_BONUS_POINTS = "nehodnotené"; // stlpec valuated v tabulke announcement_comments = NULL znamena, ze este nebol hodnoteny ucitelom

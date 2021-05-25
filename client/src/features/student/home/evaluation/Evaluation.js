@@ -18,6 +18,10 @@ import { getCurrentUserId } from "../../../../app/currentUserSlice";
 import EvaluationTable from "./EvaluationTable";
 import { useParams } from "react-router";
 import { showLoaderIfAnyNull } from "../../../../components/utils/StringUtils";
+import {
+  getCurrentSubjectNumOfBonuses,
+  getCurrentSubjectNumOfWeeks,
+} from "../../subjects/subjectsSlice";
 
 export default function Evaluation() {
   const dispatch = useDispatch();
@@ -30,6 +34,8 @@ export default function Evaluation() {
   const presentationWeight = useSelector(getPresentationWeight);
   const attendanceWeight = useSelector(getAttendanceWeight);
   const commentsWeight = useSelector(getCommentsWeight);
+  const currentSubjectNumOfWeeks = useSelector(getCurrentSubjectNumOfWeeks);
+  const currentSubjectNumOfBonuses = useSelector(getCurrentSubjectNumOfBonuses);
   const { subjectId } = useParams();
 
   useEffect(() => {
@@ -52,7 +58,8 @@ export default function Evaluation() {
         myPresentation,
         presentationWeight,
         attendanceWeight,
-        commentsWeight
+        commentsWeight,
+        currentSubjectNumOfWeeks
       ) || (
         <EvaluationTable
           presentation={myPresentation}
@@ -62,6 +69,8 @@ export default function Evaluation() {
           attendances={attendances}
           bonuses={bonuses}
           subjectValuation={subjectValuation}
+          currentSubjectNumOfWeeks={currentSubjectNumOfWeeks}
+          currentSubjectNumOfBonuses={currentSubjectNumOfBonuses}
         />
       )}
     </div>

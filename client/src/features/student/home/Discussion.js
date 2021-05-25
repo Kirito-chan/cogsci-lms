@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { getIsAdmin } from "../../../app/currentUserSlice";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import { scrollWithOffsetSmall } from "../../../components/utils/ScrollUtils";
 
 function Discussion({
   data,
@@ -80,6 +81,7 @@ function Discussion({
             smooth
             to={`${redirectTo}${queryString ? queryString : ""}${hash}`}
             className="btn btn-success btn-sm"
+            scroll={(el) => scrollWithOffsetSmall(el)}
           >
             Diskutovať
           </HashLink>

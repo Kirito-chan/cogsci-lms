@@ -324,6 +324,7 @@ export const updateSubject = async (
   about,
   userLimit,
   weeks,
+  numOfBonuses,
   active,
   subjectValPres,
   subjectValAttendance,
@@ -331,7 +332,7 @@ export const updateSubject = async (
 ) => {
   await execute(
     `UPDATE subject SET name = ?, year = ?, season = ?, about = ?, user_limit = ?,
-    weeks = ?, status = ?, val_presentation = ?, val_attendance = ?, val_comment = ?
+    weeks = ?, bonuses = ?, status = ?, val_presentation = ?, val_attendance = ?, val_comment = ?
     WHERE id = ?`,
     [
       name,
@@ -340,6 +341,7 @@ export const updateSubject = async (
       about,
       userLimit,
       weeks,
+      numOfBonuses,
       active,
       subjectValPres,
       subjectValAttendance,

@@ -21,10 +21,7 @@ function MyComment({
   const [content, setContent] = useState("");
 
   return (
-    <article
-      className={"p-3 mb-2 bg-light-grey ml-0 " + classname}
-      id={id == "new" ? "myNewComment" : id}
-    >
+    <article className={"p-3 mb-2 bg-light-grey ml-0 " + classname}>
       <Form>
         <Form.Group>
           <Form.Label>

@@ -55,7 +55,9 @@ function CommentsList({
   return (
     <aside className="mt-5">
       <hr />
-      <h3 className="mb-3">Komentáre</h3>
+      <h3 className="mb-3" id="myNewComment">
+        Komentáre
+      </h3>
 
       {showLoaderIfAnyNull(comments) ||
         (comments.length > 0 &&

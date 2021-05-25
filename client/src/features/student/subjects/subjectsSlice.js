@@ -6,6 +6,8 @@ export const slice = createSlice({
   initialState: {
     currentSubjectId: null,
     currentSubjectName: null,
+    currentSubjectNumOfWeeks: null,
+    currentSubjectNumOfBonuses: null,
     subjects: null,
   },
   reducers: {
@@ -20,6 +22,8 @@ export const slice = createSlice({
     subjectReceived: (state, action) => {
       state.currentSubjectId = action.payload.id;
       state.currentSubjectName = action.payload.name;
+      state.currentSubjectNumOfWeeks = action.payload.weeks;
+      state.currentSubjectNumOfBonuses = action.payload.bonuses;
     },
     clearedCurrentSubject: (state) => {
       state.currentSubjectId = null;
@@ -94,3 +98,7 @@ export const getCurrentSubjectId = (state) =>
   state.features.student.subjects.currentSubjectId;
 export const getCurrentSubjectName = (state) =>
   state.features.student.subjects.currentSubjectName;
+export const getCurrentSubjectNumOfWeeks = (state) =>
+  state.features.student.subjects.currentSubjectNumOfWeeks;
+export const getCurrentSubjectNumOfBonuses = (state) =>
+  state.features.student.subjects.currentSubjectNumOfBonuses;

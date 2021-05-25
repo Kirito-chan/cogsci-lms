@@ -17,6 +17,10 @@ import {
 import { useParams } from "react-router";
 import EvaluationTable from "../../student/home/evaluation/EvaluationTable";
 import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
+import {
+  getCurrentSubjectNumOfBonuses,
+  getCurrentSubjectNumOfWeeks,
+} from "../subjects/subjectsSlice";
 
 export default function Evaluation({ student }) {
   const dispatch = useDispatch();
@@ -30,6 +34,8 @@ export default function Evaluation({ student }) {
   const attendances = useSelector(getAttendance);
   const bonuses = useSelector(getBonuses);
   const subjectValuation = useSelector(getSubjectValuation);
+  const currentSubjectNumOfWeeks = useSelector(getCurrentSubjectNumOfWeeks);
+  const currentSubjectNumOfBonuses = useSelector(getCurrentSubjectNumOfBonuses);
 
   useEffect(() => {
     if (studentId && subjectId) {
@@ -46,7 +52,8 @@ export default function Evaluation({ student }) {
       attendances,
       bonuses,
       subjectValuation,
-      myPresentation
+      myPresentation,
+      currentSubjectNumOfWeeks
     ) || (
       <EvaluationTable
         presentation={myPresentation}
@@ -56,6 +63,8 @@ export default function Evaluation({ student }) {
         attendances={attendances}
         bonuses={bonuses}
         subjectValuation={subjectValuation}
+        currentSubjectNumOfWeeks={currentSubjectNumOfWeeks}
+        currentSubjectNumOfBonuses={currentSubjectNumOfBonuses}
       />
     )
   );

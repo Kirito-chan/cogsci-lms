@@ -8,6 +8,8 @@ export const slice = createSlice({
     currentSubjectId: null,
     currentSubjectName: null,
     currentSubjectStatus: null,
+    currentSubjectNumOfWeeks: null,
+    currentSubjectNumOfBonuses: null,
     subjects: null,
   },
   reducers: {
@@ -25,6 +27,8 @@ export const slice = createSlice({
       state.currentSubjectName = action.payload.name;
       state.currentSubjectStatus = action.payload.status;
       state.currentSubject = action.payload;
+      state.currentSubjectNumOfWeeks = action.payload.weeks;
+      state.currentSubjectNumOfBonuses = action.payload.bonuses;
     },
     clearedCurrentSubject: (state) => {
       state.currentSubjectId = null;
@@ -80,61 +84,58 @@ export const loadSubject = (subjectId) => (dispatch) => {
   );
 };
 
-export const insertSubject = (
-  name,
-  year,
-  season,
-  about,
-  userLimit,
-  weeks,
-  active
-) => (dispatch) => {
-  const data = { name, year, season, about, userLimit, weeks, active };
-  return dispatch(
-    apiCallBegan({
-      url: urlAdminSubject,
-      method: "post",
-      data,
-      onSuccess: subjectInserted.type,
-    })
-  );
-};
+export const insertSubject =
+  (name, year, season, about, userLimit, weeks, active) => (dispatch) => {
+    const data = { name, year, season, about, userLimit, weeks, active };
+    return dispatch(
+      apiCallBegan({
+        url: urlAdminSubject,
+        method: "post",
+        data,
+        onSuccess: subjectInserted.type,
+      })
+    );
+  };
 
-export const updateSubject = (
-  subjectId,
-  name,
-  year,
-  season,
-  about,
-  userLimit,
-  weeks,
-  active,
-  subjectValPres,
-  subjectValAttendance,
-  subjectValComment
-) => (dispatch) => {
-  const data = {
+export const updateSubject =
+  (
+    subjectId,
     name,
     year,
     season,
     about,
     userLimit,
     weeks,
+    numOfBonuses,
     active,
     subjectValPres,
     subjectValAttendance,
-    subjectValComment,
-  };
+    subjectValComment
+  ) =>
+  (dispatch) => {
+    const data = {
+      name,
+      year,
+      season,
+      about,
+      userLimit,
+      weeks,
+      numOfBonuses,
+      active,
+      subjectValPres,
+      subjectValAttendance,
+      subjectValComment,
+    };
 
-  return dispatch(
-    apiCallBegan({
-      url: urlAdminSubject + "/" + subjectId,
-      method: "put",
-      data,
-      onSuccess: subjectUpdated.type,
-    })
-  );
-};
+    return dispatch(
+      apiCallBegan({
+        url: urlAdminSubject + "/" + subjectId,
+        method: "put",
+        data,
+        onSuccess: subjectUpdated.type,
+      })
+    );
+  };
 
 export const updateSubjectStatus = (subjectId, status) => (dispatch) => {
   const data = { status };
@@ -168,3 +169,7 @@ export const getCurrentSubjectName = (state) =>
   state.features.admin.subjects.currentSubjectName;
 export const getCurrentSubjectStatus = (state) =>
   state.features.admin.subjects.currentSubjectStatus;
+export const getCurrentSubjectNumOfWeeks = (state) =>
+  state.features.admin.subjects.currentSubjectNumOfWeeks;
+export const getCurrentSubjectNumOfBonuses = (state) =>
+  state.features.admin.subjects.currentSubjectNumOfBonuses;

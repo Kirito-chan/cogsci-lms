@@ -9,6 +9,7 @@ import createOrderedCommentsMap from "../../../components/utils/ArrayUtils";
 import {
   cursorFocus,
   scrollWithOffset,
+  scrollWithOffsetSmall,
 } from "../../../components/utils/ScrollUtils";
 import { loadBonuses } from "../home/homeSlice";
 
@@ -80,6 +81,7 @@ function BonusPage() {
         to={location.pathname + location.hash}
         id="scrollDown"
         className="d-none"
+        scroll={(el) => scrollWithOffsetSmall(el)}
       ></HashLink>
 
       <BonusPageView

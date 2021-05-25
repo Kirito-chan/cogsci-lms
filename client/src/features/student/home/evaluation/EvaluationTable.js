@@ -1,6 +1,7 @@
 import React from "react";
 import Table from "react-bootstrap/Table";
 import getGrade from "../../../../components/utils/Math";
+import { NUM_OF_BONUSES_NOT_SET } from "../../../../constants";
 
 export default function EvaluationTable({
   presentation,
@@ -10,14 +11,19 @@ export default function EvaluationTable({
   attendances,
   bonuses,
   subjectValuation,
+  currentSubjectNumOfWeeks,
+  currentSubjectNumOfBonuses,
 }) {
   const presentationPoints = parseFloat(presentation?.points) || 0;
   // prettier-ignore
   const earnedAttendancePoints = attendances.filter((it) => it.got_point).length || 0;
-  const maxAttendancePoints = attendances.length || 0;
+  const maxAttendancePoints = currentSubjectNumOfWeeks;
   const earnedBonusPoints =
     bonuses.filter((it) => it.evaluation == 1).length || 0;
-  const maxBonusPoints = bonuses.length || 0;
+  const maxBonusPoints =
+    currentSubjectNumOfBonuses === NUM_OF_BONUSES_NOT_SET
+      ? bonuses.length
+      : currentSubjectNumOfBonuses;
   const bonusPointsFromWeight =
     Number(
       ((earnedBonusPoints / maxBonusPoints) * commentsWeight).toFixed(2)

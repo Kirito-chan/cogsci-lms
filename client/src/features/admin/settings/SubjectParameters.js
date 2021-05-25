@@ -35,6 +35,7 @@ function SubjectParameters() {
       setSeason(subject.season);
       setYear(subject.year);
       setWeeks(subject.weeks);
+      setNumOfBonuses(subject.bonuses);
       setSubjectValPres(subject.val_presentation);
       setSubjectValAttendance(subject.val_attendance);
       setSubjectValComment(subject.val_comment);
@@ -72,6 +73,9 @@ function SubjectParameters() {
   const [weeks, setWeeks] = useState("");
   const handleWeeks = (e) => setWeeks(e.target.value);
 
+  const [numOfBonuses, setNumOfBonuses] = useState("");
+  const handleNumOfBonuses = (e) => setNumOfBonuses(e.target.value);
+
   const [sum, setSum] = useState();
   const [errorSum, setErrorSum] = useState("d-none");
   const [allAreInvalid, setAllAreInvalid] = useState(false);
@@ -102,6 +106,7 @@ function SubjectParameters() {
         aboutSubject,
         userLimit,
         weeks,
+        numOfBonuses,
         active,
         subjectValPres,
         subjectValAttendance,
@@ -163,6 +168,11 @@ function SubjectParameters() {
           title="Počet týždňov"
           content={weeks}
           handleContent={handleWeeks}
+        />
+        <TextInputSettings
+          title="Počet bonusov"
+          content={numOfBonuses}
+          handleContent={handleNumOfBonuses}
         />
         <TextInputSettings
           title="Váha prezentácie"
