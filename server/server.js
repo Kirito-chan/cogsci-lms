@@ -22,7 +22,10 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL }));
+const __dirname = path.resolve();
+
+app.use(cors({ origin: "*" }));
+app.use(express.static(path.join(__dirname, "..", "client", "build")));
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -654,8 +657,6 @@ app.post("/api/check-token", withAuth, function (req, res) {
 app.post(
   "/api/login",
   errorHandler(async function (req, res) {
-    res.setHeader("Access-Control-Allow-Origin", process.env.CLIENT_URL);
-    res.setHeader("Access-Control-Allow-Credentials", true);
     const { username, password } = req.body;
     const user = await queries.getUserByUsername(username);
 
@@ -1493,6 +1494,10 @@ const isCorrectPassword = (typedPassword, salt, DBpassword) => {
     .digest("base64");
   return hashedPassword === DBpassword;
 };
+
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
+});
 
 // set port, listen for requests
 const PORT = process.env.SERVER_PORT;
