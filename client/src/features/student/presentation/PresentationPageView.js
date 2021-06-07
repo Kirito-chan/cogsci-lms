@@ -156,6 +156,7 @@ function PresentationPageView({
           setScrollElementIndex={setScrollElementIndex}
           insertComment={insertComment}
           loadComments={loadComments}
+          isTeachers={isTeacherPres}
         />
       </Container>
     </div>

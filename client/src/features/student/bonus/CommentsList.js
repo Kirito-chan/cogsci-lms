@@ -18,6 +18,7 @@ function CommentsList({
   comments,
   currentUserId,
   id, // bonusId or presentationId
+  isTeachers,
   commentsMap,
   refToScrolledElement,
   setScrollElementIndex,
@@ -77,6 +78,7 @@ function CommentsList({
                       isAdmin={isAdmin}
                       id={id}
                       isBonus={isBonus}
+                      isTeachers={isTeachers}
                     />
 
                     {commentsMap.get(comment).map((subcomment) => (
@@ -89,6 +91,10 @@ function CommentsList({
                           handleOdpovedat={handleOdpovedat}
                           isMyComment={currentUserId == subcomment.user_id}
                           isAdminComment={subcomment.user_role == IS_ADMIN}
+                          isAdmin={isAdmin}
+                          isBonus={isBonus}
+                          id={id}
+                          isTeachers={isTeachers}
                         />
                       </div>
                     ))}

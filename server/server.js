@@ -46,6 +46,11 @@ app.post(
             return;
           }
 
+          if (!isValidEmail(email)) {
+            res.status(403).send("E-mail nie je valídny !");
+            return;
+          }
+
           const user = await queries.getUserByUsername(username, conn);
           const user2 = await queries.getUserByEmail(email, conn);
           const user2Email = user2?.email;
@@ -1430,7 +1435,7 @@ app.delete(
   isAdminAuth,
   errorHandler(async (req, res) => {
     const { commentId } = req.params;
-    await queries.deleteComment(commentId);
+    await queries.deleteBonusComment(commentId);
     res.json(commentId);
   })
 );
@@ -1490,6 +1495,22 @@ app.post(
   })
 );
 
+app.delete(
+  "/api/admin/presentation/comment/:commentId",
+  isAdminAuth,
+  errorHandler(async (req, res) => {
+    const { commentId } = req.params;
+    const { isTeachers } = req.query;
+    if (isTeachers) {
+      await queries.deletePresTeacherComment(commentId);
+    } else {
+      await queries.deletePresStudentComment(commentId);
+    }
+
+    res.json(commentId);
+  })
+);
+
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "..", "client", "build", "index.html"));
 });
@@ -1501,6 +1522,12 @@ const isCorrectPassword = (typedPassword, salt, DBpassword) => {
     .update(password)
     .digest("base64");
   return hashedPassword === DBpassword;
+};
+
+export const isValidEmail = (email) => {
+  const emailPattern =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return !email || emailPattern.test(String(email).toLowerCase());
 };
 
 // set port, listen for requests

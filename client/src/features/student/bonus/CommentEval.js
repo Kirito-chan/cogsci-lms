@@ -9,14 +9,11 @@ import {
 } from "../../../constants";
 import { updateBonusValuated } from "./bonusSlice";
 import "./CommentEval.css";
-import ModalDeleteComment from "./ModalDeleteComment";
 
 function CommentEval({ bonusId, comment }) {
   const dispatch = useDispatch();
   const [loadingZero, setLoadingZero] = useState(false); // loading for zero points button
   const [loadingOne, setLoadingOne] = useState(false);
-  const [showOdstranit, setShowOdstranit] = useState(false);
-  const showModalOdstranit = () => setShowOdstranit(true);
   // prettier-ignore
   const [zeroPointsActive, setZeroPointsActive] = useState(comment.valuated == GOT_0_BONUS_POINTS);
   // prettier-ignore
@@ -82,21 +79,13 @@ function CommentEval({ bonusId, comment }) {
   return (
     <React.Fragment>
       <div className="d-inline-block">
-        <Button
-          variant="outline-danger"
-          size="sm"
-          className="mr-2"
-          onClick={showModalOdstranit}
-        >
-          Odstrániť
-        </Button>
         <span className={"mx-2 " + notEvaluatedDisplayed}>nehodnotené</span>
         <Button
           variant={zeroPointsActive ? "success" : "outline-success"}
           size="sm"
           onClick={zeroPointsClicked}
           active={false}
-          className="left-btn"
+          className={"left-btn " + (notEvaluatedDisplayed ? "ml-2" : "")}
           style={{ boxShadow: "none" }}
         >
           {loadingZero ? <LoadingInButton /> : "0 bodov"}
@@ -111,13 +100,6 @@ function CommentEval({ bonusId, comment }) {
           {loadingOne ? <LoadingInButton /> : "1 bod"}
         </Button>
       </div>
-      <ModalDeleteComment
-        showOdstranit={showOdstranit}
-        setShowOdstranit={setShowOdstranit}
-        userName={comment.first_name + " " + comment.last_name}
-        bonusId={bonusId}
-        commentId={comment.id}
-      />
     </React.Fragment>
   );
 }

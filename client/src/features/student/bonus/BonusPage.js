@@ -1,6 +1,6 @@
 import React, { createRef, useEffect, /* useRef,*/ useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router";
+import { useHistory, useLocation, useParams } from "react-router";
 import { getCurrentUserId, getIsAdmin } from "../../../app/currentUserSlice";
 import BonusPageView from "./BonusPageView";
 import { getBonus, getComments, loadComments } from "./bonusSlice";
@@ -17,6 +17,7 @@ function BonusPage() {
   const dispatch = useDispatch();
   const { bonusId, subjectId } = useParams();
   const location = useLocation();
+  const history = useHistory();
 
   const bonus = useSelector((state) => getBonus(state, bonusId));
   const currentUserId = useSelector(getCurrentUserId);
@@ -71,6 +72,8 @@ function BonusPage() {
   useEffect(() => {
     if (location.hash.includes("myNewComment")) {
       document.getElementById("scrollDown").click();
+      location.hash = "";
+      history.push(location.pathname);
     }
   }, [comments]);
 

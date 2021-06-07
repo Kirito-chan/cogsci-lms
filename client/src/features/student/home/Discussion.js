@@ -7,6 +7,7 @@ import { getIsAdmin } from "../../../app/currentUserSlice";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { scrollWithOffsetSmall } from "../../../components/utils/ScrollUtils";
+import { useHistory } from "react-router";
 
 function Discussion({
   data,
@@ -18,6 +19,7 @@ function Discussion({
   hodnotitElement,
   isTeacherPres,
 }) {
+  const history = useHistory();
   const isAdmin = useSelector(getIsAdmin);
   const num_of_all_comments = data?.num_all_comments;
   const num_of_my_comments = data?.num_of_comments;
@@ -81,7 +83,7 @@ function Discussion({
             smooth
             to={`${redirectTo}${queryString ? queryString : ""}${hash}`}
             className="btn btn-success btn-sm"
-            scroll={(el) => scrollWithOffsetSmall(el)}
+            scroll={(el) => scrollWithOffsetSmall(el, history, redirectTo)}
           >
             Diskutovať
           </HashLink>

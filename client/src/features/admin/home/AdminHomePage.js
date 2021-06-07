@@ -9,6 +9,7 @@ import PendingStudents from "./students/PendingStudents";
 import AcceptedStudents from "./students/AcceptedStudents";
 import RejectedStudents from "./students/RejectedStudents";
 import Attendance from "./attendance/Attendance";
+import Bonuses from "../../student/home/bonuses/Bonuses";
 
 function AdminHomePage() {
   const subjectName = useSelector(getCurrentSubjectName);
@@ -38,6 +39,7 @@ function AdminHomePage() {
 
           <Col xl={6} md={6}>
             <Attendance />
+            <Bonuses />
           </Col>
         </Row>
       </Container>

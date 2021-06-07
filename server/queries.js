@@ -202,8 +202,20 @@ export const deleteBonus = async (id) => {
   await execute(`DELETE FROM announcement a WHERE a.id = ?`, [id]);
 };
 
-export const deleteComment = async (commentId) => {
+export const deleteBonusComment = async (commentId) => {
   await execute(`DELETE FROM announcement_comments WHERE id = ?`, [commentId]);
+};
+
+export const deletePresStudentComment = async (presentationId) => {
+  await execute(`DELETE FROM user_presentation_comments WHERE id = ?`, [
+    presentationId,
+  ]);
+};
+
+export const deletePresTeacherComment = async (presentationId) => {
+  await execute(`DELETE FROM teacher_presentation_comments WHERE id = ?`, [
+    presentationId,
+  ]);
 };
 
 // admin loading students

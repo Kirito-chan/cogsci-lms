@@ -20,6 +20,7 @@ export const slice = createSlice({
     },
     commentsRequestFailed: () => {},
     commentInserted: () => {},
+    commentDeleted: () => {},
     valuationTypesRequested: () => {},
     valuationTypesReceived: (state, action) => {
       state.valuationTypes = action.payload;
@@ -41,6 +42,7 @@ export const {
   commentsReceived,
   commentsRequestFailed,
   commentInserted,
+  commentDeleted,
   valuationTypesRequested,
   valuationTypesReceived,
   valuationTypesRequestFailed,
@@ -57,164 +59,158 @@ const urlPresentation = "/presentation";
 const urlAdminPresentation = "/admin/presentation";
 const urlPresentationEvaluation = "/evaluation";
 
-export const insertPresentationEvaluation = (
-  subjectId,
-  presentationId,
-  userWhoEvaluatesId,
-  evaluatedUserId,
-  values
-) => (dispatch) => {
-  const data = { values };
+export const insertPresentationEvaluation =
+  (subjectId, presentationId, userWhoEvaluatesId, evaluatedUserId, values) =>
+  (dispatch) => {
+    const data = { values };
 
-  return dispatch(
-    apiCallBegan({
-      data,
-      method: "post",
-      url:
-        "/subject" +
-        "/" +
-        subjectId +
-        urlPresentation +
-        "/" +
-        presentationId +
-        urlPresentationEvaluation +
-        "/?userWhoEvaluatesId=" +
-        userWhoEvaluatesId +
-        "&evaluatedUserId=" +
-        evaluatedUserId,
-      onSuccess: presentationEvaluationInserted.type,
-    })
-  );
-};
+    return dispatch(
+      apiCallBegan({
+        data,
+        method: "post",
+        url:
+          "/subject" +
+          "/" +
+          subjectId +
+          urlPresentation +
+          "/" +
+          presentationId +
+          urlPresentationEvaluation +
+          "/?userWhoEvaluatesId=" +
+          userWhoEvaluatesId +
+          "&evaluatedUserId=" +
+          evaluatedUserId,
+        onSuccess: presentationEvaluationInserted.type,
+      })
+    );
+  };
 ("/api/subject/:subjectId/presentation/:presentationId/evaluation");
 
 export const loadPresentation = (presentation) => (dispatch) => {
   dispatch({ type: presentationReceived.type, payload: presentation });
 };
 
-export const deletePresentation = (presentationId, path, subjectId) => (
-  dispatch
-) => {
+export const deletePresentation =
+  (presentationId, path, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        method: "delete",
+        url:
+          "/admin" +
+          "/subject/" +
+          subjectId +
+          urlPresentation +
+          "/" +
+          presentationId +
+          "/?path=" +
+          path,
+        onSuccess: presentationDeleted.type,
+      })
+    );
+  };
+
+export const updatePresentationStatus =
+  (presentationId, status) => (dispatch) => {
+    const data = { status };
+    return dispatch(
+      apiCallBegan({
+        url: urlAdminPresentation + "/" + presentationId,
+        method: "patch",
+        data,
+        onSuccess: updatedPresentationStatus.type,
+      })
+    );
+  };
+const urlSubject = "/subject";
+// nacita komentare ktore patria ku prezentacii ucitela, cize nenacitava komentare, ktore ucitel napisal
+export const loadTeacherComments =
+  (presentationId, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        url:
+          urlSubject +
+          "/" +
+          subjectId +
+          urlPresentation +
+          "/" +
+          presentationId +
+          "/teacher/comment",
+        onStart: commentsRequested.type,
+        onSuccess: commentsReceived.type,
+        onError: commentsRequestFailed.type,
+      })
+    );
+  };
+// nacita komentare ktore patria ku prezentacii studenta, cize nenacitava komentare, ktore student napisal
+export const loadStudentComments =
+  (presentationId, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        url:
+          urlSubject +
+          "/" +
+          subjectId +
+          urlPresentation +
+          "/" +
+          presentationId +
+          "/student/comment",
+        onStart: commentsRequested.type,
+        onSuccess: commentsReceived.type,
+        onError: commentsRequestFailed.type,
+      })
+    );
+  };
+
+export const insertTeacherComment =
+  (userId, presentationId, content, refCommentId, subjectId) => (dispatch) => {
+    const data = { userId, content, refCommentId };
+
+    return dispatch(
+      apiCallBegan({
+        data,
+        method: "post",
+        url:
+          urlSubject +
+          "/" +
+          subjectId +
+          urlPresentation +
+          "/" +
+          presentationId +
+          "/teacher/comment",
+        onSuccess: commentInserted.type,
+      })
+    );
+  };
+
+export const insertStudentComment =
+  (userId, presentationId, content, refCommentId, subjectId) => (dispatch) => {
+    const data = { userId, content, refCommentId };
+
+    return dispatch(
+      apiCallBegan({
+        data,
+        method: "post",
+        url:
+          urlSubject +
+          "/" +
+          subjectId +
+          urlPresentation +
+          "/" +
+          presentationId +
+          "/student/comment",
+        onSuccess: commentInserted.type,
+      })
+    );
+  };
+
+const urlAdminComment = "/admin/presentation/comment";
+
+export const deleteComment = (commentId, isTeachers) => (dispatch) => {
   return dispatch(
     apiCallBegan({
       method: "delete",
-      url:
-        "/admin" +
-        "/subject/" +
-        subjectId +
-        urlPresentation +
-        "/" +
-        presentationId +
-        "/?path=" +
-        path,
-      onSuccess: presentationDeleted.type,
-    })
-  );
-};
-
-export const updatePresentationStatus = (presentationId, status) => (
-  dispatch
-) => {
-  const data = { status };
-  return dispatch(
-    apiCallBegan({
-      url: urlAdminPresentation + "/" + presentationId,
-      method: "patch",
-      data,
-      onSuccess: updatedPresentationStatus.type,
-    })
-  );
-};
-const urlSubject = "/subject";
-// nacita komentare ktore patria ku prezentacii ucitela, cize nenacitava komentare, ktore ucitel napisal
-export const loadTeacherComments = (presentationId, subjectId) => (
-  dispatch
-) => {
-  return dispatch(
-    apiCallBegan({
-      url:
-        urlSubject +
-        "/" +
-        subjectId +
-        urlPresentation +
-        "/" +
-        presentationId +
-        "/teacher/comment",
-      onStart: commentsRequested.type,
-      onSuccess: commentsReceived.type,
-      onError: commentsRequestFailed.type,
-    })
-  );
-};
-// nacita komentare ktore patria ku prezentacii studenta, cize nenacitava komentare, ktore student napisal
-export const loadStudentComments = (presentationId, subjectId) => (
-  dispatch
-) => {
-  return dispatch(
-    apiCallBegan({
-      url:
-        urlSubject +
-        "/" +
-        subjectId +
-        urlPresentation +
-        "/" +
-        presentationId +
-        "/student/comment",
-      onStart: commentsRequested.type,
-      onSuccess: commentsReceived.type,
-      onError: commentsRequestFailed.type,
-    })
-  );
-};
-
-export const insertTeacherComment = (
-  userId,
-  presentationId,
-  content,
-  refCommentId,
-  subjectId
-) => (dispatch) => {
-  const data = { userId, content, refCommentId };
-
-  return dispatch(
-    apiCallBegan({
-      data,
-      method: "post",
-      url:
-        urlSubject +
-        "/" +
-        subjectId +
-        urlPresentation +
-        "/" +
-        presentationId +
-        "/teacher/comment",
-      onSuccess: commentInserted.type,
-    })
-  );
-};
-
-export const insertStudentComment = (
-  userId,
-  presentationId,
-  content,
-  refCommentId,
-  subjectId
-) => (dispatch) => {
-  const data = { userId, content, refCommentId };
-
-  return dispatch(
-    apiCallBegan({
-      data,
-      method: "post",
-      url:
-        urlSubject +
-        "/" +
-        subjectId +
-        urlPresentation +
-        "/" +
-        presentationId +
-        "/student/comment",
-      onSuccess: commentInserted.type,
+      url: urlAdminComment + "/" + commentId + "/?is_teachers=" + isTeachers,
+      onSuccess: commentDeleted.type,
     })
   );
 };

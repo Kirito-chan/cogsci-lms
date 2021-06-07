@@ -4,10 +4,17 @@ export const scrollWithOffset = (el) => {
   window.scrollTo({ top: yCoordinate - yOffset, behavior: "smooth" });
 };
 
-export const scrollWithOffsetSmall = (el) => {
+export const scrollWithOffsetSmall = (
+  el,
+  history = null,
+  redirectTo = null
+) => {
   const yCoordinate = el.getBoundingClientRect().top + window.pageYOffset;
   const yOffset = 80;
   window.scrollTo({ top: yCoordinate - yOffset, behavior: "smooth" });
+  if (history && redirectTo) {
+    history.push(redirectTo);
+  }
 };
 
 export const cursorFocus = function (elem) {
