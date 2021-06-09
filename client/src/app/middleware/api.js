@@ -1,4 +1,5 @@
 import axios from "axios";
+import { SERVER_URL } from "../../constants";
 import * as actions from "../actions";
 import { anyErrorReceived, getTokenHeaders } from "../currentUserSlice";
 
@@ -19,7 +20,7 @@ const api =
     let response = null;
     try {
       response = await axios.request({
-        baseURL: "http://localhost:8080/api",
+        baseURL: SERVER_URL,
         url,
         method,
         data,

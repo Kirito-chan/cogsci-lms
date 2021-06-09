@@ -7,7 +7,6 @@ import SubjectsPageAdmin from "./features/admin/subjects/SubjectsPage";
 import Login from "./features/login/Login";
 import AuthRoute from "./features/login/AuthRoute";
 import {
-  URL_ADMIN_BONUSES,
   URL_ADMIN_PRESENTATIONS,
   URL_ADMIN_SETTINGS,
   URL_ADMIN_SUBJECTS,
@@ -64,7 +63,6 @@ function App() {
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_HOME} component={AdminHomePage} type="admin" />
           <AuthRoute path={URL_ADMIN_SUBJECTS} component={SubjectsPageAdmin} type="admin" />
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_SETTINGS} component={SettingsPage} type="admin" />
-          <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_BONUSES} component={BonusesPage} type="admin" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_ADMIN_PRESENTATIONS} component={PresentationsPageAdmin} type="admin" />
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_EMAIL} component={EmailPage} type="admin" />
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_STUDENT_DETAIL + "/:studentId"} component={StudentDetailPage} type="admin" />
@@ -75,12 +73,12 @@ function App() {
           {/* student routes */}
           <AuthRoute path={"/subject/:subjectId" + URL_HOME} component={StudentHomePage} type="student"/>
           <AuthRoute path={URL_SUBJECTS} component={SubjectsPage} type="student" />
-          <AuthRoute exact path={"/subject/:subjectId" + URL_BONUSES} component={BonusesPage} type="student" />
           <AuthRoute exact path={"/subject/:subjectId" + URL_PRESENTATIONS} component={PresentationsPage} type="student" />
           <AuthRoute path={"/subject/:subjectId" + URL_TERMS} component={TermsPage} type="student" />
 
-          {/* student and admin common routes */}        
-          <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="both" />
+          {/* student and admin common routes */}    
+          <AuthRoute path={"/subject/:subjectId" + URL_BONUSES + "/:bonusId"} component={BonusPage} type="both" />    
+          <AuthRoute path={"/subject/:subjectId" + URL_BONUSES} component={BonusesPage} type="both" />
           <AuthRoute path={"/subject/:subjectId" + URL_PRESENTATIONS + "/:presentationId"} component={PresentationPage} type="both" />
           <AuthRoute path={URL_PROFILE} component={ProfileChangePage} type="both" />
           <AuthRoute path={URL_REGISTER} component={RegisterPage} type="register" />

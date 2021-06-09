@@ -19,7 +19,6 @@ export const URL_TERMS = "/terms";
 
 export const URL_ADMIN_SUBJECTS = "/admin/subjects";
 export const URL_ADMIN_USERS = "/admin/users";
-export const URL_ADMIN_BONUSES = "/admin/bonus";
 export const URL_ADMIN_PRESENTATIONS = "/admin/presentation";
 export const URL_ADMIN_SETTINGS = "/admin/settings";
 export const URL_ADMIN_HOME = "/admin/home";
@@ -60,7 +59,7 @@ export const MINIMAL_PASSWORD_LENGTH = 6;
 export const DIFFERENT_PASSWORD_ERROR = "Heslá sa nezhodujú !";
 export const SHORT_PASSWORD_ERROR = `Heslo musí mať aspoň ${MINIMAL_PASSWORD_LENGTH} znakov !`;
 
-const serverURL = process.env.REACT_APP_API_URL;
+export const SERVER_URL = process.env.REACT_APP_API_URL;
 
 // URL na API
 export const createUrlToDownloadPresentation = (
@@ -69,7 +68,7 @@ export const createUrlToDownloadPresentation = (
   fileName,
   isTeacherPres
 ) => {
-  return `${serverURL}/subject/${subjectId}/presentation/${presId}/download?filename=${encodeURIComponent(
+  return `${SERVER_URL}/subject/${subjectId}/presentation/${presId}/download?filename=${encodeURIComponent(
     fileName
   )}&teacherPres=${isTeacherPres}`;
 };
@@ -80,5 +79,5 @@ export const createUrlToUploadPresentation = (
   userId,
   status
 ) => {
-  return `${serverURL}/subject/${subjectId}/presentation/upload?teacherPres=${isTeacherPres}&userId=${userId}&status=${status}`;
+  return `${SERVER_URL}/subject/${subjectId}/presentation/upload?teacherPres=${isTeacherPres}&userId=${userId}&status=${status}`;
 };

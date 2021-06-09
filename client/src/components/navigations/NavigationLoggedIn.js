@@ -6,7 +6,6 @@ import { FaBrain, FaUser } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import {
   URL_ADMIN_SUBJECTS,
-  URL_ADMIN_BONUSES,
   URL_BONUSES,
   URL_HOME,
   URL_PRESENTATIONS,
@@ -91,14 +90,18 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
           <NavLink
             // prettier-ignore
             to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_HOME : URL_HOME) }
-            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
+            className={
+              "nav-link " + (inGlobalPage || !subjectId ? "d-none" : "")
+            }
           >
             {subjectName}
           </NavLink>
           <NavLink
             // prettier-ignore
-            to={"/subject/" + subjectId + (isAdmin ? URL_ADMIN_BONUSES : URL_BONUSES) }
-            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
+            to={"/subject/" + subjectId + URL_BONUSES}
+            className={
+              "nav-link " + (inGlobalPage || !subjectId ? "d-none" : "")
+            }
           >
             Bonusy
           </NavLink>
@@ -108,31 +111,45 @@ function NavigationLoggedIn({ currentUserName, isAdmin }) {
               subjectId +
               (isAdmin ? URL_ADMIN_PRESENTATIONS : URL_PRESENTATIONS)
             }
-            className={"nav-link " + (inGlobalPage ? "d-none" : "")}
+            className={
+              "nav-link " + (inGlobalPage || !subjectId ? "d-none" : "")
+            }
           >
             Prezentácie
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_ADMIN_OVERALL_ATTENDANCE}
-            className={"nav-link " + (inGlobalPage || !isAdmin ? "d-none" : "")}
+            className={
+              "nav-link " +
+              (inGlobalPage || !isAdmin || !subjectId ? "d-none" : "")
+            }
           >
             Dochádzka
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_TERMS}
-            className={"nav-link " + (isAdmin || inGlobalPage ? "d-none" : "")}
+            className={
+              "nav-link " +
+              (isAdmin || inGlobalPage || !subjectId ? "d-none" : "")
+            }
           >
             Podmienky
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_ADMIN_SETTINGS}
-            className={"nav-link " + (inGlobalPage || !isAdmin ? "d-none" : "")}
+            className={
+              "nav-link " +
+              (inGlobalPage || !isAdmin || !subjectId ? "d-none" : "")
+            }
           >
             Nastavenia
           </NavLink>
           <NavLink
             to={"/subject/" + subjectId + URL_ADMIN_EMAIL}
-            className={"nav-link " + (inGlobalPage || !isAdmin ? "d-none" : "")}
+            className={
+              "nav-link " +
+              (inGlobalPage || !isAdmin || !subjectId ? "d-none" : "")
+            }
           >
             Email
           </NavLink>

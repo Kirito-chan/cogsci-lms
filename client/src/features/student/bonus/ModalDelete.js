@@ -3,7 +3,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
-import { deleteBonus, loadBonus } from "./bonusSlice";
+import { deleteBonus } from "./bonusSlice";
+import { loadBonuses } from "../home/homeSlice";
 
 function ModalDelete({
   showOdstranit,
@@ -19,8 +20,8 @@ function ModalDelete({
   const handleOdstranit = () => {
     closeModalOdstranit();
     dispatch(deleteBonus(bonus.id)).then(() => {
-      dispatch(loadBonus(currentUserId, subjectId));
-      history.push(`/subject/${subjectId}/admin/bonus`);
+      dispatch(loadBonuses(currentUserId, subjectId));
+      history.push(`/subject/${subjectId}/bonus`);
     });
   };
 

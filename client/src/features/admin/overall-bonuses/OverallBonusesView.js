@@ -98,7 +98,7 @@ function OverallBonusesView({
                       const isChecked = initialized
                         ? checkedBonuses.checkedItems.get(
                             studentBonus.student.id
-                          )[j].isChecked
+                          )[j]?.isChecked
                         : "";
                       const commented = isChecked == NOT_YET_COMMENTED;
                       return (

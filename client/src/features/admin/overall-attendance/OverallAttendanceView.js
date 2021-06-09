@@ -84,7 +84,7 @@ function OverallAttendanceView({
                               )
                                 ? checkedAttendances.checkedItems.get(
                                     studentAttendance.student.id
-                                  )[j].isChecked
+                                  )[j]?.isChecked
                                 : false
                             }
                           />

@@ -5,6 +5,7 @@ import formatTranslation from "../../../../components/utils/StringUtils";
 import { Link } from "react-router-dom";
 import {
   STUD_PRES_CLOSED,
+  STUD_PRES_NEUTRAL,
   STUD_PRES_OPENED,
   URL_PRESENTATIONS,
 } from "../../../../constants";
@@ -34,11 +35,21 @@ function MyPresentationList({
           >
             {myPresentation.title}
           </Link>
-          <p>
+          <p className="mb-1">
             <b>Hodnotenie:</b>{" "}
             {myPresentation.points ? myPresentation.points : 0} z{" "}
             {presentationWeight} {formatTranslation(presentationWeight, "bod")}
           </p>
+          {isUploaded && (
+            <p>
+              <b>Stav: </b>
+              {myPresentation.status === STUD_PRES_NEUTRAL
+                ? "Prijatá na feedback"
+                : myPresentation.status === STUD_PRES_OPENED
+                ? "Otvorené hodnotenie"
+                : "Uzavreté hodnotenie"}
+            </p>
+          )}
         </div>
 
         <Form

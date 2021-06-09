@@ -128,12 +128,16 @@ function PresentationPage() {
   useEffect(() => {
     if (location.hash.includes("myNewComment")) {
       document.getElementById("scrollDownToLastComment").click();
+      location.hash = "";
+      history.push(location.pathname + location.search);
     }
   }, [comments]);
 
   useEffect(() => {
     if (location.hash.includes("sliderForm")) {
       document.getElementById("scrollDownToSlider").click();
+      location.hash = "";
+      history.push(location.pathname + location.search);
     }
   }, [valuationTypes]);
 

@@ -38,6 +38,7 @@ function PresentationPageView({
 }) {
   const handleDownload = (e) => {
     e.preventDefault();
+    console.log(presentation.id);
     axios
       .get(
         createUrlToDownloadPresentation(
