@@ -23,7 +23,6 @@ function StudentHomePage() {
   return (
     <div>
       <Navigation />
-
       <section>
         <Container fluid>
           <Row>

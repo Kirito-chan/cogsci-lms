@@ -9,7 +9,7 @@ import DeleteButton from "../../presentation/DeleteButton";
 
 function TeacherPresentationsList({ teacherPresentations, subjectId }) {
   return (
-    <div>
+    <div className="mb-4">
       {teacherPresentations.length !== 0 || (
         <p className="text-secondary">Žiadne</p>
       )}

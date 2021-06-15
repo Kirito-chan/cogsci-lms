@@ -83,52 +83,48 @@ export default slice.reducer;
 
 // Action Creators
 
-export const uploadPresentation = (
-  file,
-  subjectId,
-  currentUserId,
-  isTeacherPres,
-  status = 0
-) => (dispatch) => {
-  const data = new FormData();
-  data.append("file", file);
-  const url = createUrlToUploadPresentation(
-    subjectId,
-    isTeacherPres,
-    currentUserId,
-    status
-  );
+export const uploadPresentation =
+  (file, subjectId, currentUserId, isTeacherPres, status = 0) =>
+  (dispatch) => {
+    const data = new FormData();
+    data.append("file", file);
+    const url = createUrlToUploadPresentation(
+      subjectId,
+      isTeacherPres,
+      currentUserId,
+      status
+    );
 
-  return dispatch(
-    apiCallBegan({
-      method: "post",
-      data,
-      url,
-      onSuccess: uploadedPresentationReceived.type,
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    })
-  );
-};
+    return dispatch(
+      apiCallBegan({
+        method: "post",
+        data,
+        url,
+        onSuccess: uploadedPresentationReceived.type,
+        headers: {
+          "content-type": "multipart/form-data",
+        },
+      })
+    );
+  };
 
 const urlAttendance = "/attendance";
 const urlSubject = "/subject";
 
-export const addPasswordForAttendance = (userId, subjectId, password) => (
-  dispatch
-) => {
-  const data = { password };
-  return dispatch(
-    apiCallBegan({
-      method: "post",
-      url: urlSubject + "/" + subjectId + urlAttendance + "/?userId=" + userId,
-      data,
-      onSuccess: passwordForAttendanceAdded.type,
-      onError: passwordForAttendanceFailed.type,
-    })
-  );
-};
+export const addPasswordForAttendance =
+  (userId, subjectId, password) => (dispatch) => {
+    const data = { password };
+    return dispatch(
+      apiCallBegan({
+        method: "post",
+        url:
+          urlSubject + "/" + subjectId + urlAttendance + "/?userId=" + userId,
+        data,
+        onSuccess: passwordForAttendanceAdded.type,
+        onError: passwordForAttendanceFailed.type,
+      })
+    );
+  };
 
 export const loadAttendance = (userId, subjectId) => (dispatch) => {
   return dispatch(
@@ -178,30 +174,28 @@ export const loadTeacherPresentations = (userId, subjectId) => (dispatch) => {
 
 const urlStudentPresentations = "/student-presentation";
 
-export const loadStudentPresentationsOpened = (userId, subjectId) => (
-  dispatch
-) => {
-  return dispatch(
-    apiCallBegan({
-      // prettier-ignore
-      url: urlStudentPresentations + "/?status=" + STUD_PRES_OPENED + "&userId=" + userId + "&subjectId=" + subjectId,
-      onSuccess: studentPresentationsOpenedReceived.type,
-    })
-  );
-};
+export const loadStudentPresentationsOpened =
+  (userId, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        // prettier-ignore
+        url: urlStudentPresentations + "/?status=" + STUD_PRES_OPENED + "&userId=" + userId + "&subjectId=" + subjectId,
+        onSuccess: studentPresentationsOpenedReceived.type,
+      })
+    );
+  };
 
-export const loadStudentPresentationsClosed = (userId, subjectId) => (
-  dispatch
-) => {
-  return dispatch(
-    apiCallBegan({
-      // prettier-ignore
-      url:
+export const loadStudentPresentationsClosed =
+  (userId, subjectId) => (dispatch) => {
+    return dispatch(
+      apiCallBegan({
+        // prettier-ignore
+        url:
         urlStudentPresentations + "/?status=" + STUD_PRES_CLOSED + "&userId=" + userId + "&subjectId=" + subjectId,
-      onSuccess: studentPresentationsClosedReceived.type,
-    })
-  );
-};
+        onSuccess: studentPresentationsClosedReceived.type,
+      })
+    );
+  };
 
 const urlMyPresentation = "/my-presentation";
 
@@ -226,53 +220,44 @@ export const loadSubjectValuation = (subjectId) => (dispatch) => {
   );
 };
 
-export const updateSubjectValuation = (
-  subjectId,
-  gradeA,
-  gradeB,
-  gradeC,
-  gradeD,
-  gradeE,
-  gradeFx
-) => (dispatch) => {
-  const data = { gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx };
-  return dispatch(
-    apiCallBegan({
-      method: "put",
-      data,
-      url: urlAdmin + urlSubject + "/" + subjectId + urlSubjectValuation,
-      onSuccess: subjectValuationReceived.type,
-    })
-  );
-};
+export const updateSubjectValuation =
+  (subjectId, gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx) =>
+  (dispatch) => {
+    const data = { gradeA, gradeB, gradeC, gradeD, gradeE, gradeFx };
+    return dispatch(
+      apiCallBegan({
+        method: "put",
+        data,
+        url: urlAdmin + urlSubject + "/" + subjectId + urlSubjectValuation,
+        onSuccess: subjectValuationReceived.type,
+      })
+    );
+  };
 
 const urlAdmin = "/admin";
 const urlSettings = "/settings";
 const urlPresCriteria = "/presentation-criteria";
 
-export const deleteOldAndInsertNewPresentationCriteria = (
-  subjectId,
-  criteria,
-  wereJustUpdatedNotDeletedOrInserted
-) => (dispatch) => {
-  const data = { criteria };
-  return dispatch(
-    apiCallBegan({
-      method: "post",
-      data,
-      url:
-        urlAdmin +
-        urlSubject +
-        "/" +
-        subjectId +
-        urlSettings +
-        urlPresCriteria +
-        "/?wereJustUpdatedNotDeletedOrInserted=" +
-        wereJustUpdatedNotDeletedOrInserted,
-      onSuccess: presentationCriteriaInserted.type,
-    })
-  );
-};
+export const deleteOldAndInsertNewPresentationCriteria =
+  (subjectId, criteria, wereJustUpdatedNotDeletedOrInserted) => (dispatch) => {
+    const data = { criteria };
+    return dispatch(
+      apiCallBegan({
+        method: "post",
+        data,
+        url:
+          urlAdmin +
+          urlSubject +
+          "/" +
+          subjectId +
+          urlSettings +
+          urlPresCriteria +
+          "/?wereJustUpdatedNotDeletedOrInserted=" +
+          wereJustUpdatedNotDeletedOrInserted,
+        onSuccess: presentationCriteriaInserted.type,
+      })
+    );
+  };
 
 export const clearAttendancePasswordError = () => (dispatch) => {
   dispatch({ type: attendancePasswordErrorCleared.type, payload: "" });

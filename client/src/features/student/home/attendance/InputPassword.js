@@ -25,7 +25,6 @@ function InputPassword() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     dispatch(addPasswordForAttendance(currentUserId, subjectId, password)).then(
       () => {
         dispatch(loadAttendance(currentUserId, subjectId));

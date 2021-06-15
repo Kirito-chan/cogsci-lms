@@ -75,6 +75,7 @@ function PresentationsPageList({
         {showLoaderIfAnyNull(teacherPresentations) || (
           <TeacherPresentationsList
             teacherPresentations={teacherPresentations}
+            subjectId={subjectId}
           />
         )}
       </Container>
