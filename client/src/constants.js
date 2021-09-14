@@ -11,7 +11,7 @@ export const USER_LOGOUT = "USER_LOGOUT";
 export const MAX_POINT_HEIGHT_PRES_EVALUATION = 10;
 
 // URL pre router
-export const URL_PREFIX = "/prezenacie"
+export const URL_PREFIX = "/prezentacie"
 
 export const URL_HOME = "/home-student";
 export const URL_SUBJECTS = "/subjects";
