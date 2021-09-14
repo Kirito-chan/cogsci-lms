@@ -27,6 +27,7 @@ import {
   URL_RESETED_PASSWORD,
   URL_LOGIN,
   URL_PROFILE,
+  URL_PREFIX,
 } from "./constants";
 import BonusesPage from "./features/student/bonuses/BonusesPage";
 import BonusPage from "./features/student/bonus/BonusPage";
@@ -52,7 +53,7 @@ import ProfileChangePage from "./components/profile-change/ProfileChangePage";
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+      <BrowserRouter basename={URL_PREFIX}>
         <ScrollToTop />
         <Switch>
           <AuthRoute exact path="/" component={Login} type="login" />
