@@ -133,7 +133,7 @@ export const getBonuses = async (userId, subjectId) => {
   WITH
   tab1 AS (
   SELECT a.*,
-         c.user_id,
+         ? as user_id,
          CASE
          WHEN c.id is NULL THEN ?
           WHEN sum(c.valuated) is NULL THEN ?
@@ -158,6 +158,7 @@ export const getBonuses = async (userId, subjectId) => {
   FROM tab1 LEFT JOIN tab2 USING(id)
   ORDER BY tab1.id DESC`,
     [
+      userId,
       NOT_YET_COMMENTED,
       NOT_YET_EVALUATED_BONUS_POINTS,
       GOT_0_BONUS_POINTS,
@@ -798,7 +799,7 @@ export const getStudentPresentations = async (
     `
   WITH
    tab1 as 
-   (SELECT p.id, p.title, p.owner_id as user_id, p.path, p.status, user.first_name, user.last_name,
+   (SELECT p.id, p.title, p.owner_id as user_id, p.path, p.status, min(user.first_name) as first_name, min(user.last_name) as last_name,
            count(u.user_id) as num_all_comments   
    FROM ((presentation p JOIN user_subject_lookup as usl
        ON p.id = usl.presentation_id)
@@ -919,7 +920,7 @@ export const getTeacherPresentations = async (userId, subjectId) => {
   SELECT t.id, 
          t.title,
          t.path,
-         c.user_id,
+         ? as user_id,
          count(c.user_id) as num_of_comments         
   FROM teacher_presentation AS t LEFT JOIN teacher_presentation_comments AS c
   ON t.id = c.presentation_id AND c.user_id = ?
@@ -935,7 +936,7 @@ export const getTeacherPresentations = async (userId, subjectId) => {
 
   SELECT tab1.*, tab2.num_all_comments FROM tab1 LEFT JOIN tab2 USING(id)
   ORDER BY tab1.id DESC;`,
-    [userId, subjectId]
+    [userId, userId, subjectId]
   );
   return row;
 };
