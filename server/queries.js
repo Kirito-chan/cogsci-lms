@@ -135,7 +135,7 @@ export const getBonuses = async (userId, subjectId) => {
   SELECT a.*,
          ? as user_id,
          CASE
-         WHEN c.id is NULL THEN ?
+         WHEN count(c.id) = 0 THEN ?
           WHEN sum(c.valuated) is NULL THEN ?
           WHEN sum(c.valuated) = ? THEN '0'
           ELSE '1'
