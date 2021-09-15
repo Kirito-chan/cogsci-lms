@@ -897,13 +897,14 @@ export const getMyPresentation = async (userId, subjectId) => {
     ),
 
     tab4 as (SELECT 
-           presentation_id as id, 
-           title, 
-           user_id,
-           path,
-           status,
-           ROUND((SELECT sum(points_per_category) FROM tab2)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points
-    FROM tab3)
+           tab3.presentation_id as id, 
+           min(tab3.title) as title, 
+           min(tab3.user_id) as user_id,
+           min(tab3.path) as path,
+           min(tab3.status) as status,
+           ROUND((SELECT sum(points_per_category) FROM tab3)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points
+    FROM tab3
+    GROUP BY tab3.presentation_id)
 
     SELECT tab4.*, user.first_name, user.last_name 
     FROM tab4 JOIN user ON tab4.user_id = user.id 
