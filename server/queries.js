@@ -67,7 +67,7 @@ export const getBonusesOfStudent = async (userId, subjectId, conn) => {
   const [rows] = await execute(
     `SELECT a.id, a.created,
          CASE
-         WHEN ac.id is NULL THEN ?
+         WHEN count(ac.id) = 0 THEN ?
           WHEN sum(ac.valuated) is NULL THEN ?
           WHEN sum(ac.valuated) = ? THEN FALSE
           ELSE TRUE
@@ -816,7 +816,7 @@ export const getStudentPresentations = async (
    GROUP BY tab1.id
    )
 
-   SELECT tab2.*, CASE WHEN upv.id is NULL THEN FALSE ELSE TRUE END AS has_evaluated
+   SELECT tab2.*, CASE WHEN count(upv.id) = 0 THEN FALSE ELSE TRUE END AS has_evaluated
    FROM tab2 LEFT JOIN user_presentation_valuation as upv
          ON upv.target_usl_id = (SELECT usl.id FROM user_subject_lookup as usl
                                 WHERE usl.user_id = tab2.user_id
