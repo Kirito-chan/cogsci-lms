@@ -896,12 +896,13 @@ export const getMyPresentation = async (userId, subjectId) => {
       ON tab2.pvp_id = pvp.id
     ),
 
-    tab4 as (SELECT presentation_id as id, 
+    tab4 as (SELECT 
+           presentation_id as id, 
            title, 
            user_id,
            path,
            status,
-           ROUND(sum(points_per_category)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points
+           ROUND((SELECT sum(points_per_category) FROM tab2)/(SELECT count(DISTINCT whose_usl_id) FROM tab2), 2) as points
     FROM tab3)
 
     SELECT tab4.*, user.first_name, user.last_name 
