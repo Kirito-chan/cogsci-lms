@@ -125,6 +125,7 @@ app.post(
       });
       res.json({ token, user });
     } else {
+      res.set({ 'content-type': 'application/json; charset=utf-8' });
       res.status(401).send("Nesprávne heslo");
     }
   })
@@ -197,6 +198,7 @@ app.put(
             .update(`${oldPassword}{${user.salt}}`)
             .digest("base64");
           if (hashedOldPassword !== user.password) {
+            res.set({ 'content-type': 'application/json; charset=utf-8' });
             res.status(401).send("Nesprávne heslo !");
             return;
           }
@@ -350,6 +352,7 @@ app.post(
             conn.release();
             return;
           }
+          res.set({ 'content-type': 'application/json; charset=utf-8' });
           res.status(401).send("Nesprávne heslo");
         } catch (error) {
           conn.rollback();
