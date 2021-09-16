@@ -24,6 +24,7 @@ const __dirname = path.resolve();
 
 app.use(cors({ origin: "*" })); // pri nasadeni na PROD nahradit "*" s process.env.CLIENT_URL
 app.use(express.static(path.join(__dirname, "..", "client", "build")));
+app.use(express.static(path.join(__dirname, "uploads")));
 app.use(express.json());
 
 // REGISTRATION
@@ -831,6 +832,7 @@ app.get(
     } else filePath = `uploads/${subjectId}/${presentationId}_${filename}`;
 
     try {
+      res.setHeader('content-type', 'application/octet-stream');
       res.download(filePath);
     } catch (error) {
       console.error(error);
