@@ -13,7 +13,7 @@ export default function AttendanceTable({ attendances, detail }) {
 
   return (
     <div>
-      {allLocked && !detail ? <AddAttendance /> : ""}
+      {allLocked && !detail && <AddAttendance />}
 
       <Table bordered striped hover size="sm" className="text-center">
         <thead>
@@ -21,7 +21,7 @@ export default function AttendanceTable({ attendances, detail }) {
             <th>Týždeň</th>
             <th>Dátum</th>
             <th>{detail ? "Získal bod" : "Uzamknutie dochádzky"}</th>
-            {!detail ? <th>Heslo</th> : ""}
+            {!detail && <th>Heslo</th>}
           </tr>
         </thead>
         <tbody>
@@ -42,7 +42,7 @@ export default function AttendanceTable({ attendances, detail }) {
                   <LockAttendance attendanceId={attendance.id} />
                 )}
               </td>
-              {!detail ? <td>{attendance.password}</td> : ""}
+              {!detail && <td>{attendance.password}</td>}
             </tr>
           ))}
         </tbody>
