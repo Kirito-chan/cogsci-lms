@@ -25,12 +25,16 @@ import {
 } from "./constants.js";
 
 const execute = async (queryString, paramsArr, conn = null) => {
-  if (conn) {
-    const rows = await conn.query(queryString, paramsArr);
+  try {
+    if (conn) {
+      const rows = await conn.query(queryString, paramsArr);
+      return rows;
+    }
+    const rows = await pool.query(queryString, paramsArr);
     return rows;
+  } catch(error) {
+    console.error(error);
   }
-  const rows = await pool.query(queryString, paramsArr);
-  return rows;
 };
 
 export const registerUser = async (

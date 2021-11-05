@@ -823,17 +823,18 @@ app.get(
   "/api/subject/:subjectId/presentation/:presentationId/download",
   isEnrolledInSubjectAuth,
   (req, res) => {
-    const { presentationId, subjectId } = req.params;
-    const { filename, teacherPres } = req.query;
-
-    let filePath = "";
-    if (teacherPres == "true") {
-      filePath = `uploads/teacher/${subjectId}/${presentationId}_${filename}`;
-    } else filePath = `uploads/${subjectId}/${presentationId}_${filename}`;
-
     try {
+      const { presentationId, subjectId } = req.params;
+      const { filename, teacherPres } = req.query;
+
+      let filePath = "";
+      if (teacherPres == "true") {
+        filePath = `uploads/teacher/${subjectId}/${presentationId}_${filename}`;
+      } else filePath = `uploads/${subjectId}/${presentationId}_${filename}`;
+
       res.setHeader('content-type', 'application/octet-stream');
       res.download(filePath);
+      
     } catch (error) {
       console.error(error);
     }
