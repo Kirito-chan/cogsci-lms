@@ -3,16 +3,16 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useDispatch } from "react-redux";
 
-export function TextInput({ title, content, handleContent }) {
+export function TextInput({ title, content, handleContent, required = true }) {
   return (
     <Form.Group as={Row}>
       <Form.Label column sm="3" className="text-right">
         <b>{title}</b>
-        <span className="text-danger">*</span>
+        {required && <span className="text-danger">*</span>} 
       </Form.Label>
       <Col sm="9">
         <Form.Control
-          required
+          required={required}
           type="text"
           onChange={handleContent}
           value={content}

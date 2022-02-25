@@ -52,6 +52,12 @@ function LoginView({
           Prihlásiť
         </Button>
       </Form>
+
+      <footer className="text-center bg-dark text-white wrapper w-100" style={ {position: "fixed", bottom: 0}}>
+        <div className="text-center p-3">
+          &copy; 2021 Copyright: František Kochjar
+        </div>
+      </footer>
     </div>
   );
 }

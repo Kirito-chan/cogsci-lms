@@ -35,7 +35,6 @@ import ScrollToTop from "./components/utils/ScrollToTop";
 import PresentationPage from "./features/student/presentation/PresentationPage";
 import PresentationsPage from "./features/student/presentations/PresentationsPage";
 import TermsPage from "./features/student/terms/TermsPage";
-import NotAuthorizedPage from "./components/NotAuthorizedPage";
 import AdminHomePage from "./features/admin/home/AdminHomePage";
 import PresentationsPageAdmin from "./features/admin/presentations/PresentationsPage";
 import SettingsPage from "./features/admin/settings/SettingsPage";
@@ -58,7 +57,7 @@ function App() {
         <Switch>
           <AuthRoute exact path="/" component={Login} type="login" />
           <AuthRoute path={URL_LOGIN} component={Login} type="login" />
-          <AuthRoute path={URL_NOT_AUTHORIZED} component={NotAuthorizedPage} type="not-auth" />
+          <AuthRoute path={URL_NOT_AUTHORIZED} component={Login} type="login" />
           
           {/* admin routes */}
           <AuthRoute path={"/subject/:subjectId" + URL_ADMIN_HOME} component={AdminHomePage} type="admin" />

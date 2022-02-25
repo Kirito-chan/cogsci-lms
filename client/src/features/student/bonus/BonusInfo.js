@@ -7,7 +7,7 @@ import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import Discussion from "../home/Discussion";
 import "./Bonus.css";
-import { showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
+import { isValidUrl, showLoaderIfAnyNull } from "../../../components/utils/StringUtils";
 import ModalEdit from "./ModalEdit";
 import ModalDelete from "./ModalDelete";
 
@@ -32,8 +32,9 @@ function BonusInfo({
   useEffect(() => {
     if (bonus) {
       let newUrl = bonus.video_URL;
+      
 
-      if (newUrl.includes("ted") && !newUrl.includes("embed")) {
+      if (isValidUrl(newUrl) && newUrl.includes("ted") && !newUrl.includes("embed")) {
         newUrl = new URL(newUrl);
         newUrl.hostname = newUrl.hostname.replace("www", "embed");
         newUrl = newUrl.href;
@@ -87,10 +88,9 @@ function BonusInfo({
               </p>
               <p>
                 {bonus.video_URL && bonus.video_URL != "null" ? (
-                  // prettier-ignore
-                  <a target="_blank" href={bonus.video_URL} rel="noopener noreferrer">
-                {bonus.video_URL}
-              </a>
+                  // prettier-ignore   
+                isValidUrl(url) ? <a href={bonus.video_URL}>{bonus.video_URL}</a> 
+                                 : <span>{bonus.video_URL}</span>
                 ) : (
                   <span className="font-italic">nepridaný</span>
                 )}
@@ -109,7 +109,7 @@ function BonusInfo({
             </Col>
 
             <Col lg={6}>
-              {url && url != "null" && (
+              {url && url != "null" && isValidUrl(url) && (
                 <BonusVideo url={url} isFocusing={bonus.is_focusing_URL} />
               )}
             </Col>

@@ -76,6 +76,7 @@ function AddBonusModal({
             title="URL odkaz"
             content={urlRef}
             handleContent={handleUrlRef}
+            required={false}
           />
         </Modal.Body>
         <Modal.Footer className="d-flex justify-content-between">
