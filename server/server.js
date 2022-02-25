@@ -905,7 +905,7 @@ app.post(
               const editedPath = `uploads/${subjectId}/${oldPres.id}_${oldPres.path}`;
               fs.unlink(editedPath, (err) => {
                 if (err) {
-                  conn.rollback();
+                  conn.commit();
                   conn.release();
                   console.error(err);
                   return;
