@@ -795,6 +795,11 @@ app.post(
 
           for (const element of values) {
             const pvpId = await queries.getPvpId(subjectId, element.name, conn);
+            const alreadyEvaluated = await queries.hasAlreadyEvaluatedPresentation(whoseUslId, targetUslId, pvpId);
+            if (alreadyEvaluated) {
+              res.sendStatus(409);
+              return;
+            }
             await queries.insertPresentationValuation(
               whoseUslId,
               targetUslId,

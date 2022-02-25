@@ -52,7 +52,7 @@ export const registerUser = async (
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     [firstName, lastName, username, password, email, IS_STUDENT, salt, date]
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 // BONUSES
@@ -64,7 +64,7 @@ export const insertBonus = async (subjectId, title, content, urlRef, created) =>
      VALUES (?, ?, ?, ?, ?, 0, ?)`,
     [subjectId, content, title, created, created, urlRef]
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const getBonusesOfStudent = async (userId, subjectId, conn) => {
@@ -121,7 +121,7 @@ export const insertBonusComment = async (bonusId, userId, content, date, refComm
        VALUES (?, ?, ?, ?, ?)`,
       [userId, bonusId, content, date, refCommentId]
     );
-    return row.insertId;
+    return row?.insertId;
 };
 
 export const getBonus = async (bonusId) => {
@@ -243,7 +243,7 @@ export const updateUserStatus = async (subjectId, userId, status) => {
      WHERE subject_id = ? AND user_id = ?`,
     [status, subjectId, userId]
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const insertNewUserToSubject = async (userId, subjectId) => {
@@ -252,7 +252,7 @@ export const insertNewUserToSubject = async (userId, subjectId) => {
      VALUES (?, ?, ?)`,
     [userId, subjectId, PENDING_FOR_SUBJ]
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const insertSubject = async (
@@ -293,7 +293,7 @@ export const insertSubjectValuation = async (subjectId, conn) => {
     [subjectId, A, B, C, D, E, Fx],
     conn
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 // ORDER BY (usl.status = ?) DESC, (usl.status = ?) DESC, s.year DESC
@@ -631,7 +631,7 @@ export const getAttendanceIdForPassword = async (subjectId, password, conn) => {
     conn
   );
 
-  if (rows.length > 0) return rows[0].id;
+  if (rows.length > 0) return rows[0]?.id;
   else return false;
 };
 
@@ -732,7 +732,7 @@ export const getUslId = async (subjectId, userId, conn) => {
     [subjectId, userId],
     conn
   );
-  return row[0].id;
+  return row[0]?.id;
 };
 
 export const getPvpId = async (subjectId, name, conn) => {
@@ -741,7 +741,7 @@ export const getPvpId = async (subjectId, name, conn) => {
     [subjectId, name],
     conn
   );
-  return row[0].id;
+  return row[0]?.id;
 };
 
 export const insertPresentationValuation = async (
@@ -756,7 +756,7 @@ export const insertPresentationValuation = async (
     [whoseUslId, targetUslId, pvpId, points],
     conn
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 // presentations
@@ -787,7 +787,7 @@ export const insertPresentationCriteria = async (subjectId, criteria, conn) => {
     } else query += `(${subjectId}, '${criterion.name}', ${criterion.height})`;
   }
   const [row] = await execute(query, [subjectId], conn);
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const deleteTeacherPresentation = async (id) => {
@@ -969,7 +969,7 @@ export const insertTeacherToUSL = async (teacherId, subjectId, conn) => {
     [teacherId, subjectId, ADMIN_FOR_SUBJ],
     conn
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const deleteUserFromUSL = async (id, conn) => {
@@ -979,7 +979,7 @@ export const deleteUserFromUSL = async (id, conn) => {
     [id],
     conn
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const insertTeacherPresentation = async (
@@ -995,7 +995,7 @@ export const insertTeacherPresentation = async (
     [subjectId, title, path, date],
     conn
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const getStudentPresentation = async (userId, subjectId, conn) => {
@@ -1015,7 +1015,7 @@ export const insertStudentPresentation = async (title, path, ownerId, conn) => {
     [title, path, STUD_PRES_NEUTRAL, ownerId],
     conn
   );
-  return row.insertId;
+  return row?.insertId;
 };
 
 export const updateStudentPresentation = async (
@@ -1042,4 +1042,13 @@ export const deleteStudentEvaluation = async (targetUslId, conn) => {
     [targetUslId],
     conn
   );
+};
+
+export const hasAlreadyEvaluatedPresentation = async (whoseUslId, targetUslId, pvpId, conn) => {
+  const [rows] = await execute(
+    `SELECT * FROM user_presentation_valuation WHERE whose_usl_id = ? AND target_usl_id = ? AND pvp_id = ?`,
+    [whoseUslId, targetUslId, pvpId],
+    conn
+  );
+  return rows.length > 0;
 };
