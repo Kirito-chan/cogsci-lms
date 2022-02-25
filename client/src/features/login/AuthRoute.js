@@ -92,7 +92,7 @@ const AuthRoute = (props) => {
         setComponent(<Redirect to={URL_LOGIN} />);
       }
     }
-  }, [props.component, token, tokenError]);
+  }, [props.component, token, tokenError, isAdmin]);
 
   return component;
 };
