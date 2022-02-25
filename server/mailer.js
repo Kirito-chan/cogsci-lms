@@ -6,18 +6,14 @@ const mailjetAPI = mailjet.connect(
 );
 
 const sendEmail = (messageInfo) => {
-  const toEmails = messageInfo.toEmail.map((email) => ({ Email: email }));
+  const emails = messageInfo.toEmail.map((email) => ({
+    From: { Email: messageInfo.fromEmail, Name: messageInfo.fromName },
+    To: [{ Email: email }],
+    Subject: messageInfo.subject,
+    HtmlPart: messageInfo.text,
+  }));
 
-  return mailjetAPI.post("send", { version: "v3.1" }).request({
-    Messages: [
-      {
-        From: { Email: messageInfo.fromEmail, Name: messageInfo.fromName },
-        To: toEmails,
-        Subject: messageInfo.subject,
-        HtmlPart: messageInfo.text,
-      },
-    ],
-  });
+  return mailjetAPI.post("send", { version: "v3.1" }).request({Messages: emails});
 };
 
 export async function sendOne(messageInfo) {

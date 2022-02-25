@@ -987,8 +987,11 @@ app.post(
       text,
     };
 
+    if (toEmail.length == 0) {
+      res.send('{"message":"Email NOT sent. No recipients defined."}');
+      return;
+    }
     mailer.sendOne(messageInfo);
-
     res.send('{"message":"Email sent."}');
   })
 );
